@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PUNCH-DRUNK ARCHIVE</title>
+  <meta name="description" content="PUNCH-DRUNK MUSIC BAR DAEGU의 음반 아카이브입니다." />
+  <meta property="og:title" content="PUNCH-DRUNK ARCHIVE" />
+  <meta property="og:description" content="PUNCH-DRUNK MUSIC BAR DAEGU의 추천 음반과 보유 음반을 둘러보세요." />
+  <meta property="og:image" content="logo-punchdrunk-circle.png" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="logo-punchdrunk-circle.png" />
+  <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
+  <link rel="stylesheet" href="styles.css?v=20260724a" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <button class="site-home-button" data-home-link type="button" aria-label="처음 화면으로 돌아가기" data-i18n-aria="homeLabel">
+        <img class="site-logo" src="logo-punchdrunk-circle.png" alt="PUNCH-DRUNK MUSIC BAR DAEGU KOREA" />
+      </button>
+      <nav class="language-switch" aria-label="언어 선택" data-i18n-aria="languageLabel">
+        <button type="button" data-language-option="ko" aria-pressed="true" title="한국어">
+          <span>KR</span>
+        </button>
+        <button type="button" data-language-option="en" aria-pressed="false" title="English">
+          <span>EN</span>
+        </button>
+      </nav>
+    </header>
+
+    <main id="app" aria-live="polite"></main>
+  </div>
+
+  <template id="home-template">
+    <section class="weekly-section" aria-label="금주의 음반" data-i18n-aria="weeklyAlbum">
+      <div class="section-heading">
+        <p class="section-kicker" data-i18n="weeklyAlbum">금주의 음반</p>
+        <p class="section-note" data-i18n="weeklyNote">이번 주 가장 먼저 들어볼 음반</p>
+      </div>
+      <button class="weekly-card" type="button" data-weekly-open>
+        <div class="weekly-cover" data-weekly-cover></div>
+        <div class="weekly-meta">
+          <div class="weekly-info">
+            <span class="pill" data-weekly-format></span>
+            <h1 data-weekly-title></h1>
+            <p data-weekly-artist></p>
+            <p class="weekly-year" data-weekly-year></p>
+          </div>
+          <div class="weekly-reason">
+            <span data-i18n="selectionReason">선정 이유</span>
+            <p data-weekly-reason></p>
+          </div>
+          <span class="weekly-cta" data-i18n="details">자세히 보기</span>
+        </div>
+      </button>
+    </section>
+
+    <aside class="request-guide" aria-label="신청 안내" data-i18n-aria="requestGuideTitle">
+      <p class="request-guide-label" data-i18n="requestGuideTitle">신청 안내</p>
+      <p class="request-guide-text" data-i18n="requestGuideText">신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요. 리스트에 없는 곡은 스트리밍으로 재생됩니다.</p>
+    </aside>
+
+    <section class="search-section" aria-label="음반 검색과 필터" data-i18n-aria="searchSection">
+      <label class="search-label" for="search-input" data-i18n="albumSearch">음반 검색</label>
+      <div class="search-input-wrap">
+        <input id="search-input" class="search-input" type="search" placeholder="음반 검색" data-i18n-placeholder="albumSearch" autocomplete="off" />
+        <button class="search-clear-button" type="button" data-search-clear aria-label="검색어 지우기" data-i18n-aria="clearSearch" hidden></button>
+      </div>
+      <button class="filter-panel-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="album-filter-panel">
+        <span data-i18n="filters">필터</span>
+        <span class="filter-toggle-summary" data-filter-toggle-summary></span>
+        <span class="filter-toggle-chevron" aria-hidden="true"></span>
+      </button>
+      <div class="filter-panel" id="album-filter-panel" data-filter-panel hidden>
+        <div class="search-tools">
+          <label class="sort-label">
+            <span data-i18n="sort">정렬</span>
+            <select data-sort-select>
+              <option value="default" data-i18n="sortDefault">기본순</option>
+              <option value="newest" data-i18n="sortNewest">최근 발매순</option>
+              <option value="oldest" data-i18n="sortOldest">오래된순</option>
+              <option value="artist" data-i18n="sortArtist">아티스트순</option>
+              <option value="title" data-i18n="sortTitle">앨범명순</option>
+            </select>
+          </label>
+          <button class="tool-button" type="button" data-new-albums data-i18n="newAlbums" aria-pressed="false">새로 온 음반</button>
+          <button class="tool-button" type="button" data-reset-filters data-i18n="resetFilters">필터 초기화</button>
+        </div>
+        <div class="filter-row format-row" data-format-filters></div>
+        <div class="filter-scroll-shell" data-genre-scroll-shell>
+          <div class="filter-row genre-row" data-genre-filters></div>
+        </div>
+      </div>
+      <div class="result-summary-row">
+        <div class="result-summary" data-result-summary></div>
+        <!-- 랜덤 음반은 필터와 무관한 탐색 기능이므로 결과 요약 옆에 따로 둡니다. -->
+        <button class="tool-button result-random-button" type="button" data-random-album data-i18n="randomAlbum">랜덤 음반</button>
+      </div>
+    </section>
+
+    <section class="grid-section" data-grid-section aria-label="앨범 목록" data-i18n-aria="albumList">
+      <div class="album-grid" data-album-grid></div>
+      <p class="empty-message" data-empty-message hidden data-i18n="emptyAlbums">조건에 맞는 음반이 없습니다.</p>
+      <nav class="pagination" data-pagination aria-label="앨범 목록 페이지" data-i18n-aria="albumListPage"></nav>
+    </section>
+  </template>
+
+  <template id="detail-template">
+    <article class="detail-page">
+      <div class="detail-top-actions">
+        <button class="back-button" type="button" data-history-back data-i18n="previousView">← 이전 화면</button>
+        <button class="back-button album-list-button" type="button" data-album-list data-i18n="albumListButton">음반 목록</button>
+      </div>
+      <div class="detail-cover-wrap" data-detail-cover></div>
+      <div class="detail-head">
+        <div class="detail-tags" data-detail-tags></div>
+        <h1 data-detail-title></h1>
+        <p data-detail-artist></p>
+      </div>
+      <section class="detail-section">
+        <h2 data-i18n="tracklist">트랙리스트</h2>
+        <ol class="tracklist" data-detail-tracklist></ol>
+        <p class="tracklist-hint"><span class="tiny-dot"></span> <span data-i18n="recommendedHint">표시는 추천곡입니다.</span></p>
+      </section>
+      <section class="detail-section">
+        <h2 data-i18n="description">설명</h2>
+        <p class="description" data-detail-description></p>
+      </section>
+      <p class="request-note" data-request-note></p>
+      <nav class="detail-nav" aria-label="다른 음반 보기" data-i18n-aria="otherAlbums">
+        <button type="button" data-prev-album data-i18n="prevAlbum">이전 음반</button>
+        <button type="button" data-random-album data-i18n="randomAlbum">랜덤 음반</button>
+        <button type="button" data-next-album data-i18n="nextAlbum">다음 음반</button>
+      </nav>
+    </article>
+  </template>
+
+  <script src="albums-data.js?v=20260724b"></script>
+  <script src="app.js?v=20260724b"></script>
+</body>
+</html>

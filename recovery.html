@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PUNCH-DRUNK ARCHIVE 복구</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #121019;
+      --panel: rgba(255, 255, 255, 0.07);
+      --line: rgba(255, 255, 255, 0.14);
+      --text: #f6f1ea;
+      --muted: rgba(246, 241, 234, 0.72);
+      --pink: #ff5b9d;
+      --blue: #4b74ff;
+      --yellow: #ffc059;
+      --green: #69d6a2;
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 24% 12%, rgba(255, 91, 157, 0.18), transparent 32%),
+        radial-gradient(circle at 78% 0%, rgba(75, 116, 255, 0.18), transparent 34%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 28px 16px 70px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 48px);
+      letter-spacing: 0;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .panel {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .status {
+      border-color: rgba(255, 192, 89, 0.44);
+      background: rgba(255, 192, 89, 0.1);
+    }
+
+    .status[data-state="good"] {
+      border-color: rgba(105, 214, 162, 0.42);
+      background: rgba(105, 214, 162, 0.09);
+    }
+
+    .status[data-state="bad"] {
+      border-color: rgba(255, 91, 157, 0.44);
+      background: rgba(255, 91, 157, 0.1);
+    }
+
+    .candidate {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .candidate strong,
+    .candidate span {
+      display: block;
+    }
+
+    .candidate span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.075);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: rgba(255, 91, 157, 0.5);
+      background: linear-gradient(135deg, rgba(75, 116, 255, 0.36), rgba(255, 91, 157, 0.26));
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.28);
+      color: var(--text);
+      resize: vertical;
+    }
+
+    code {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>PUNCH-DRUNK ARCHIVE 복구</h1>
+    <p>관리자 페이지에서 입력한 내용이 새로고침 후 사라졌을 때, 같은 브라우저에 남아 있는 임시 저장본을 찾아 복구 파일로 내려받습니다.</p>
+
+    <section class="panel status" data-status data-state="checking">
+      임시 저장본을 찾는 중입니다.
+    </section>
+
+    <section class="panel">
+      <strong>사용 방법</strong>
+      <p>
+        임시 저장본이 보이면 가장 위 후보의 <code>albums-data.js 받기</code>를 누르고,
+        받은 파일을 기존 <code>albums-data.js</code>와 교체하세요.
+        커버 목록도 바뀌었다면 <code>covers-list.js 받기</code>도 받아서 교체합니다.
+      </p>
+    </section>
+
+    <section class="panel">
+      <strong>발견된 임시 저장본</strong>
+      <div data-candidates></div>
+    </section>
+
+    <section class="panel">
+      <strong>수동 복사용 데이터</strong>
+      <p>다운로드가 막히면 아래 내용을 복사해 보관하세요. 평소에는 건드리지 않아도 됩니다.</p>
+      <textarea data-raw readonly></textarea>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const DRAFT_KEY = 'pd-admin-draft';
+      const DRAFT_HISTORY_KEY = 'pd-admin-draft-history';
+      const status = document.querySelector('[data-status]');
+      const candidatesEl = document.querySelector('[data-candidates]');
+      const rawEl = document.querySelector('[data-raw]');
+
+      function readJson(key, fallback = null) {
+        try {
+          const saved = localStorage.getItem(key);
+          return saved ? JSON.parse(saved) : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function normalizeDraft(payload) {
+        if (!payload || !Array.isArray(payload.albums)) return null;
+        return {
+          albums: payload.albums,
+          covers: Array.isArray(payload.covers) ? payload.covers : [],
+          currentId: payload.currentId || payload.albums[0]?.id || '',
+          savedAt: payload.savedAt || '',
+          reason: payload.reason || '',
+        };
+      }
+
+      function getDrafts() {
+        const current = normalizeDraft(readJson(DRAFT_KEY));
+        const history = readJson(DRAFT_HISTORY_KEY, []);
+        return [current, ...(Array.isArray(history) ? history.map(normalizeDraft) : [])]
+          .filter(Boolean)
+          .filter((draft, index, list) => {
+            const key = `${draft.savedAt}-${draft.albums.length}-${draft.albums.map(album => album.id).join('|')}`;
+            return list.findIndex(item => `${item.savedAt}-${item.albums.length}-${item.albums.map(album => album.id).join('|')}` === key) === index;
+          })
+          .sort((a, b) => b.albums.length - a.albums.length || String(b.savedAt).localeCompare(String(a.savedAt)));
+      }
+
+      function ensureAlbumShape(album) {
+        return {
+          id: album.id || slugify(album.title || album.artist || 'album'),
+          title: album.title || '',
+          artist: album.artist || '',
+          year: album.year || '',
+          format: album.format || 'Vinyl',
+          genre: album.genre || '',
+          coverImage: album.coverImage || '',
+          recommendedTracks: Array.isArray(album.recommendedTracks) ? album.recommendedTracks : [],
+          tracklist: Array.isArray(album.tracklist) ? album.tracklist : [],
+          description: album.description || '',
+          weeklyReason: album.weeklyReason || '',
+          isWeekly: album.isWeekly === true || album.weekly === true,
+        };
+      }
+
+      function slugify(value) {
+        return String(value || '')
+          .toLowerCase()
+          .normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9가-힣]+/g, '-')
+          .replace(/^-+|-+$/g, '') || `album-${Date.now()}`;
+      }
+
+      function serializeAlbums(albums) {
+        const clean = JSON.parse(JSON.stringify(albums || [])).map(ensureAlbumShape);
+        if (!clean.some(album => album.isWeekly) && clean[0]) clean[0].isWeekly = true;
+        return `// PUNCH-DRUNK ARCHIVE 복구 음반 데이터\n// recovery.html에서 만든 파일입니다.\n\nconst ALBUMS = ${JSON.stringify(clean, null, 2)};\n\nwindow.PD_ALBUMS = ALBUMS;\n`;
+      }
+
+      function serializeCovers(covers) {
+        const clean = Array.isArray(covers) ? covers : [];
+        return `// PUNCH-DRUNK ARCHIVE 복구 커버 이미지 목록\n// recovery.html에서 만든 파일입니다.\n\nconst COVER_IMAGES = ${JSON.stringify(clean, null, 2)};\n\nwindow.PD_COVERS = COVER_IMAGES;\n`;
+      }
+
+      function downloadText(filename, text) {
+        const blob = new Blob([text], { type: 'text/javascript;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.append(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      function formatTime(value) {
+        if (!value) return '저장 시각 없음';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '저장 시각 없음';
+        return date.toLocaleString('ko-KR');
+      }
+
+      function render() {
+        const drafts = getDrafts();
+        rawEl.value = JSON.stringify(drafts, null, 2);
+
+        if (!drafts.length) {
+          status.dataset.state = 'bad';
+          status.textContent = '이 화면에서는 임시 저장본을 찾지 못했습니다. 반드시 입력했던 것과 같은 브라우저, 같은 폴더에서 recovery.html을 열어야 합니다.';
+          candidatesEl.innerHTML = '<p>후보가 없습니다.</p>';
+          return;
+        }
+
+        status.dataset.state = 'good';
+        status.textContent = `${drafts.length}개의 임시 저장 후보를 찾았습니다. 보통 가장 위 후보가 복구 가능성이 가장 높습니다.`;
+        candidatesEl.replaceChildren(...drafts.map((draft, index) => {
+          const card = document.createElement('article');
+          card.className = 'candidate';
+
+          const info = document.createElement('div');
+          const titles = draft.albums.slice(0, 5).map(album => album.title || album.id || '제목 없음').join(', ');
+          info.innerHTML = `
+            <strong>${index + 1}. ${draft.albums.length}장 / ${formatTime(draft.savedAt)}</strong>
+            <span>${titles}${draft.albums.length > 5 ? ' ...' : ''}</span>
+          `;
+
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+
+          const albumsButton = document.createElement('button');
+          albumsButton.type = 'button';
+          albumsButton.className = 'primary';
+          albumsButton.textContent = 'albums-data.js 받기';
+          albumsButton.addEventListener('click', () => downloadText('albums-data.js', serializeAlbums(draft.albums)));
+
+          const coversButton = document.createElement('button');
+          coversButton.type = 'button';
+          coversButton.textContent = 'covers-list.js 받기';
+          coversButton.addEventListener('click', () => downloadText('covers-list.js', serializeCovers(draft.covers)));
+
+          actions.append(albumsButton, coversButton);
+          card.append(info, actions);
+          return card;
+        }));
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

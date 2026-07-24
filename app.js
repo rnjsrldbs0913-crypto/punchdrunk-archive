@@ -1,0 +1,1462 @@
+(() => {
+  const albumsFromConst = typeof ALBUMS !== 'undefined' && Array.isArray(ALBUMS) ? ALBUMS : null;
+  const albums = albumsFromConst || (Array.isArray(window.PD_ALBUMS) ? window.PD_ALBUMS : []);
+  const app = document.querySelector('#app');
+  const homeTemplate = document.querySelector('#home-template');
+  const detailTemplate = document.querySelector('#detail-template');
+  const siteHeader = document.querySelector('[data-home-link]');
+  const languageButtons = document.querySelectorAll('[data-language-option]');
+  const LANGUAGE_STORAGE_KEY = 'pd-language';
+  const FORMAT_ALL = '전체';
+  const GENRE_ALL = '전체 장르';
+  const NEW_ALBUM_DAYS = 14;
+  const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
+  const CUSTOMER_FEATURES = {
+    // false로 바꾸면 원본 커버만 사용하므로 썸네일 기능만 간단히 되돌릴 수 있습니다.
+    gridThumbnails: true,
+  };
+
+  function getInitialLanguage() {
+    try {
+      const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (saved === 'ko' || saved === 'en') return saved;
+    } catch (error) {
+      console.warn(error);
+    }
+    return 'ko';
+  }
+
+  const state = {
+    query: '',
+    format: FORMAT_ALL,
+    genre: GENRE_ALL,
+    sort: 'default',
+    recentOnly: false,
+    filtersExpanded: false,
+    page: 1,
+    lastRandomAlbumId: '',
+    detailTrackSearch: null,
+    language: getInitialLanguage(),
+  };
+  let suppressAlbumCardClickUntil = 0;
+  let swipeHintSeenInMemory = false;
+  let swipeHintObserver = null;
+  let swipeHintTimer = 0;
+  let swipeHintQueued = false;
+  let swipeHintSection = null;
+
+  const STANDARD_GENRES = [
+    '재즈',
+    '소울/펑크',
+    '힙합',
+    '알앤비',
+    '록',
+    '팝',
+    '일렉트로닉',
+    '사운드트랙',
+    '월드/라틴',
+    '한국음악',
+    '기타',
+  ];
+
+  const GENRE_LABELS = {
+    ko: {
+      [GENRE_ALL]: '전체 장르',
+      '재즈': '재즈',
+      '소울/펑크': '소울/펑크',
+      '힙합': '힙합',
+      '알앤비': '알앤비',
+      '록': '록',
+      '팝': '팝',
+      '일렉트로닉': '일렉트로닉',
+      '사운드트랙': '사운드트랙',
+      '월드/라틴': '월드/라틴',
+      '한국음악': '한국음악',
+      '기타': '기타',
+    },
+    en: {
+      [GENRE_ALL]: 'All genres',
+      '재즈': 'Jazz',
+      '소울/펑크': 'Soul/Funk',
+      '힙합': 'Hip-Hop',
+      '알앤비': 'R&B',
+      '록': 'Rock',
+      '팝': 'Pop',
+      '일렉트로닉': 'Electronic',
+      '사운드트랙': 'Soundtrack',
+      '월드/라틴': 'World/Latin',
+      '한국음악': 'Korean Music',
+      '기타': 'Other',
+    },
+  };
+
+  const UI_TEXT = {
+    ko: {
+      homeLabel: '처음 화면으로 돌아가기',
+      languageLabel: '언어 선택',
+      weeklyAlbum: '금주의 음반',
+      weeklyNote: 'PUNCH-DRUNK PICK',
+      selectionReason: '이번 주의 선택',
+      details: '음반 자세히 보기 →',
+      chooseWeekly: '금주의 음반을 선택하세요',
+      weeklyDefaultReason: '이번 주 Punch-drunk의 분위기와 잘 맞는 음반으로 골랐습니다.',
+      requestGuideTitle: '신청 안내',
+      requestGuideText: '신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요. 리스트에 없는 곡은 스트리밍으로 재생됩니다.',
+      released: year => `${year}년 발매`,
+      searchSection: '음반 검색과 필터',
+      albumSearch: '음반 검색',
+      clearSearch: '검색어 지우기',
+      filters: '필터',
+      sort: '정렬',
+      sortDefault: '기본순',
+      sortNewest: '최근 발매순',
+      sortOldest: '오래된순',
+      sortArtist: '아티스트순',
+      sortTitle: '앨범명순',
+      randomAlbum: '랜덤 음반',
+      newAlbums: '새로 온 음반',
+      resetFilters: '필터 초기화',
+      albumList: '앨범 목록',
+      albumListPage: '앨범 목록 페이지',
+      emptyAlbums: '조건에 맞는 음반이 없습니다.',
+      all: '전체',
+      previous: '이전',
+      next: '다음',
+      previousAlbumPage: '이전 음반 페이지',
+      nextAlbumPage: '다음 음반 페이지',
+      swipePagePosition: '음반 목록 현재 위치',
+      pageStatus: (page, total) => `${page} / ${total} 페이지`,
+      resultSummary: ({ format, genre, total, start, end }) => total
+        ? `${format} / ${genre} · ${total}장 중 ${start}-${end}번째`
+        : `${format} / ${genre} · 0장의 음반`,
+      previousView: '← 이전 화면',
+      albumListButton: '음반 목록',
+      tracklist: '트랙리스트',
+      recommendedHint: '표시는 추천곡입니다.',
+      description: '설명',
+      otherAlbums: '다른 음반 보기',
+      prevAlbum: '이전 음반',
+      nextAlbum: '다음 음반',
+      tracklistEmpty: '트랙리스트를 입력하세요',
+      descriptionEmpty: '설명을 입력하세요.',
+      requestNote: '신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요. 리스트에 없는 곡은 스트리밍으로 재생됩니다.',
+      matchTitle: '앨범명에서 검색됨',
+      matchArtist: '아티스트에서 검색됨',
+      matchYear: '연도에서 검색됨',
+      matchFormat: '포맷에서 검색됨',
+      matchGenre: '장르에서 검색됨',
+      matchRecommended: '트랙리스트에서 검색됨',
+      matchTracklist: '트랙리스트에서 검색됨',
+      trackSearchMatch: '검색 일치',
+      formatVinyl: 'LP',
+      formatCD: 'CD',
+    },
+    en: {
+      homeLabel: 'Back to home',
+      languageLabel: 'Language',
+      weeklyAlbum: 'Album of the Week',
+      weeklyNote: 'PUNCH-DRUNK PICK',
+      selectionReason: "This week's pick",
+      details: 'View album →',
+      chooseWeekly: 'Choose an album of the week',
+      weeklyDefaultReason: 'Selected because it fits the mood of Punch-drunk this week.',
+      requestGuideTitle: 'Song requests',
+      requestGuideText: 'Please write your request on the slip provided and hand it to a member of staff. Songs not on the list will be played via streaming.',
+      released: year => `Released in ${year}`,
+      searchSection: 'Album search and filters',
+      albumSearch: 'Search albums',
+      clearSearch: 'Clear search',
+      filters: 'Filters',
+      sort: 'Sort',
+      sortDefault: 'Default',
+      sortNewest: 'Newest release',
+      sortOldest: 'Oldest release',
+      sortArtist: 'Artist',
+      sortTitle: 'Album title',
+      randomAlbum: 'Random album',
+      newAlbums: 'New arrivals',
+      resetFilters: 'Reset filters',
+      albumList: 'Album list',
+      albumListPage: 'Album list pages',
+      emptyAlbums: 'No albums match these filters.',
+      all: 'All',
+      previous: 'Previous',
+      next: 'Next',
+      previousAlbumPage: 'Previous album page',
+      nextAlbumPage: 'Next album page',
+      swipePagePosition: 'Current album list position',
+      pageStatus: (page, total) => `Page ${page} of ${total}`,
+      resultSummary: ({ format, genre, total, start, end }) => total
+        ? `${format} / ${genre} · ${start}-${end} of ${total} albums`
+        : `${format} / ${genre} · 0 albums`,
+      previousView: '← Previous',
+      albumListButton: 'Album list',
+      tracklist: 'Tracklist',
+      recommendedHint: 'marks recommended tracks.',
+      description: 'Description',
+      otherAlbums: 'Browse other albums',
+      prevAlbum: 'Previous album',
+      nextAlbum: 'Next album',
+      tracklistEmpty: 'Tracklist coming soon',
+      descriptionEmpty: 'English description coming soon.',
+      requestNote: 'Please write your request on the slip provided and hand it to a member of staff. Songs not on the list will be played via streaming.',
+      matchTitle: 'Matched album title',
+      matchArtist: 'Matched artist',
+      matchYear: 'Matched year',
+      matchFormat: 'Matched format',
+      matchGenre: 'Matched genre',
+      matchRecommended: 'Matched tracklist',
+      matchTracklist: 'Matched tracklist',
+      trackSearchMatch: 'Search match',
+      formatVinyl: 'Vinyl',
+      formatCD: 'CD',
+    },
+  };
+
+  function t(key) {
+    const value = UI_TEXT[state.language]?.[key] ?? UI_TEXT.ko[key] ?? '';
+    return typeof value === 'function' ? value : String(value);
+  }
+
+  function getGenreLabel(genre, language = state.language) {
+    return GENRE_LABELS[language]?.[genre] || genre || '';
+  }
+
+  function applyStaticTranslations(root = document) {
+    root.querySelectorAll('[data-i18n]').forEach(element => {
+      element.textContent = t(element.dataset.i18n);
+    });
+    root.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+      element.setAttribute('placeholder', t(element.dataset.i18nPlaceholder));
+    });
+    root.querySelectorAll('[data-i18n-aria]').forEach(element => {
+      element.setAttribute('aria-label', t(element.dataset.i18nAria));
+    });
+  }
+
+  function updateLanguageButtons() {
+    languageButtons.forEach(button => {
+      const active = button.dataset.languageOption === state.language;
+      button.dataset.active = String(active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.documentElement.lang = state.language;
+  }
+
+  function setLanguage(language) {
+    if (language !== 'ko' && language !== 'en') return;
+    state.language = language;
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    } catch (error) {
+      console.warn(error);
+    }
+    updateLanguageButtons();
+    applyStaticTranslations(document);
+    renderRouteFromLocation();
+  }
+
+  function normalize(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[\s\-_.:;,'"!?’‘“”()[\]{}]+/g, '')
+      .trim();
+  }
+
+  function normalizeGenreName(value) {
+    // 검색용 정규화에서 분리된 한글 자모를 다시 합쳐 "랩", "재즈" 같은 한글 장르도 비교되게 합니다.
+    return normalize(String(value || '').replace(/&/g, 'and')).normalize('NFC');
+  }
+
+  function classifyGenre(rawGenre) {
+    const raw = String(rawGenre || '').trim();
+    const genre = normalizeGenreName(raw);
+    if (!genre) return '기타';
+
+    // 장르 필터 정리: Apple/iTunes의 세부 장르나 예전 저장 값을 큰 장르로 묶어 보여줍니다.
+    if (/soundtrack|ost|film|movie|score|originalmotionpicture|애니메이션|사운드트랙/.test(genre)) return '사운드트랙';
+    // Jazz Rap처럼 다른 장르명이 함께 있어도 힙합 하위 장르를 먼저 힙합으로 묶습니다.
+    if (/hiphop|hip\/hop|rap|boombap|jazzhop|drill|grime|crunk|gfunk|phonk|turntabl|gangsta|lofihiphop|memphisrap|pluggnb|plugg|붐뱁|트랩|드릴|그라임|갱스터|지펑크|쥐펑크|힙합|랩/.test(genre)) return '힙합';
+    if (/jazz|bebop|bop|fusion|swing|ragtime|재즈/.test(genre)) return '재즈';
+    if (/kpop|korean|koreanmusic|koreanpop|가요|케이팝|한국|한국음악/.test(genre)) return '한국음악';
+    if (/rband|rnb|randb|rhythmandblues|알앤비/.test(genre)) return '알앤비';
+    if (/soul|funk|motown|disco|소울|펑크/.test(genre)) return '소울/펑크';
+    if (/alternative|rock|punk|indie|grunge|newwave|metal|hardcore|록|락|얼터너티브|메탈/.test(genre)) return '록';
+    if (/electronic|electronica|techno|house|dance|ambient|idm|edm|disco|일렉트로닉|댄스/.test(genre)) return '일렉트로닉';
+    if (/latin|brazil|brasil|bossa|samba|world|afro|reggae|ska|dub|koreantraditional|국악|월드|라틴|브라질/.test(genre)) {
+      return '월드/라틴';
+    }
+    if (/pop|kpop|jpop|cpop|가요|케이팝|팝/.test(genre)) return '팝';
+    const exact = STANDARD_GENRES.find(item => normalizeGenreName(item) === genre);
+    return exact || '기타';
+  }
+
+  albums.forEach(album => {
+    album.genre = classifyGenre(album.genre);
+  });
+  function getWeeklyAlbum() {
+    return albums.find(album => album.isWeekly === true || album.weekly === true) || null;
+  }
+
+  function formatLabel(format, language = state.language) {
+    if (format === 'Vinyl') return language === 'en' ? UI_TEXT.en.formatVinyl : UI_TEXT.ko.formatVinyl;
+    if (format === 'CD') return UI_TEXT[language]?.formatCD || 'CD';
+    return format || '';
+  }
+
+  function getLocalizedArtist(album) {
+    const original = String(album?.artist || '').trim();
+    const artistKo = String(album?.artistKo || '').trim();
+    const artistEn = String(album?.artistEn || '').trim();
+    if (artistKo && artistEn) return state.language === 'en' ? artistEn : artistKo;
+    return original;
+  }
+
+  function getLocalizedDescription(album) {
+    if (state.language === 'en') return String(album?.descriptionEn || '').trim();
+    return String(album?.description || '').trim();
+  }
+
+  function getLocalizedWeeklyReason(album) {
+    const value = state.language === 'en' ? album?.weeklyReasonEn : album?.weeklyReason;
+    return String(value || '').trim() || t('weeklyDefaultReason');
+  }
+
+  function createFallbackCover(album, className = '') {
+    // 이미지 없을 때 임시 커버 표시: 깨진 이미지 아이콘 대신 앨범명/아티스트명을 보여줍니다.
+    const fallback = document.createElement('div');
+    fallback.className = `cover-fallback ${className}`.trim();
+    fallback.innerHTML = `
+      <span>${escapeHtml(getLocalizedArtist(album) || 'PUNCH-DRUNK')}</span>
+      <strong>${escapeHtml(album.title || 'Untitled')}</strong>
+    `;
+    return fallback;
+  }
+
+  function getCoverThumbnailPath(path) {
+    if (!CUSTOMER_FEATURES.gridThumbnails) return '';
+    const normalized = String(path || '').trim().replace(/\\/g, '/');
+    if (!/^covers\/(?!thumbs\/)/i.test(normalized) || /\.(?:gif|svg)$/i.test(normalized)) return '';
+
+    const relativePath = normalized.slice('covers/'.length);
+    const fileName = relativePath.split('/').pop() || 'cover';
+    const baseName = fileName
+      .replace(/\.[^.]+$/, '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9._-]+/gi, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'cover';
+    let hash = 0x811c9dc5;
+    for (const byte of new TextEncoder().encode(relativePath)) {
+      hash ^= byte;
+      hash = Math.imul(hash, 0x01000193);
+    }
+    return `covers/thumbs/${baseName}-${(hash >>> 0).toString(16).padStart(8, '0')}.jpg`;
+  }
+
+  function createCover(album, className = '') {
+    const wrap = document.createElement('div');
+    wrap.className = `cover-frame ${className}`.trim();
+
+    if (album.coverImage) {
+      const img = document.createElement('img');
+      const originalSource = String(album.coverImage).trim();
+      const thumbnailSource = className.split(/\s+/).includes('grid-cover')
+        ? getCoverThumbnailPath(originalSource)
+        : '';
+      let triedOriginal = !thumbnailSource;
+      img.src = thumbnailSource || originalSource;
+      img.alt = `${getLocalizedArtist(album) || ''} - ${album.title || ''}`.trim();
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.onerror = () => {
+        if (!triedOriginal && originalSource) {
+          triedOriginal = true;
+          img.src = originalSource;
+          return;
+        }
+        // 이미지 파일이 없거나 경로가 틀린 경우에도 화면이 깨지지 않게 임시 커버로 바꿉니다.
+        // NEW 같은 커버 위 표시가 함께 사라지지 않도록 실패한 이미지 요소만 교체합니다.
+        img.remove();
+        wrap.prepend(createFallbackCover(album));
+      };
+      wrap.append(img);
+    } else {
+      wrap.append(createFallbackCover(album));
+    }
+
+    return wrap;
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function getGenresForCurrentFormat() {
+    const relevant = albums.filter(album => {
+      const formatOk = state.format === FORMAT_ALL || album.format === state.format;
+      const recentOk = !state.recentOnly || isRecentlyAdded(album);
+      return formatOk && recentOk;
+    });
+    const counts = relevant.reduce((map, album) => {
+      const genre = classifyGenre(album.genre);
+      if (!genre) return map;
+      map.set(genre, (map.get(genre) || 0) + 1);
+      return map;
+    }, new Map());
+    return [
+      { name: GENRE_ALL, count: relevant.length },
+      ...STANDARD_GENRES.filter(name => counts.has(name)).map(name => ({ name, count: counts.get(name) })),
+    ];
+  }
+  function getSearchableText(album) {
+    // 검색 대상 구성: 설명(description)은 일부러 제외합니다.
+    // 손님이 개인적인 설명 문장까지 검색하는 상황을 막기 위한 처리입니다.
+    return [
+      album.title,
+      album.artist,
+      album.artistKo,
+      album.artistEn,
+      getLocalizedArtist(album),
+      album.year,
+      album.format,
+      formatLabel(album.format, 'ko'),
+      formatLabel(album.format, 'en'),
+      album.genre,
+      getGenreLabel(album.genre, 'ko'),
+      getGenreLabel(album.genre, 'en'),
+      ...(album.recommendedTracks || []),
+      ...(album.tracklist || []),
+    ].join(' ');
+  }
+
+  function getFilteredAlbums() {
+    const q = normalize(state.query);
+    return albums.filter(album => {
+      // 포맷/장르 필터: 장르 필터는 현재 선택된 포맷 안에서만 적용됩니다.
+      const formatOk = state.format === FORMAT_ALL || album.format === state.format;
+      const albumGenre = classifyGenre(album.genre);
+      const genreOk = state.genre === GENRE_ALL || albumGenre === state.genre;
+      const queryOk = !q || normalize(getSearchableText(album)).includes(q);
+      const recentOk = !state.recentOnly || isRecentlyAdded(album);
+      return formatOk && genreOk && queryOk && recentOk;
+    });
+  }
+  function parseYear(year) {
+    const parsed = parseInt(String(year || '').match(/\d{4}/)?.[0] || '0', 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function compareText(a, b) {
+    return String(a || '').localeCompare(String(b || ''), state.language === 'en' ? 'en' : 'ko', { sensitivity: 'base' });
+  }
+
+  function getVisibleAlbums() {
+    const filtered = getFilteredAlbums();
+    const sorted = [...filtered];
+
+    if (state.sort === 'newest') sorted.sort((a, b) => parseYear(b.year) - parseYear(a.year));
+    if (state.sort === 'oldest') sorted.sort((a, b) => parseYear(a.year) - parseYear(b.year));
+    if (state.sort === 'artist') sorted.sort((a, b) => compareText(getLocalizedArtist(a), getLocalizedArtist(b)) || compareText(a.title, b.title));
+    if (state.sort === 'title') sorted.sort((a, b) => compareText(a.title, b.title) || compareText(getLocalizedArtist(a), getLocalizedArtist(b)));
+
+    return sorted;
+  }
+
+  function getAlbumsPerPage() {
+    if (window.matchMedia('(min-width: 1060px)').matches) return 18;
+    if (window.matchMedia('(min-width: 720px)').matches) return 15;
+    return 9;
+  }
+
+  function isMobileAlbumPager() {
+    return window.matchMedia('(max-width: 719px)').matches;
+  }
+
+  function resetAlbumPage() {
+    state.page = 1;
+  }
+
+  // 휴대폰 폭과 글꼴이 달라도 도구 버튼 문구가 두 줄이 되지 않도록 실제 버튼 너비에 맞춰 조정합니다.
+  function fitSearchToolLabels(root = app) {
+    root.querySelectorAll('.search-tools .tool-button, .result-random-button').forEach(button => {
+      button.style.fontSize = '';
+      button.style.paddingInline = '';
+
+      const baseSize = Number.parseFloat(window.getComputedStyle(button).fontSize) || 13;
+      let fontSize = baseSize;
+
+      while (button.scrollWidth > button.clientWidth + 1 && fontSize > 10) {
+        fontSize = Math.max(10, fontSize - 0.5);
+        button.style.fontSize = `${fontSize}px`;
+      }
+
+      if (button.scrollWidth > button.clientWidth + 1) {
+        button.style.paddingInline = '4px';
+      }
+    });
+  }
+
+  function scheduleSearchToolLabelFit() {
+    window.requestAnimationFrame(() => fitSearchToolLabels());
+  }
+
+  function getAlbumTotalPages() {
+    return Math.max(1, Math.ceil(getVisibleAlbums().length / getAlbumsPerPage()));
+  }
+
+  function goToAlbumPage(page, options = {}) {
+    const totalPages = getAlbumTotalPages();
+    const nextPage = Math.min(Math.max(1, page), totalPages);
+    if (nextPage === state.page) return false;
+    const direction = nextPage > state.page ? 'next' : 'prev';
+    state.page = nextPage;
+    updateAlbumGrid({ ...options, direction });
+    return true;
+  }
+
+  // SWIPE-AFFORDANCE-2-NUDGE: 목록이 화면에 처음 들어왔을 때 한 번만 옆 페이지를 살짝 보여줍니다.
+  function hasSeenSwipeDiscoveryHint() {
+    if (swipeHintSeenInMemory) return true;
+    try {
+      return window.sessionStorage.getItem(SWIPE_HINT_STORAGE_KEY) === 'true';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function markSwipeDiscoveryHintSeen() {
+    swipeHintSeenInMemory = true;
+    try {
+      window.sessionStorage.setItem(SWIPE_HINT_STORAGE_KEY, 'true');
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
+  function cancelSwipeDiscoveryHint() {
+    swipeHintObserver?.disconnect();
+    swipeHintObserver = null;
+    window.clearTimeout(swipeHintTimer);
+    swipeHintTimer = 0;
+    swipeHintQueued = false;
+
+    if (swipeHintSection) {
+      swipeHintSection.classList.remove('is-swipe-hinting');
+      delete swipeHintSection.dataset.swipeHintDirection;
+      swipeHintSection = null;
+    }
+  }
+
+  function scheduleSwipeDiscoveryHint(section, totalPages) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canShow = section && isMobileAlbumPager() && totalPages > 1 && !reduceMotion && !hasSeenSwipeDiscoveryHint();
+    if (!canShow) {
+      if (swipeHintQueued || swipeHintSection) cancelSwipeDiscoveryHint();
+      return;
+    }
+    if (swipeHintQueued || swipeHintSection) return;
+
+    const playHint = () => {
+      if (!section.isConnected || hasSeenSwipeDiscoveryHint()) {
+        cancelSwipeDiscoveryHint();
+        return;
+      }
+
+      const track = section.querySelector('.album-swipe-track');
+      if (!track) {
+        cancelSwipeDiscoveryHint();
+        return;
+      }
+
+      cancelSwipeDiscoveryHint();
+      markSwipeDiscoveryHintSeen();
+      swipeHintSection = section;
+      section.dataset.swipeHintDirection = state.page < totalPages ? 'next' : 'previous';
+      section.classList.add('is-swipe-hinting');
+
+      const finish = () => {
+        if (swipeHintSection !== section) return;
+        window.clearTimeout(swipeHintTimer);
+        swipeHintTimer = 0;
+        section.classList.remove('is-swipe-hinting');
+        delete section.dataset.swipeHintDirection;
+        swipeHintSection = null;
+      };
+
+      track.addEventListener('animationend', finish, { once: true });
+      swipeHintTimer = window.setTimeout(finish, 1150);
+    };
+
+    swipeHintQueued = true;
+    if ('IntersectionObserver' in window) {
+      swipeHintObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.28)) playHint();
+      }, { threshold: [0.28], rootMargin: '0px 0px -8% 0px' });
+      swipeHintObserver.observe(section);
+      return;
+    }
+
+    swipeHintTimer = window.setTimeout(playHint, 500);
+  }
+  function fieldMatches(value, q) {
+    return normalize(value).includes(q);
+  }
+
+  function listMatches(list, q) {
+    return (list || []).some(item => fieldMatches(item, q));
+  }
+
+  function getSearchMatchType(album) {
+    const q = normalize(state.query);
+    if (!q) return '';
+    if (fieldMatches(album.title, q)) return 'title';
+    if (fieldMatches(album.artist, q) || fieldMatches(album.artistKo, q) || fieldMatches(album.artistEn, q)) return 'artist';
+    if (fieldMatches(album.year, q)) return 'year';
+    if (fieldMatches(album.format, q) || fieldMatches(formatLabel(album.format, 'ko'), q) || fieldMatches(formatLabel(album.format, 'en'), q)) return 'format';
+    if (fieldMatches(album.genre, q) || fieldMatches(getGenreLabel(album.genre, 'ko'), q) || fieldMatches(getGenreLabel(album.genre, 'en'), q)) return 'genre';
+    // 추천곡 검색도 손님 화면에서는 트랙리스트 검색으로 통합합니다.
+    if (listMatches(album.tracklist, q) || listMatches(album.recommendedTracks, q)) return 'tracklist';
+    return '';
+  }
+
+  function getSearchMatchLabel(album, matchType = getSearchMatchType(album)) {
+    const labels = {
+      title: 'matchTitle',
+      artist: 'matchArtist',
+      year: 'matchYear',
+      format: 'matchFormat',
+      genre: 'matchGenre',
+      tracklist: 'matchTracklist',
+    };
+    return labels[matchType] ? t(labels[matchType]) : '';
+  }
+
+  function getBaseUrl() {
+    return `${window.location.pathname}${window.location.search}`;
+  }
+
+  function getAlbumHash(albumId) {
+    return `#album=${encodeURIComponent(albumId)}`;
+  }
+
+  function getAlbumIdFromHash() {
+    const match = window.location.hash.match(/^#album=(.+)$/);
+    if (!match) return '';
+    try {
+      return decodeURIComponent(match[1]);
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function openAlbum(albumId, options = {}) {
+    const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
+    if (!album) return renderHome();
+    const detailHash = getAlbumHash(album.id);
+    const trackSearchQuery = String(options.trackSearchQuery || '').trim();
+    state.detailTrackSearch = trackSearchQuery ? { albumId: album.id, query: trackSearchQuery } : null;
+    const detailState = { view: 'detail', albumId: album.id };
+    if (trackSearchQuery) detailState.trackSearchQuery = trackSearchQuery;
+
+    // 브라우저 뒤로가기 지원: 상세 화면을 열 때 방문 기록에 한 단계를 쌓아 목록으로 돌아갈 수 있게 합니다.
+    if (window.location.hash !== detailHash) {
+      history.pushState(detailState, '', `${getBaseUrl()}${detailHash}`);
+    } else {
+      history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
+    }
+    renderDetail(album.id);
+  }
+
+  function openRandomAlbum() {
+    if (!albums.length) return;
+    const currentAlbumId = getAlbumIdFromHash();
+    const blockedId = currentAlbumId || state.lastRandomAlbumId;
+    const pool = albums.length > 1
+      ? albums.filter(item => item.id !== blockedId)
+      : albums;
+    const album = pool[Math.floor(Math.random() * pool.length)];
+    state.lastRandomAlbumId = album.id;
+    openAlbum(album.id);
+  }
+
+  function getFilterToggleSummary() {
+    const formatText = state.format === FORMAT_ALL ? t('all') : formatLabel(state.format);
+    const genreText = getGenreLabel(state.genre);
+    const parts = [formatText, genreText];
+    if (state.recentOnly) parts.unshift(t('newAlbums'));
+
+    const sortKeyByValue = {
+      newest: 'sortNewest',
+      oldest: 'sortOldest',
+      artist: 'sortArtist',
+      title: 'sortTitle',
+    };
+    if (sortKeyByValue[state.sort]) parts.push(t(sortKeyByValue[state.sort]));
+    return parts.join(' · ');
+  }
+
+  // 검색창은 항상 보이고, 정렬과 필터만 손님이 필요할 때 펼쳐서 사용합니다.
+  function updateFilterPanel(root = app) {
+    const toggle = root.querySelector('[data-filter-toggle]');
+    const panel = root.querySelector('[data-filter-panel]');
+    const summary = root.querySelector('[data-filter-toggle-summary]');
+    if (!toggle || !panel || !summary) return;
+
+    toggle.setAttribute('aria-expanded', String(state.filtersExpanded));
+    panel.hidden = !state.filtersExpanded;
+    summary.textContent = getFilterToggleSummary();
+  }
+
+  function renderHome() {
+    cancelSwipeDiscoveryHint();
+    const node = homeTemplate.content.cloneNode(true);
+    applyStaticTranslations(node);
+    const weekly = getWeeklyAlbum();
+    const weeklyButton = node.querySelector('[data-weekly-open]');
+
+    if (weekly) {
+      node.querySelector('[data-weekly-cover]').append(createCover(weekly, 'weekly-cover-art'));
+      node.querySelector('[data-weekly-format]').textContent = [formatLabel(weekly.format), getGenreLabel(classifyGenre(weekly.genre))].filter(Boolean).join(' · ');
+      node.querySelector('[data-weekly-title]').textContent = weekly.title || t('chooseWeekly');
+      node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
+      node.querySelector('[data-weekly-year]').textContent = weekly.year ? t('released')(weekly.year) : '';
+      node.querySelector('[data-weekly-reason]').textContent = getLocalizedWeeklyReason(weekly);
+      weeklyButton.addEventListener('click', () => openAlbum(weekly.id));
+    } else {
+      weeklyButton.disabled = true;
+      weeklyButton.classList.add('is-empty');
+      node.querySelector('[data-weekly-cover]').append(createFallbackCover({ artist: 'PUNCH-DRUNK', title: t('chooseWeekly') }, 'weekly-cover-art'));
+      node.querySelector('[data-weekly-format]').textContent = '';
+      node.querySelector('[data-weekly-title]').textContent = t('chooseWeekly');
+      node.querySelector('[data-weekly-artist]').textContent = '';
+      node.querySelector('[data-weekly-year]').textContent = '';
+      node.querySelector('[data-weekly-reason]').textContent = t('weeklyDefaultReason');
+    }
+
+    const searchInput = node.querySelector('#search-input');
+    const searchClearButton = node.querySelector('[data-search-clear]');
+    const updateSearchClearButton = () => {
+      searchClearButton.hidden = !searchInput.value;
+    };
+    searchInput.value = state.query;
+    updateSearchClearButton();
+    searchInput.addEventListener('input', event => {
+      state.query = event.target.value;
+      resetAlbumPage();
+      updateAlbumGrid();
+      updateSearchClearButton();
+    });
+    searchClearButton.addEventListener('click', () => {
+      state.query = '';
+      searchInput.value = '';
+      resetAlbumPage();
+      updateAlbumGrid();
+      updateSearchClearButton();
+      searchInput.focus();
+    });
+
+    const sortSelect = node.querySelector('[data-sort-select]');
+    sortSelect.value = state.sort;
+    sortSelect.addEventListener('change', event => {
+      state.sort = event.target.value;
+      resetAlbumPage();
+      updateAlbumGrid();
+      updateFilterPanel(app);
+    });
+
+    node.querySelector('[data-filter-toggle]').addEventListener('click', () => {
+      state.filtersExpanded = !state.filtersExpanded;
+      updateFilterPanel(app);
+      if (state.filtersExpanded) scheduleSearchToolLabelFit();
+    });
+
+    const newAlbumsButton = node.querySelector('[data-new-albums]');
+    newAlbumsButton.dataset.active = String(state.recentOnly);
+    newAlbumsButton.setAttribute('aria-pressed', String(state.recentOnly));
+    newAlbumsButton.addEventListener('click', () => {
+      state.recentOnly = !state.recentOnly;
+      state.genre = GENRE_ALL;
+      resetAlbumPage();
+      renderHome();
+    });
+
+    node.querySelector('[data-reset-filters]').addEventListener('click', () => {
+      state.query = '';
+      state.format = FORMAT_ALL;
+      state.genre = GENRE_ALL;
+      state.sort = 'default';
+      state.recentOnly = false;
+      state.filtersExpanded = false;
+      resetAlbumPage();
+      renderHome();
+    });
+
+    renderFormatFilters(node.querySelector('[data-format-filters]'));
+    renderGenreFilters(node.querySelector('[data-genre-filters]'));
+    updateFilterPanel(node);
+    setupAlbumSwipe(node.querySelector('[data-grid-section]'));
+    app.replaceChildren(node);
+    updateAlbumGrid();
+    scheduleSearchToolLabelFit();
+  }
+
+  function getAlbumAddedTime(album) {
+    const explicitTime = Date.parse(album?.addedAt || '');
+    if (Number.isFinite(explicitTime)) return explicitTime;
+
+    // 예전 관리자에서 만든 ID에는 생성 시각이 36진수로 들어 있습니다. 날짜 필드가 없는 기존 음반만 보조적으로 판별합니다.
+    const idMatch = String(album?.id || '').match(/^album-([a-z0-9]+)(?:-|$)/i);
+    if (!idMatch) return 0;
+    const inferredTime = Number.parseInt(idMatch[1], 36);
+    const oldestAllowed = Date.UTC(2020, 0, 1);
+    if (!Number.isFinite(inferredTime) || inferredTime < oldestAllowed || inferredTime > Date.now() + 86400000) return 0;
+    return inferredTime;
+  }
+
+  function isRecentlyAdded(album) {
+    const addedTime = getAlbumAddedTime(album);
+    if (!addedTime) return false;
+    const age = Date.now() - addedTime;
+    return age >= 0 && age <= NEW_ALBUM_DAYS * 24 * 60 * 60 * 1000;
+  }
+
+  function renderFormatFilters(container) {
+    const formats = [FORMAT_ALL, 'Vinyl', 'CD'];
+    container.replaceChildren(...formats.map(format => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'filter-chip';
+      button.textContent = format === FORMAT_ALL ? t('all') : formatLabel(format);
+      button.dataset.active = String(state.format === format);
+      button.addEventListener('click', () => {
+        state.format = format;
+        state.genre = GENRE_ALL;
+        resetAlbumPage();
+        renderHome();
+      });
+      return button;
+    }));
+  }
+
+  function renderGenreFilters(container) {
+    const genres = getGenresForCurrentFormat();
+    container.replaceChildren(...genres.map(genre => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'filter-chip genre-chip';
+      button.textContent = `${getGenreLabel(genre.name)} ${genre.count}`;
+      button.dataset.active = String(state.genre === genre.name);
+      button.addEventListener('click', () => {
+        state.genre = genre.name;
+        resetAlbumPage();
+        updateAlbumGrid();
+        updateFilterPanel(app);
+        container.querySelectorAll('.filter-chip').forEach(chip => chip.dataset.active = 'false');
+        button.dataset.active = 'true';
+      });
+      return button;
+    }));
+
+    const scrollShell = container.closest('[data-genre-scroll-shell]');
+    const updateScrollHints = () => {
+      if (!scrollShell) return;
+      const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+      scrollShell.classList.toggle('can-scroll-left', container.scrollLeft > 3);
+      scrollShell.classList.toggle('can-scroll-right', maxScroll - container.scrollLeft > 3);
+    };
+    container.addEventListener('scroll', updateScrollHints, { passive: true });
+    requestAnimationFrame(updateScrollHints);
+  }
+
+  function renderPagination(container, totalAlbums, totalPages) {
+    if (!container) return;
+    if (totalPages <= 1) {
+      container.replaceChildren();
+      return;
+    }
+
+    const makeButton = (label, page, options = {}) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.dataset.page = String(page);
+      if (options.current) button.dataset.current = 'true';
+      if (options.disabled) button.disabled = true;
+      button.addEventListener('click', () => {
+        if (button.disabled || page === state.page) return;
+        goToAlbumPage(page, { scrollToGrid: true });
+      });
+      return button;
+    };
+
+    const pages = new Set([1, totalPages, state.page - 1, state.page, state.page + 1]);
+    const pageButtons = Array.from(pages)
+      .filter(page => page >= 1 && page <= totalPages)
+      .sort((a, b) => a - b);
+    const nodes = [
+      makeButton(t('previous'), Math.max(1, state.page - 1), { disabled: state.page === 1 }),
+    ];
+
+    let previousPage = 0;
+    pageButtons.forEach(page => {
+      if (previousPage && page - previousPage > 1) {
+        const gap = document.createElement('span');
+        gap.className = 'pagination-gap';
+        gap.textContent = '...';
+        nodes.push(gap);
+      }
+      nodes.push(makeButton(String(page), page, { current: page === state.page }));
+      previousPage = page;
+    });
+
+    nodes.push(makeButton(t('next'), Math.min(totalPages, state.page + 1), { disabled: state.page === totalPages }));
+
+    const status = document.createElement('span');
+    status.className = 'pagination-status';
+    status.textContent = t('pageStatus')(state.page, totalPages);
+    nodes.push(status);
+
+    // 모바일에서는 현재 페이지 양옆의 << >>가 가로 스와이프 방향과 페이지 이동을 함께 알려줍니다.
+    const mobilePrevious = makeButton('<<', Math.max(1, state.page - 1), { disabled: state.page === 1 });
+    mobilePrevious.classList.add('pagination-swipe-button');
+    mobilePrevious.setAttribute('aria-label', t('previousAlbumPage'));
+
+    const mobileStatus = document.createElement('span');
+    mobileStatus.className = 'pagination-mobile-status';
+    mobileStatus.textContent = `${state.page}/${totalPages}`;
+
+    const mobileNext = makeButton('>>', Math.min(totalPages, state.page + 1), { disabled: state.page === totalPages });
+    mobileNext.classList.add('pagination-swipe-button');
+    mobileNext.setAttribute('aria-label', t('nextAlbumPage'));
+
+    const mobileCue = document.createElement('span');
+    mobileCue.className = 'pagination-mobile-cue';
+    mobileCue.append(mobilePrevious, mobileStatus, mobileNext);
+    nodes.push(mobileCue);
+
+    container.replaceChildren(...nodes);
+  }
+
+  function createAlbumCard(album) {
+    const card = document.createElement('button');
+    const recentlyAdded = isRecentlyAdded(album);
+    const searchMatchType = getSearchMatchType(album);
+    card.type = 'button';
+    card.className = 'album-card';
+    card.dataset.recent = String(recentlyAdded);
+    card.addEventListener('click', event => {
+      if (Date.now() < suppressAlbumCardClickUntil) {
+        event.preventDefault();
+        return;
+      }
+      openAlbum(album.id, {
+        trackSearchQuery: searchMatchType === 'tracklist' ? state.query : '',
+      });
+    });
+    const cover = createCover(album, 'grid-cover');
+    if (recentlyAdded) {
+      const badge = document.createElement('span');
+      badge.className = 'album-card-new';
+      badge.textContent = 'NEW';
+      badge.setAttribute('aria-label', state.language === 'ko' ? '최근 등록 음반' : 'Recently added');
+      cover.append(badge);
+    }
+    card.append(cover);
+
+    const meta = document.createElement('span');
+    meta.className = 'album-card-meta';
+    meta.innerHTML = `<strong>${escapeHtml(getLocalizedArtist(album) || '')}</strong><em>${escapeHtml(album.title || '')}</em>`;
+    card.append(meta);
+
+    const matchLabel = getSearchMatchLabel(album, searchMatchType);
+    if (matchLabel) {
+      const match = document.createElement('span');
+      match.className = 'album-card-match';
+      match.textContent = matchLabel;
+      card.append(match);
+    }
+
+    return card;
+  }
+
+  function getPageAlbums(list, page, perPage) {
+    const start = (page - 1) * perPage;
+    return list.slice(start, start + perPage);
+  }
+
+  function renderAlbumGridPage(albums, options = {}) {
+    const page = document.createElement('div');
+    page.className = `album-grid-page${options.empty ? ' is-empty' : ''}`;
+    if (options.hidden) page.setAttribute('aria-hidden', 'true');
+    page.replaceChildren(...albums.map(createAlbumCard));
+    return page;
+  }
+
+  function renderMobileSwipeGrid(grid, filtered, perPage, totalPages) {
+    grid.classList.add('is-swipe-pager');
+    grid.classList.remove('is-dragging', 'is-touching');
+    delete grid.dataset.slide;
+
+    const track = document.createElement('div');
+    track.className = 'album-swipe-track';
+    track.style.transform = 'translate3d(-100%, 0, 0)';
+
+    const previousAlbums = state.page > 1 ? getPageAlbums(filtered, state.page - 1, perPage) : [];
+    const currentAlbums = getPageAlbums(filtered, state.page, perPage);
+    const nextAlbums = state.page < totalPages ? getPageAlbums(filtered, state.page + 1, perPage) : [];
+
+    track.append(
+      renderAlbumGridPage(previousAlbums, { hidden: true, empty: state.page <= 1 }),
+      renderAlbumGridPage(currentAlbums),
+      renderAlbumGridPage(nextAlbums, { hidden: true, empty: state.page >= totalPages })
+    );
+
+    grid.replaceChildren(track);
+  }
+
+  function setSwipeTrackOffset(track, offset) {
+    track.style.transform = `translate3d(calc(-100% + ${offset}px), 0, 0)`;
+  }
+
+  function settleAlbumSwipe(section, swipe, targetPage, targetTransform) {
+    const track = swipe.track;
+    let done = false;
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      window.clearTimeout(swipe.settleTimer);
+      section.classList.remove('is-swiping');
+      swipe.grid?.classList.remove('is-dragging', 'is-touching');
+      if (targetPage !== state.page) {
+        state.page = targetPage;
+        updateAlbumGrid();
+      } else if (track) {
+        track.style.transition = '';
+        track.style.transform = 'translate3d(-100%, 0, 0)';
+      }
+      swipe.active = false;
+      swipe.dragging = false;
+      swipe.axis = null;
+      swipe.pointerId = null;
+      swipe.track = null;
+      swipe.grid = null;
+      section.dataset.swiping = 'false';
+    };
+
+    if (!track) {
+      finish();
+      return;
+    }
+
+    track.style.transition = 'transform 280ms cubic-bezier(0.22, 0.72, 0.16, 1)';
+    track.style.transform = targetTransform;
+    track.addEventListener('transitionend', finish, { once: true });
+    swipe.settleTimer = window.setTimeout(finish, 340);
+  }
+
+  function setupAlbumSwipe(section) {
+    if (!section) return;
+    const swipe = {
+      active: false,
+      dragging: false,
+      startX: 0,
+      startY: 0,
+      lastX: 0,
+      lastTime: 0,
+      velocityX: 0,
+      width: 0,
+      axis: null,
+      pointerId: null,
+      track: null,
+      grid: null,
+      settleTimer: 0,
+    };
+
+    const clearSwipe = () => {
+      swipe.active = false;
+      swipe.dragging = false;
+      swipe.axis = null;
+      swipe.pointerId = null;
+      swipe.track = null;
+      swipe.grid?.classList.remove('is-dragging', 'is-touching');
+      swipe.grid = null;
+      section.dataset.swiping = 'false';
+    };
+
+    section.addEventListener('pointerdown', event => {
+      if (!isMobileAlbumPager() || event.button > 0) return;
+      if (event.target.closest('[data-pagination]')) return;
+      const grid = section.querySelector('[data-album-grid]');
+      const track = grid?.querySelector('.album-swipe-track');
+      if (!grid || !track || getAlbumTotalPages() <= 1) return;
+
+      if (section.classList.contains('is-swipe-hinting')) cancelSwipeDiscoveryHint();
+      window.clearTimeout(swipe.settleTimer);
+      swipe.active = true;
+      swipe.dragging = false;
+      swipe.axis = null;
+      swipe.startX = event.clientX;
+      swipe.startY = event.clientY;
+      swipe.lastX = event.clientX;
+      swipe.lastTime = performance.now();
+      swipe.velocityX = 0;
+      swipe.width = grid.getBoundingClientRect().width || window.innerWidth;
+      swipe.pointerId = event.pointerId;
+      swipe.grid = grid;
+      swipe.track = track;
+      track.style.transition = 'none';
+      grid.classList.add('is-touching');
+      section.dataset.swiping = 'false';
+    });
+
+    section.addEventListener('pointermove', event => {
+      if (!swipe.active || event.pointerId !== swipe.pointerId || !swipe.track) return;
+      const deltaX = event.clientX - swipe.startX;
+      const deltaY = event.clientY - swipe.startY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      if (!swipe.dragging) {
+        if (absX < 6 && absY < 6) return;
+
+        // 모바일 방향 잠금: 대각선 움직임은 가로 스와이프에 조금 더 관대하게 판정합니다.
+        const clearlyVertical = absY >= 12 && absY > absX * 1.45;
+        if (clearlyVertical) {
+          swipe.axis = 'y';
+          clearSwipe();
+          return;
+        }
+
+        const horizontalIntent = absX >= 7 && absX >= absY * 0.8;
+        if (!horizontalIntent) return;
+        markSwipeDiscoveryHintSeen();
+        cancelSwipeDiscoveryHint();
+        swipe.axis = 'x';
+        swipe.dragging = true;
+        suppressAlbumCardClickUntil = Date.now() + 500;
+        swipe.grid.classList.add('is-dragging');
+        section.dataset.swiping = 'true';
+        swipe.lastX = event.clientX;
+        swipe.lastTime = performance.now();
+        try {
+          section.setPointerCapture(event.pointerId);
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+
+      event.preventDefault();
+      const now = performance.now();
+      const elapsed = Math.max(1, now - swipe.lastTime);
+      swipe.velocityX = (event.clientX - swipe.lastX) / elapsed;
+      swipe.lastX = event.clientX;
+      swipe.lastTime = now;
+
+      // 모바일 스와이프: 손가락이 움직이는 만큼 앨범 트랙도 같이 움직입니다.
+      let offset = deltaX;
+      if ((state.page <= 1 && deltaX > 0) || (state.page >= getAlbumTotalPages() && deltaX < 0)) {
+        offset = deltaX * 0.32;
+      }
+      const limit = swipe.width * 1.08;
+      offset = Math.max(-limit, Math.min(limit, offset));
+      setSwipeTrackOffset(swipe.track, offset);
+    }, { passive: false });
+
+    section.addEventListener('pointerup', event => {
+      if (!swipe.active || event.pointerId !== swipe.pointerId) return;
+      const deltaX = event.clientX - swipe.startX;
+      const deltaY = event.clientY - swipe.startY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+      const totalPages = getAlbumTotalPages();
+
+      if (!swipe.dragging) {
+        clearSwipe();
+        return;
+      }
+
+      suppressAlbumCardClickUntil = Date.now() + 500;
+      const threshold = Math.min(112, Math.max(54, swipe.width * 0.24));
+      const flick = absX > 24 && Math.abs(swipe.velocityX) > 0.42 && absX > absY;
+      const wantsNext = (deltaX < -threshold || (flick && swipe.velocityX < 0)) && state.page < totalPages;
+      const wantsPrev = (deltaX > threshold || (flick && swipe.velocityX > 0)) && state.page > 1;
+
+      if (wantsNext) {
+        settleAlbumSwipe(section, swipe, state.page + 1, 'translate3d(-200%, 0, 0)');
+        return;
+      }
+      if (wantsPrev) {
+        settleAlbumSwipe(section, swipe, state.page - 1, 'translate3d(0%, 0, 0)');
+        return;
+      }
+      settleAlbumSwipe(section, swipe, state.page, 'translate3d(-100%, 0, 0)');
+    });
+
+    section.addEventListener('pointercancel', () => {
+      if (swipe.dragging && swipe.track) {
+        settleAlbumSwipe(section, swipe, state.page, 'translate3d(-100%, 0, 0)');
+      } else {
+        clearSwipe();
+      }
+    });
+  }
+
+  function updateAlbumGrid(options = {}) {
+    const grid = app.querySelector('[data-album-grid]');
+    if (!grid) return;
+    const empty = app.querySelector('[data-empty-message]');
+    const summary = app.querySelector('[data-result-summary]');
+    const pagination = app.querySelector('[data-pagination]');
+    const filtered = getVisibleAlbums();
+    const perPage = getAlbumsPerPage();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+    if (state.page > totalPages) state.page = totalPages;
+    if (state.page < 1) state.page = 1;
+    const start = (state.page - 1) * perPage;
+    const pagedAlbums = getPageAlbums(filtered, state.page, perPage);
+    const shownStart = filtered.length ? start + 1 : 0;
+    const shownEnd = Math.min(start + perPage, filtered.length);
+
+    const baseFormatText = state.format === FORMAT_ALL ? t('all') : formatLabel(state.format);
+    const formatText = state.recentOnly ? `${t('newAlbums')} · ${baseFormatText}` : baseFormatText;
+    const genreText = getGenreLabel(state.genre);
+    summary.textContent = t('resultSummary')({
+      format: formatText,
+      genre: genreText,
+      total: filtered.length,
+      start: shownStart,
+      end: shownEnd,
+    });
+
+    if (isMobileAlbumPager() && filtered.length && totalPages > 1) {
+      renderMobileSwipeGrid(grid, filtered, perPage, totalPages);
+    } else {
+      grid.classList.remove('is-swipe-pager', 'is-dragging', 'is-touching');
+      grid.replaceChildren(...pagedAlbums.map(createAlbumCard));
+      if (options.direction) {
+        grid.dataset.slide = options.direction;
+        window.setTimeout(() => {
+          if (grid.dataset.slide === options.direction) delete grid.dataset.slide;
+        }, 260);
+      } else {
+        delete grid.dataset.slide;
+      }
+    }
+
+    empty.hidden = filtered.length !== 0;
+    renderPagination(pagination, filtered.length, totalPages);
+    scheduleSwipeDiscoveryHint(app.querySelector('[data-grid-section]'), totalPages);
+    if (options.scrollToGrid) {
+      app.querySelector('.grid-section')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }
+
+  function stripTrackNumber(track) {
+    const text = String(track || '').trim();
+    // 트랙 번호와 곡 제목 분리: A1. Title / B2 Title / 1. Title 같은 앞 번호를 제거합니다.
+    return text.replace(/^([A-Z]\s*\d+|\d+|[A-Z][-–]\d+|[A-Z]\.\d+)\.?\s+/i, '').trim();
+  }
+
+  function splitTrackLine(track) {
+    // 트랙 번호와 곡 제목 분리: 추천점이 곡 번호 왼쪽에 놓이도록 번호를 별도 span으로 나눕니다.
+    const text = String(track || '').trim();
+    const match = text.match(/^([A-Z]\s*\d+|\d+|[A-Z][-–]\d+|[A-Z]\.\d+)\.?\s+(.+)$/i);
+    if (!match) return { number: '', title: text };
+    const rawNumber = match[1].replace(/\s+/g, '');
+    const number = rawNumber.endsWith('.') ? rawNumber : `${rawNumber}.`;
+    return { number, title: match[2].trim() };
+  }
+
+  function isRecommendedTrack(track, recommendedTracks) {
+    // 추천곡 매칭: 트랙 한 줄 또는 곡명이 정확히 같을 때만 같은 곡으로 봅니다.
+    // 단어 포함 비교를 하지 않아 원곡과 Instrumental/Remix가 함께 표시되지 않습니다.
+    const trackLine = normalize(String(track || '').trim());
+    const trackTitle = normalize(stripTrackNumber(track));
+    if (!trackTitle) return false;
+    return (recommendedTracks || []).some(recommended => {
+      const recommendedValue = normalize(String(recommended || '').trim());
+      return recommendedValue && (recommendedValue === trackLine || recommendedValue === trackTitle);
+    });
+  }
+
+  function isTrackSearchMatch(track, searchQuery, recommendedTracks) {
+    // 트랙 검색 강조: 트랙리스트 직접 검색과 추천곡 데이터 검색을 모두 실제 트랙 행에 연결합니다.
+    const q = normalize(searchQuery);
+    if (!q) return false;
+    if (fieldMatches(track, q)) return true;
+
+    const trackTitle = normalize(stripTrackNumber(track));
+    return (recommendedTracks || []).some(recommended => {
+      const recommendedTitle = normalize(stripTrackNumber(recommended));
+      return fieldMatches(recommended, q)
+        && recommendedTitle
+        && (trackTitle === recommendedTitle || trackTitle.includes(recommendedTitle));
+    });
+  }
+
+  function goHome() {
+    state.detailTrackSearch = null;
+    history.replaceState({ view: 'home' }, '', getBaseUrl());
+    renderHome();
+  }
+
+  function goPreviousView() {
+    history.back();
+  }
+
+  function goAlbumList() {
+    state.detailTrackSearch = null;
+    history.pushState({ view: 'home' }, '', getBaseUrl());
+    renderHome();
+    requestAnimationFrame(() => {
+      document.querySelector('.search-section')?.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  function renderDetail(albumId) {
+    const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
+    if (!album) return renderHome();
+
+    const node = detailTemplate.content.cloneNode(true);
+    applyStaticTranslations(node);
+    node.querySelector('[data-history-back]').addEventListener('click', goPreviousView);
+    node.querySelector('[data-album-list]').addEventListener('click', goAlbumList);
+    node.querySelector('[data-detail-cover]').append(createCover(album, 'detail-cover'));
+    node.querySelector('[data-detail-title]').textContent = album.title || '';
+    node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
+
+    const tags = [formatLabel(album.format), getGenreLabel(classifyGenre(album.genre)), album.year].filter(Boolean);
+    node.querySelector('[data-detail-tags]').replaceChildren(...tags.map(tag => {
+      const span = document.createElement('span');
+      span.className = 'pill';
+      span.textContent = tag;
+      return span;
+    }));
+
+    const trackList = node.querySelector('[data-detail-tracklist]');
+    const tracks = album.tracklist && album.tracklist.length ? album.tracklist : [t('tracklistEmpty')];
+    const recommendedTracks = album.recommendedTracks || [];
+    const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
+      ? state.detailTrackSearch.query
+      : '';
+
+    trackList.replaceChildren(...tracks.map(track => {
+      const { number, title } = splitTrackLine(track);
+      const li = document.createElement('li');
+      li.className = 'track-row';
+      if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
+      const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
+      if (isSearchMatch) li.classList.add('is-search-match');
+
+      const dot = document.createElement('span');
+      dot.className = 'recommend-dot';
+      dot.setAttribute('aria-hidden', 'true');
+
+      const numberSpan = document.createElement('span');
+      numberSpan.className = 'track-number';
+      numberSpan.textContent = number;
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'track-title';
+      titleSpan.textContent = title;
+      if (isSearchMatch) {
+        const searchMarker = document.createElement('span');
+        searchMarker.className = 'track-search-marker';
+        searchMarker.textContent = t('trackSearchMatch');
+        titleSpan.append(searchMarker);
+      }
+
+      // 추천곡 점 렌더링: 시각적 순서가 추천점 → 곡 번호 → 곡명으로 보이게 합니다.
+      li.append(dot, numberSpan, titleSpan);
+      return li;
+    }));
+
+    node.querySelector('[data-detail-description]').textContent = getLocalizedDescription(album) || t('descriptionEmpty');
+    node.querySelector('[data-request-note]').textContent = t('requestNote');
+
+    const filteredList = getVisibleAlbums();
+    const navList = filteredList.some(item => item.id === album.id) ? filteredList : albums;
+    const currentIndex = Math.max(0, navList.findIndex(item => item.id === album.id));
+    const previousAlbum = navList[(currentIndex - 1 + navList.length) % navList.length];
+    const nextAlbum = navList[(currentIndex + 1) % navList.length];
+    const prevButton = node.querySelector('[data-prev-album]');
+    const nextButton = node.querySelector('[data-next-album]');
+
+    if (navList.length <= 1) {
+      prevButton.disabled = true;
+      nextButton.disabled = true;
+    } else {
+      prevButton.addEventListener('click', () => openAlbum(previousAlbum.id));
+      nextButton.addEventListener('click', () => openAlbum(nextAlbum.id));
+    }
+
+    app.replaceChildren(node);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  siteHeader.addEventListener('click', goHome);
+  siteHeader.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') goHome();
+  });
+
+  languageButtons.forEach(button => {
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      setLanguage(button.dataset.languageOption);
+    });
+  });
+
+  document.addEventListener('click', event => {
+    if (event.target.closest('[data-random-album]')) openRandomAlbum();
+  });
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      updateAlbumGrid();
+      scheduleSearchToolLabelFit();
+    }, 120);
+  });
+
+  function renderRouteFromLocation() {
+    const albumId = getAlbumIdFromHash();
+    if (albumId && albums.some(album => album.id === albumId)) {
+      const trackSearchQuery = history.state?.albumId === albumId
+        ? String(history.state.trackSearchQuery || '').trim()
+        : '';
+      state.detailTrackSearch = trackSearchQuery ? { albumId, query: trackSearchQuery } : null;
+      renderDetail(albumId);
+      return;
+    }
+    state.detailTrackSearch = null;
+    if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
+    renderHome();
+  }
+
+  window.addEventListener('popstate', renderRouteFromLocation);
+  updateLanguageButtons();
+  applyStaticTranslations(document);
+
+  const initialAlbumId = getAlbumIdFromHash();
+  if (initialAlbumId && albums.some(album => album.id === initialAlbumId)) {
+    // 상세 주소로 바로 들어온 손님도 뒤로가기를 누르면 사이트 밖이 아니라 목록으로 돌아가게 합니다.
+    history.replaceState({ view: 'home' }, '', getBaseUrl());
+    history.pushState({ view: 'detail', albumId: initialAlbumId }, '', `${getBaseUrl()}${getAlbumHash(initialAlbumId)}`);
+    renderDetail(initialAlbumId);
+  } else {
+    if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
+    else history.replaceState({ view: 'home' }, '', `${getBaseUrl()}${window.location.hash}`);
+    renderHome();
+  }
+})();
