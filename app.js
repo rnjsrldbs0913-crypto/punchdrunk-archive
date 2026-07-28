@@ -334,19 +334,20 @@
 
     video.src = WEEKLY_MOTION_TEST.src;
     video.poster = WEEKLY_MOTION_TEST.poster;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
     video.hidden = false;
     scrim.hidden = false;
     indicator.hidden = false;
     card.classList.add('has-weekly-motion');
     card.setAttribute('aria-label', `${album.title || t('weeklyAlbum')}: ${t('details')}`);
+    video.load();
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      card.classList.add('is-motion-reduced');
-      return { shouldSuppressClick: () => false };
-    }
-
-    let activePointerId = null;
-    let pressStartedAt = 0;
+    let activeInteraction = null;
     let suppressClickUntil = 0;
 
     const stopMotion = ({ suppressClick = false } = {}) => {
@@ -355,44 +356,115 @@
       if (suppressClick) suppressClickUntil = performance.now() + 500;
     };
 
-    card.addEventListener('pointerdown', event => {
-      if (event.button > 0 || activePointerId !== null) return;
-      activePointerId = event.pointerId;
-      pressStartedAt = performance.now();
+    const startMotion = interaction => {
+      if (activeInteraction) return false;
+      activeInteraction = {
+        ...interaction,
+        startedAt: performance.now(),
+      };
+      const requestKey = `${interaction.type}:${interaction.id}`;
+      card.classList.add('is-motion-playing');
+      video.muted = true;
 
+      const playRequest = video.play();
+      if (playRequest && typeof playRequest.then === 'function') {
+        playRequest.then(() => {
+          const activeKey = activeInteraction
+            ? `${activeInteraction.type}:${activeInteraction.id}`
+            : '';
+          if (activeKey !== requestKey) video.pause();
+        }).catch(error => {
+          activeInteraction = null;
+          stopMotion();
+          console.warn('Weekly motion preview could not start.', error);
+        });
+      }
+      return true;
+    };
+
+    const finishInteraction = ({ type, id, suppressClick = true } = {}) => {
+      if (!activeInteraction
+        || activeInteraction.type !== type
+        || activeInteraction.id !== id) return;
+      const heldLongEnough = performance.now() - activeInteraction.startedAt >= 160;
+      activeInteraction = null;
+      stopMotion({ suppressClick: suppressClick && heldLongEnough });
+    };
+
+    const touchCapable = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+
+    card.addEventListener('pointerdown', event => {
+      if (event.button > 0 || (touchCapable && event.pointerType === 'touch')) return;
+      if (!startMotion({ type: 'pointer', id: event.pointerId })) return;
       try {
         card.setPointerCapture(event.pointerId);
       } catch (error) {
-        // Pointer capture is optional; touch cancellation still stops playback.
+        // Pointer capture is optional; pointer cancellation still stops playback.
       }
-
-      const requestPointerId = event.pointerId;
-      video.muted = true;
-      video.play().then(() => {
-        if (activePointerId !== requestPointerId) {
-          video.pause();
-          return;
-        }
-        card.classList.add('is-motion-playing');
-      }).catch(error => {
-        console.warn('Weekly motion preview could not start.', error);
-      });
     });
 
     const finishPointer = event => {
-      if (event.pointerId !== activePointerId) return;
-      const heldLongEnough = performance.now() - pressStartedAt >= 160;
-      activePointerId = null;
-      stopMotion({ suppressClick: heldLongEnough });
+      finishInteraction({ type: 'pointer', id: event.pointerId });
     };
 
     card.addEventListener('pointerup', finishPointer);
     card.addEventListener('pointercancel', finishPointer);
     card.addEventListener('lostpointercapture', event => {
-      if (event.pointerId !== activePointerId) return;
-      activePointerId = null;
-      stopMotion();
+      finishInteraction({ type: 'pointer', id: event.pointerId, suppressClick: false });
     });
+
+    if (touchCapable) {
+      card.addEventListener('touchstart', event => {
+        const touch = event.changedTouches[0];
+        if (!touch) return;
+        startMotion({
+          type: 'touch',
+          id: touch.identifier,
+          startX: touch.clientX,
+          startY: touch.clientY,
+        });
+      }, { passive: true });
+
+      card.addEventListener('touchmove', event => {
+        if (activeInteraction?.type !== 'touch') return;
+        const touch = Array.from(event.changedTouches)
+          .find(item => item.identifier === activeInteraction.id);
+        if (!touch) return;
+        const distance = Math.hypot(
+          touch.clientX - activeInteraction.startX,
+          touch.clientY - activeInteraction.startY,
+        );
+        if (distance > 14) {
+          finishInteraction({
+            type: 'touch',
+            id: touch.identifier,
+            suppressClick: false,
+          });
+        }
+      }, { passive: true });
+
+      const finishTouch = event => {
+        if (activeInteraction?.type !== 'touch') return;
+        const touch = Array.from(event.changedTouches)
+          .find(item => item.identifier === activeInteraction.id);
+        if (!touch) return;
+        finishInteraction({ type: 'touch', id: touch.identifier });
+      };
+
+      card.addEventListener('touchend', finishTouch, { passive: true });
+      card.addEventListener('touchcancel', event => {
+        if (activeInteraction?.type !== 'touch') return;
+        const touch = Array.from(event.changedTouches)
+          .find(item => item.identifier === activeInteraction.id);
+        if (!touch) return;
+        finishInteraction({
+          type: 'touch',
+          id: touch.identifier,
+          suppressClick: false,
+        });
+      }, { passive: true });
+    }
+
     card.addEventListener('contextmenu', event => event.preventDefault());
 
     return {

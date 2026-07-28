@@ -259,6 +259,7 @@ select:focus-visible,
 .weekly-card.has-weekly-motion .weekly-meta {
   position: relative;
   z-index: 2;
+  transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
 }
 
 .weekly-card.has-weekly-motion .weekly-meta {
@@ -274,13 +275,23 @@ select:focus-visible,
 }
 
 .weekly-card.is-motion-playing .weekly-motion-video {
-  opacity: 0.8;
-  filter: saturate(1.05) contrast(1.05);
+  opacity: 1;
+  filter: saturate(1.08) contrast(1.03);
   transform: scale(1.035);
 }
 
 .weekly-card.is-motion-playing .weekly-motion-scrim {
-  opacity: 0.62;
+  opacity: 0.18;
+}
+
+.weekly-card.is-motion-playing .weekly-cover {
+  opacity: 0.14;
+  filter: saturate(0.55) brightness(0.78);
+  transform: scale(0.985);
+}
+
+.weekly-card.is-motion-playing .weekly-meta {
+  opacity: 0.42;
 }
 
 .weekly-motion-indicator {
@@ -2954,12 +2965,10 @@ textarea:focus {
 @media (prefers-reduced-motion: reduce) {
   .weekly-motion-video,
   .weekly-motion-scrim,
+  .weekly-card.has-weekly-motion .weekly-cover,
+  .weekly-card.has-weekly-motion .weekly-meta,
   .weekly-motion-indicator::after {
     transition: none;
-  }
-
-  .weekly-card.is-motion-reduced .weekly-motion-indicator {
-    display: none;
   }
 }
 
