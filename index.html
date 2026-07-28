@@ -11,7 +11,7 @@
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/png" href="logo-punchdrunk-circle.png" />
   <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
-  <link rel="stylesheet" href="styles.css?v=20260728095508" />
+  <link rel="stylesheet" href="styles.css?v=20260728144726" />
 </head>
 <body>
   <div class="app-shell">
@@ -39,6 +39,17 @@
         <p class="section-note" data-i18n="weeklyNote">이번 주 가장 먼저 들어볼 음반</p>
       </div>
       <button class="weekly-card" type="button" data-weekly-open>
+        <video
+          class="weekly-motion-video"
+          data-weekly-motion-video
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-hidden="true"
+          hidden
+        ></video>
+        <span class="weekly-motion-scrim" data-weekly-motion-scrim aria-hidden="true" hidden></span>
         <div class="weekly-cover" data-weekly-cover></div>
         <div class="weekly-meta">
           <div class="weekly-info">
@@ -53,6 +64,7 @@
           </div>
           <span class="weekly-cta" data-i18n="details">자세히 보기</span>
         </div>
+        <span class="weekly-motion-indicator" data-weekly-motion-indicator aria-hidden="true" hidden></span>
       </button>
     </section>
 
@@ -139,7 +151,7 @@
     </article>
   </template>
 
-  <script src="albums-data.js?v=20260728095508"></script>
-  <script src="app.js?v=20260728095508"></script>
+  <script src="albums-data.js?v=20260728144726"></script>
+  <script src="app.js?v=20260728144726"></script>
 </body>
 </html>

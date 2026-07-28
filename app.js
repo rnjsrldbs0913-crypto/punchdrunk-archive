@@ -15,6 +15,12 @@
     // false로 바꾸면 원본 커버만 사용하므로 썸네일 기능만 간단히 되돌릴 수 있습니다.
     gridThumbnails: true,
   };
+  const WEEKLY_MOTION_TEST = Object.freeze({
+    enabled: true,
+    albumId: 'album-mrdetafz',
+    src: 'media/weekly-motion-test.mp4',
+    poster: 'media/weekly-motion-test-poster.jpg',
+  });
 
   function getInitialLanguage() {
     try {
@@ -310,6 +316,88 @@
   });
   function getWeeklyAlbum() {
     return albums.find(album => album.isWeekly === true || album.weekly === true) || null;
+  }
+
+  function setupWeeklyMotion(card, album) {
+    const video = card?.querySelector('[data-weekly-motion-video]');
+    const scrim = card?.querySelector('[data-weekly-motion-scrim]');
+    const indicator = card?.querySelector('[data-weekly-motion-indicator]');
+    const enabled = WEEKLY_MOTION_TEST.enabled
+      && album?.id === WEEKLY_MOTION_TEST.albumId
+      && video
+      && scrim
+      && indicator;
+
+    if (!enabled) {
+      return { shouldSuppressClick: () => false };
+    }
+
+    video.src = WEEKLY_MOTION_TEST.src;
+    video.poster = WEEKLY_MOTION_TEST.poster;
+    video.hidden = false;
+    scrim.hidden = false;
+    indicator.hidden = false;
+    card.classList.add('has-weekly-motion');
+    card.setAttribute('aria-label', `${album.title || t('weeklyAlbum')}: ${t('details')}`);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      card.classList.add('is-motion-reduced');
+      return { shouldSuppressClick: () => false };
+    }
+
+    let activePointerId = null;
+    let pressStartedAt = 0;
+    let suppressClickUntil = 0;
+
+    const stopMotion = ({ suppressClick = false } = {}) => {
+      video.pause();
+      card.classList.remove('is-motion-playing');
+      if (suppressClick) suppressClickUntil = performance.now() + 500;
+    };
+
+    card.addEventListener('pointerdown', event => {
+      if (event.button > 0 || activePointerId !== null) return;
+      activePointerId = event.pointerId;
+      pressStartedAt = performance.now();
+
+      try {
+        card.setPointerCapture(event.pointerId);
+      } catch (error) {
+        // Pointer capture is optional; touch cancellation still stops playback.
+      }
+
+      const requestPointerId = event.pointerId;
+      video.muted = true;
+      video.play().then(() => {
+        if (activePointerId !== requestPointerId) {
+          video.pause();
+          return;
+        }
+        card.classList.add('is-motion-playing');
+      }).catch(error => {
+        console.warn('Weekly motion preview could not start.', error);
+      });
+    });
+
+    const finishPointer = event => {
+      if (event.pointerId !== activePointerId) return;
+      const heldLongEnough = performance.now() - pressStartedAt >= 160;
+      activePointerId = null;
+      stopMotion({ suppressClick: heldLongEnough });
+    };
+
+    card.addEventListener('pointerup', finishPointer);
+    card.addEventListener('pointercancel', finishPointer);
+    card.addEventListener('lostpointercapture', event => {
+      if (event.pointerId !== activePointerId) return;
+      activePointerId = null;
+      stopMotion();
+    });
+    card.addEventListener('contextmenu', event => event.preventDefault());
+
+    return {
+      shouldSuppressClick: () => performance.now() < suppressClickUntil,
+    };
   }
 
   function formatLabel(format, language = state.language) {
@@ -742,7 +830,14 @@
       node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
       node.querySelector('[data-weekly-year]').textContent = weekly.year ? t('released')(weekly.year) : '';
       node.querySelector('[data-weekly-reason]').textContent = getLocalizedWeeklyReason(weekly);
-      weeklyButton.addEventListener('click', () => openAlbum(weekly.id));
+      const weeklyMotion = setupWeeklyMotion(weeklyButton, weekly);
+      weeklyButton.addEventListener('click', event => {
+        if (weeklyMotion.shouldSuppressClick()) {
+          event.preventDefault();
+          return;
+        }
+        openAlbum(weekly.id);
+      });
     } else {
       weeklyButton.disabled = true;
       weeklyButton.classList.add('is-empty');
