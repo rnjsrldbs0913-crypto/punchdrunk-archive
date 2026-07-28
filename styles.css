@@ -812,6 +812,8 @@ select:focus-visible,
   color: var(--muted);
   font: inherit;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .pagination-nav-button {
@@ -829,11 +831,27 @@ select:focus-visible,
   color: rgba(255, 150, 191, 0.96);
 }
 
-.pagination-nav-button:hover:not(:disabled),
-.pagination-page-summary:hover,
-.pagination-page-number:hover,
-.pagination-page-number[data-current="true"],
-.pagination-page-form button:hover {
+.pagination-page-number[data-current="true"] {
+  border-color: rgba(255, 91, 157, 0.54);
+  background: rgba(255, 91, 157, 0.14);
+  color: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pagination-nav-button:hover:not(:disabled),
+  .pagination-page-summary:hover,
+  .pagination-page-number:hover,
+  .pagination-page-form button:hover {
+    border-color: rgba(255, 91, 157, 0.54);
+    background: rgba(255, 91, 157, 0.14);
+    color: #fff;
+  }
+}
+
+.pagination-nav-button:active:not(:disabled),
+.pagination-page-summary:active,
+.pagination-page-number:active,
+.pagination-page-form button:active {
   border-color: rgba(255, 91, 157, 0.54);
   background: rgba(255, 91, 157, 0.14);
   color: #fff;
