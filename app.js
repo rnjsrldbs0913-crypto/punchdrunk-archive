@@ -1058,10 +1058,24 @@
       return;
     }
 
-    track.style.transition = 'transform 280ms cubic-bezier(0.22, 0.72, 0.16, 1)';
+    if (swipe.frameId) {
+      window.cancelAnimationFrame(swipe.frameId);
+      swipe.frameId = 0;
+      setSwipeTrackOffset(track, swipe.pendingOffset);
+    }
+
+    // 현재 손가락 위치를 먼저 확정해야 놓는 순간부터 자연스럽게 이어집니다.
+    track.getBoundingClientRect();
+    const distanceRatio = targetPage === state.page
+      ? Math.min(1, Math.abs(swipe.pendingOffset) / Math.max(1, swipe.width))
+      : Math.min(1, Math.abs(swipe.width - Math.abs(swipe.pendingOffset)) / Math.max(1, swipe.width));
+    const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 1
+      : Math.round(150 + distanceRatio * 100);
+    track.style.transition = `transform ${duration}ms cubic-bezier(0.2, 0.78, 0.18, 1)`;
     track.style.transform = targetTransform;
     track.addEventListener('transitionend', finish, { once: true });
-    swipe.settleTimer = window.setTimeout(finish, 340);
+    swipe.settleTimer = window.setTimeout(finish, duration + 80);
   }
 
   function setupAlbumSwipe(section) {
@@ -1073,16 +1087,33 @@
       startY: 0,
       lastX: 0,
       lastTime: 0,
+      startTime: 0,
       velocityX: 0,
       width: 0,
+      totalPages: 1,
       axis: null,
       pointerId: null,
       track: null,
       grid: null,
+      pendingOffset: 0,
+      frameId: 0,
       settleTimer: 0,
     };
 
+    const queueSwipeOffset = offset => {
+      swipe.pendingOffset = offset;
+      if (swipe.frameId) return;
+      swipe.frameId = window.requestAnimationFrame(() => {
+        swipe.frameId = 0;
+        if (swipe.track) setSwipeTrackOffset(swipe.track, swipe.pendingOffset);
+      });
+    };
+
     const clearSwipe = () => {
+      if (swipe.frameId) {
+        window.cancelAnimationFrame(swipe.frameId);
+        swipe.frameId = 0;
+      }
       swipe.active = false;
       swipe.dragging = false;
       swipe.axis = null;
@@ -1109,11 +1140,14 @@
       swipe.startY = event.clientY;
       swipe.lastX = event.clientX;
       swipe.lastTime = performance.now();
+      swipe.startTime = swipe.lastTime;
       swipe.velocityX = 0;
       swipe.width = grid.getBoundingClientRect().width || window.innerWidth;
+      swipe.totalPages = getAlbumTotalPages();
       swipe.pointerId = event.pointerId;
       swipe.grid = grid;
       swipe.track = track;
+      swipe.pendingOffset = 0;
       track.style.transition = 'none';
       grid.classList.add('is-touching');
       section.dataset.swiping = 'false';
@@ -1127,17 +1161,17 @@
       const absY = Math.abs(deltaY);
 
       if (!swipe.dragging) {
-        if (absX < 6 && absY < 6) return;
+        if (absX < 4 && absY < 4) return;
 
-        // 모바일 방향 잠금: 대각선 움직임은 가로 스와이프에 조금 더 관대하게 판정합니다.
-        const clearlyVertical = absY >= 12 && absY > absX * 1.45;
+        // 세로 스크롤은 그대로 두되, 대각선 가로 스와이프는 조금 더 빨리 붙잡습니다.
+        const clearlyVertical = absY >= 9 && absY > absX * 1.3;
         if (clearlyVertical) {
           swipe.axis = 'y';
           clearSwipe();
           return;
         }
 
-        const horizontalIntent = absX >= 7 && absX >= absY * 0.8;
+        const horizontalIntent = absX >= 5 && absX >= absY * 0.72;
         if (!horizontalIntent) return;
         markSwipeDiscoveryHintSeen();
         cancelSwipeDiscoveryHint();
@@ -1158,18 +1192,19 @@
       event.preventDefault();
       const now = performance.now();
       const elapsed = Math.max(1, now - swipe.lastTime);
-      swipe.velocityX = (event.clientX - swipe.lastX) / elapsed;
+      const instantVelocity = (event.clientX - swipe.lastX) / elapsed;
+      swipe.velocityX = swipe.velocityX * 0.56 + instantVelocity * 0.44;
       swipe.lastX = event.clientX;
       swipe.lastTime = now;
 
       // 모바일 스와이프: 손가락이 움직이는 만큼 앨범 트랙도 같이 움직입니다.
       let offset = deltaX;
-      if ((state.page <= 1 && deltaX > 0) || (state.page >= getAlbumTotalPages() && deltaX < 0)) {
-        offset = deltaX * 0.32;
+      if ((state.page <= 1 && deltaX > 0) || (state.page >= swipe.totalPages && deltaX < 0)) {
+        offset = deltaX * 0.28;
       }
       const limit = swipe.width * 1.08;
       offset = Math.max(-limit, Math.min(limit, offset));
-      setSwipeTrackOffset(swipe.track, offset);
+      queueSwipeOffset(offset);
     }, { passive: false });
 
     section.addEventListener('pointerup', event => {
@@ -1186,10 +1221,19 @@
       }
 
       suppressAlbumCardClickUntil = Date.now() + 500;
-      const threshold = Math.min(112, Math.max(54, swipe.width * 0.24));
-      const flick = absX > 24 && Math.abs(swipe.velocityX) > 0.42 && absX > absY;
-      const wantsNext = (deltaX < -threshold || (flick && swipe.velocityX < 0)) && state.page < totalPages;
-      const wantsPrev = (deltaX > threshold || (flick && swipe.velocityX > 0)) && state.page > 1;
+      const now = performance.now();
+      const duration = Math.max(1, now - swipe.startTime);
+      const releaseDelay = Math.max(0, now - swipe.lastTime);
+      const recentVelocity = swipe.velocityX * Math.max(0, 1 - releaseDelay / 140);
+      const averageVelocity = deltaX / duration;
+      const releaseVelocity = Math.abs(recentVelocity) > Math.abs(averageVelocity)
+        ? recentVelocity
+        : averageVelocity * 0.65;
+      const threshold = Math.min(82, Math.max(36, swipe.width * 0.17));
+      const projectedX = deltaX + releaseVelocity * 135;
+      const horizontalIntent = absX >= 14 && absX >= absY * 0.68;
+      const wantsNext = horizontalIntent && projectedX < -threshold && state.page < totalPages;
+      const wantsPrev = horizontalIntent && projectedX > threshold && state.page > 1;
 
       if (wantsNext) {
         settleAlbumSwipe(section, swipe, state.page + 1, 'translate3d(-200%, 0, 0)');
