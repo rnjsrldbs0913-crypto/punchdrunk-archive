@@ -101,7 +101,8 @@
       chooseWeekly: '금주의 음반을 선택하세요',
       weeklyDefaultReason: '이번 주 Punch-drunk의 분위기와 잘 맞는 음반으로 골랐습니다.',
       requestGuideTitle: '신청 안내',
-      requestGuideText: '신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요. 리스트에 없는 곡은 스트리밍으로 재생됩니다.',
+      requestGuideLine1: '신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요.',
+      requestGuideLine2: '리스트에 없는 곡은 스트리밍으로 재생됩니다.',
       released: year => `${year}년 발매`,
       searchSection: '음반 검색과 필터',
       albumSearch: '음반 검색',
@@ -122,8 +123,13 @@
       all: '전체',
       previous: '이전',
       next: '다음',
+      firstAlbumPage: '첫 페이지',
+      lastAlbumPage: '마지막 페이지',
       previousAlbumPage: '이전 음반 페이지',
       nextAlbumPage: '다음 음반 페이지',
+      chooseAlbumPage: '페이지 선택',
+      pageNumber: '페이지 번호',
+      goToPage: '이동',
       swipePagePosition: '음반 목록 현재 위치',
       pageStatus: (page, total) => `${page} / ${total} 페이지`,
       resultSummary: ({ format, genre, total, start, end }) => total
@@ -161,7 +167,8 @@
       chooseWeekly: 'Choose an album of the week',
       weeklyDefaultReason: 'Selected because it fits the mood of Punch-drunk this week.',
       requestGuideTitle: 'Song requests',
-      requestGuideText: 'Please write your request on the slip provided and hand it to a member of staff. Songs not on the list will be played via streaming.',
+      requestGuideLine1: 'Please write your request on the slip provided and hand it to a member of staff.',
+      requestGuideLine2: 'Songs not on the list will be played via streaming.',
       released: year => `Released in ${year}`,
       searchSection: 'Album search and filters',
       albumSearch: 'Search albums',
@@ -182,8 +189,13 @@
       all: 'All',
       previous: 'Previous',
       next: 'Next',
+      firstAlbumPage: 'First page',
+      lastAlbumPage: 'Last page',
       previousAlbumPage: 'Previous album page',
       nextAlbumPage: 'Next album page',
+      chooseAlbumPage: 'Choose a page',
+      pageNumber: 'Page number',
+      goToPage: 'Go',
       swipePagePosition: 'Current album list position',
       pageStatus: (page, total) => `Page ${page} of ${total}`,
       resultSummary: ({ format, genre, total, start, end }) => total
@@ -889,7 +901,9 @@
       button.type = 'button';
       button.textContent = label;
       button.dataset.page = String(page);
-      if (options.current) button.dataset.current = 'true';
+      if (options.className) button.className = options.className;
+      if (options.ariaLabel) button.setAttribute('aria-label', options.ariaLabel);
+      if (options.title) button.title = options.title;
       if (options.disabled) button.disabled = true;
       button.addEventListener('click', () => {
         if (button.disabled || page === state.page) return;
@@ -898,52 +912,122 @@
       return button;
     };
 
-    const pages = new Set([1, totalPages, state.page - 1, state.page, state.page + 1]);
-    const pageButtons = Array.from(pages)
-      .filter(page => page >= 1 && page <= totalPages)
-      .sort((a, b) => a - b);
-    const nodes = [
-      makeButton(t('previous'), Math.max(1, state.page - 1), { disabled: state.page === 1 }),
-    ];
+    const controls = document.createElement('div');
+    controls.className = 'pagination-controls';
 
-    let previousPage = 0;
-    pageButtons.forEach(page => {
-      if (previousPage && page - previousPage > 1) {
-        const gap = document.createElement('span');
-        gap.className = 'pagination-gap';
-        gap.textContent = '...';
-        nodes.push(gap);
-      }
-      nodes.push(makeButton(String(page), page, { current: page === state.page }));
-      previousPage = page;
+    const firstButton = makeButton('|<', 1, {
+      className: 'pagination-nav-button is-backward',
+      ariaLabel: t('firstAlbumPage'),
+      title: t('firstAlbumPage'),
+      disabled: state.page === 1,
+    });
+    const previousButton = makeButton('<', Math.max(1, state.page - 1), {
+      className: 'pagination-nav-button is-backward',
+      ariaLabel: t('previousAlbumPage'),
+      title: t('previousAlbumPage'),
+      disabled: state.page === 1,
     });
 
-    nodes.push(makeButton(t('next'), Math.min(totalPages, state.page + 1), { disabled: state.page === totalPages }));
+    const picker = document.createElement('details');
+    picker.className = 'pagination-page-picker';
+    const pickerSummary = document.createElement('summary');
+    pickerSummary.className = 'pagination-page-summary';
+    pickerSummary.setAttribute('aria-label', `${t('chooseAlbumPage')}: ${state.page} / ${totalPages}`);
 
-    const status = document.createElement('span');
-    status.className = 'pagination-status';
-    status.textContent = t('pageStatus')(state.page, totalPages);
-    nodes.push(status);
+    const pickerStatus = document.createElement('span');
+    pickerStatus.textContent = `${state.page} / ${totalPages}`;
+    const pickerChevron = document.createElement('span');
+    pickerChevron.className = 'pagination-page-chevron';
+    pickerChevron.textContent = '▾';
+    pickerChevron.setAttribute('aria-hidden', 'true');
+    pickerSummary.append(pickerStatus, pickerChevron);
 
-    // 모바일에서는 현재 페이지 양옆의 << >>가 가로 스와이프 방향과 페이지 이동을 함께 알려줍니다.
-    const mobilePrevious = makeButton('<<', Math.max(1, state.page - 1), { disabled: state.page === 1 });
-    mobilePrevious.classList.add('pagination-swipe-button');
-    mobilePrevious.setAttribute('aria-label', t('previousAlbumPage'));
+    const pickerPanel = document.createElement('div');
+    pickerPanel.className = 'pagination-page-panel';
+    const pickerHeading = document.createElement('div');
+    pickerHeading.className = 'pagination-page-heading';
+    const pickerTitle = document.createElement('strong');
+    pickerTitle.textContent = t('chooseAlbumPage');
+    const pickerPosition = document.createElement('span');
+    pickerPosition.textContent = `${state.page} / ${totalPages}`;
+    pickerHeading.append(pickerTitle, pickerPosition);
 
-    const mobileStatus = document.createElement('span');
-    mobileStatus.className = 'pagination-mobile-status';
-    mobileStatus.textContent = `${state.page}/${totalPages}`;
+    const pageGrid = document.createElement('div');
+    pageGrid.className = 'pagination-page-grid';
+    pageGrid.setAttribute('role', 'list');
+    for (let page = 1; page <= totalPages; page += 1) {
+      const pageButton = document.createElement('button');
+      pageButton.type = 'button';
+      pageButton.className = 'pagination-page-number';
+      pageButton.textContent = String(page);
+      pageButton.dataset.page = String(page);
+      pageButton.setAttribute('aria-label', t('pageStatus')(page, totalPages));
+      if (page === state.page) {
+        pageButton.dataset.current = 'true';
+        pageButton.setAttribute('aria-current', 'page');
+      }
+      pageButton.addEventListener('click', () => {
+        picker.removeAttribute('open');
+        if (page === state.page) return;
+        goToAlbumPage(page, { scrollToGrid: true });
+      });
+      pageGrid.append(pageButton);
+    }
 
-    const mobileNext = makeButton('>>', Math.min(totalPages, state.page + 1), { disabled: state.page === totalPages });
-    mobileNext.classList.add('pagination-swipe-button');
-    mobileNext.setAttribute('aria-label', t('nextAlbumPage'));
+    const pageForm = document.createElement('form');
+    pageForm.className = 'pagination-page-form';
+    const pageLabel = document.createElement('label');
+    pageLabel.textContent = t('pageNumber');
+    const pageInput = document.createElement('input');
+    pageInput.type = 'number';
+    pageInput.inputMode = 'numeric';
+    pageInput.min = '1';
+    pageInput.max = String(totalPages);
+    pageInput.value = String(state.page);
+    pageInput.setAttribute('aria-label', t('pageNumber'));
+    const pageSubmit = document.createElement('button');
+    pageSubmit.type = 'submit';
+    pageSubmit.textContent = t('goToPage');
+    pageLabel.append(pageInput);
+    pageForm.append(pageLabel, pageSubmit);
+    pageForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const requestedPage = Math.min(totalPages, Math.max(1, Number.parseInt(pageInput.value, 10) || state.page));
+      picker.removeAttribute('open');
+      if (requestedPage === state.page) return;
+      goToAlbumPage(requestedPage, { scrollToGrid: true });
+    });
 
-    const mobileCue = document.createElement('span');
-    mobileCue.className = 'pagination-mobile-cue';
-    mobileCue.append(mobilePrevious, mobileStatus, mobileNext);
-    nodes.push(mobileCue);
+    pickerPanel.append(pickerHeading, pageGrid, pageForm);
+    picker.append(pickerSummary, pickerPanel);
+    picker.addEventListener('toggle', () => {
+      if (!picker.open) return;
+      requestAnimationFrame(() => {
+        picker.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest' });
+      });
+    });
+    picker.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !picker.open) return;
+      event.preventDefault();
+      picker.removeAttribute('open');
+      pickerSummary.focus();
+    });
 
-    container.replaceChildren(...nodes);
+    const nextButton = makeButton('>', Math.min(totalPages, state.page + 1), {
+      className: 'pagination-nav-button is-forward',
+      ariaLabel: t('nextAlbumPage'),
+      title: t('nextAlbumPage'),
+      disabled: state.page === totalPages,
+    });
+    const lastButton = makeButton('>|', totalPages, {
+      className: 'pagination-nav-button is-forward',
+      ariaLabel: t('lastAlbumPage'),
+      title: t('lastAlbumPage'),
+      disabled: state.page === totalPages,
+    });
+
+    controls.append(firstButton, previousButton, picker, nextButton, lastButton);
+    container.replaceChildren(controls);
   }
 
   function createAlbumCard(album) {

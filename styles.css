@@ -351,13 +351,15 @@ select:focus-visible,
 
 .request-guide {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(108px, max-content) minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   margin: 0 0 24px;
-  padding: 12px 4px;
-  border-top: 1px solid rgba(255, 91, 157, 0.32);
-  border-bottom: 0;
+  padding: 17px 20px 17px 22px;
+  border: 1px solid rgba(255, 91, 157, 0.38);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 4px 0 0 rgba(255, 91, 157, 0.9);
 }
 
 .request-guide-label,
@@ -366,15 +368,28 @@ select:focus-visible,
 }
 
 .request-guide-label {
-  color: rgba(255, 142, 177, 0.96);
-  font-size: 12px;
+  color: rgba(255, 151, 186, 1);
+  font-size: 14px;
   font-weight: 850;
 }
 
 .request-guide-text {
-  color: rgba(246, 241, 234, 0.76);
-  font-size: 13px;
-  line-height: 1.55;
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  color: rgba(250, 247, 242, 0.9);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+
+.request-guide-text span {
+  display: block;
+}
+
+.request-guide-text span + span {
+  color: rgba(188, 204, 231, 0.86);
 }
 
 .recent-section {
@@ -774,106 +789,251 @@ select:focus-visible,
 }
 
 .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 7px;
+  position: relative;
   margin: 26px 0 8px;
 }
 
-.pagination button {
-  min-width: 38px;
-  min-height: 38px;
-  padding: 0 12px;
+.pagination-controls {
+  display: grid;
+  grid-template-columns: 42px 42px minmax(118px, 150px) 42px 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.pagination-nav-button,
+.pagination-page-summary,
+.pagination-page-number,
+.pagination-page-form button {
+  min-height: 40px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.055);
   color: var(--muted);
+  font: inherit;
   cursor: pointer;
 }
 
-.pagination button:hover:not(:disabled),
-.pagination button[data-current="true"] {
+.pagination-nav-button {
+  width: 42px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.pagination-nav-button.is-backward {
+  color: rgba(151, 178, 255, 0.96);
+}
+
+.pagination-nav-button.is-forward {
+  color: rgba(255, 150, 191, 0.96);
+}
+
+.pagination-nav-button:hover:not(:disabled),
+.pagination-page-summary:hover,
+.pagination-page-number:hover,
+.pagination-page-number[data-current="true"],
+.pagination-page-form button:hover {
   border-color: rgba(255, 91, 157, 0.54);
   background: rgba(255, 91, 157, 0.14);
   color: #fff;
 }
 
-.pagination button:disabled {
+.pagination-nav-button:disabled {
   cursor: default;
   opacity: 0.38;
 }
 
-.pagination-gap,
-.pagination-status {
+.pagination-page-picker {
+  position: relative;
+  min-width: 0;
+}
+
+.pagination-page-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 118px;
+  padding: 0 14px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 750;
+  list-style: none;
+  user-select: none;
+}
+
+.pagination-page-summary::-webkit-details-marker {
+  display: none;
+}
+
+.pagination-page-picker[open] .pagination-page-summary {
+  border-color: rgba(255, 91, 157, 0.58);
+  background: rgba(255, 91, 157, 0.14);
+  color: #fff;
+}
+
+.pagination-page-chevron {
+  color: rgba(255, 151, 186, 0.9);
+  font-size: 11px;
+  transition: transform 150ms ease;
+}
+
+.pagination-page-picker[open] .pagination-page-chevron {
+  transform: rotate(180deg);
+}
+
+.pagination-page-panel {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  width: min(360px, calc(100vw - 24px));
+  padding: 15px;
+  border: 1px solid rgba(255, 91, 157, 0.44);
+  border-radius: var(--radius);
+  background: rgba(16, 17, 22, 0.99);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+}
+
+.pagination-page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.pagination-page-heading span {
   color: var(--faint);
   font-size: 12px;
 }
 
-.pagination-status {
-  flex-basis: 100%;
+.pagination-page-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  max-height: 205px;
+  padding-right: 3px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.pagination-page-number {
+  min-width: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.pagination-page-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: end;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.pagination-page-form label {
+  display: grid;
+  grid-template-columns: max-content minmax(62px, 1fr);
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pagination-page-form input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text);
+  font: inherit;
   text-align: center;
 }
 
-.pagination-mobile-cue {
-  display: none;
+.pagination-page-form button {
+  padding: 0 13px;
+  color: rgba(255, 186, 212, 0.96);
+  font-size: 12px;
+  font-weight: 750;
 }
 
 @media (max-width: 719px) {
-  .pagination button,
-  .pagination-gap {
-    display: none;
+  .pagination {
+    margin-top: 24px;
   }
 
-  .pagination-status {
-    display: none;
+  .pagination-controls {
+    grid-template-columns: 42px 42px minmax(104px, 1fr) 42px 42px;
+    width: min(100%, 344px);
+    margin-inline: auto;
+    gap: 5px;
   }
 
-  .pagination-mobile-cue {
-    display: flex;
-    flex-basis: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: var(--muted);
+  .pagination-page-summary {
+    min-width: 0;
+    padding-inline: 9px;
+  }
+
+  .pagination-page-panel {
+    width: min(352px, calc(100vw - 24px));
+    padding: 14px;
+  }
+
+  .pagination-page-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .pagination-page-form label {
+    grid-template-columns: 1fr 70px;
+  }
+}
+
+@media (max-width: 374px) {
+  .pagination-controls {
+    grid-template-columns: 38px 38px minmax(96px, 1fr) 38px 38px;
+  }
+
+  .pagination-nav-button {
+    width: 38px;
+  }
+
+  .pagination-page-form label {
+    grid-template-columns: 1fr 62px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pagination-page-chevron {
+    transition: none;
+  }
+}
+
+@media (max-width: 719px) {
+  .pagination-page-number {
+    min-height: 38px;
+  }
+}
+
+@media (max-width: 520px) {
+  .request-guide {
+    grid-template-columns: 1fr;
+    gap: 7px;
+    padding: 16px 17px 16px 19px;
+  }
+
+  .request-guide-text {
     font-size: 13px;
-  }
-
-  .pagination .pagination-mobile-cue .pagination-swipe-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 48px;
-    min-height: 42px;
-    padding: 0 10px;
-    border: 1px solid transparent;
-    border-radius: var(--radius);
-    background: transparent;
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  .pagination .pagination-mobile-cue .pagination-swipe-button:first-child {
-    color: rgba(151, 178, 255, 0.96);
-  }
-
-  .pagination .pagination-mobile-cue .pagination-swipe-button:last-child {
-    color: rgba(255, 150, 191, 0.96);
-  }
-
-  .pagination .pagination-mobile-cue .pagination-swipe-button:not(:disabled):active {
-    border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.07);
-    color: #fff;
-  }
-
-  .pagination-mobile-status {
-    min-width: 58px;
-    text-align: center;
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 700;
+    line-height: 1.55;
   }
 }
 
@@ -2534,8 +2694,8 @@ textarea:focus {
 
   .request-guide {
     grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 11px 2px;
+    gap: 7px;
+    padding: 16px 17px 16px 19px;
   }
 
   .search-tools {
@@ -2688,7 +2848,6 @@ textarea:focus {
   background: rgba(255, 255, 255, 0.055);
 }
 
-.request-guide-label,
 .weekly-reason span,
 .detail-section h2 {
   color: rgba(129, 172, 212, 0.98);
