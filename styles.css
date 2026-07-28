@@ -291,7 +291,7 @@ select:focus-visible,
 }
 
 .weekly-card.is-motion-playing .weekly-meta {
-  opacity: 0.42;
+  opacity: 1;
 }
 
 .weekly-motion-indicator {
