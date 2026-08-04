@@ -3,6 +3,80 @@
 
 const ALBUMS = [
   {
+    "id": "album-mscp5pqe",
+    "title": "Amplified",
+    "artist": "큐 팁",
+    "artistKo": "큐 팁",
+    "artistEn": "Q-Tip",
+    "addedAt": "2026-08-03T03:56:06.662Z",
+    "year": "1999",
+    "format": "Vinyl",
+    "genre": "힙합",
+    "coverImage": "covers/album-mscp5pqe.jpg",
+    "recommendedTracks": [
+      "1. Wait Up",
+      "2. Higher",
+      "5. Let's Ride",
+      "11. Do It, See It, Be It"
+    ],
+    "tracklist": [
+      "1. Wait Up",
+      "2. Higher",
+      "3. Breathe and Stop",
+      "4. Moving With U",
+      "5. Let's Ride",
+      "6. Things We Do",
+      "7. All In",
+      "8. Go Hard",
+      "9. Do It",
+      "10. N.T. (feat. Busta Rhymes)",
+      "11. Do It, See It, Be It",
+      "12. End of Time (feat. Korn)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mscp1yel",
+    "title": "Decades",
+    "artist": "마리아 슈나이더 오케스트라",
+    "artistKo": "마리아 슈나이더 오케스트라",
+    "artistEn": "Maria Schneider Orchestra",
+    "addedAt": "2026-08-03T03:53:11.277Z",
+    "year": "2024",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "coverImage": "covers/11164-1.jpg",
+    "recommendedTracks": [
+      "A1. Hang Gliding",
+      "E1. Walking By Flashlight",
+      "E2. Stone Song",
+      "F1. Sputnik"
+    ],
+    "tracklist": [
+      "A1. Hang Gliding",
+      "A2. Gush",
+      "B1. Coming About",
+      "B2. Some Circles",
+      "C1. Bulería, Soleá y Rumba",
+      "D1. The Pretty Road",
+      "D2. Sky Blue",
+      "E1. Walking By Flashlight",
+      "E2. Stone Song",
+      "E3. The Thompson Fields",
+      "F1. Sputnik",
+      "F2. Data Lords"
+    ],
+    "description": "주인장은 사실 빅밴드나 오케스트라 재즈를 별로 좋아하지 않습니다.\n이렇게 큰 구성의 연주에서는 각각의 악기의 개성이 드러나기 어렵고, 솔로 비중도 축소되거나 사라질 수 밖에 없습니다.\n각 악기 연주자의 창의성도 줄어들고, 함께 연주될 때 각 악기에 집중해서 감상하기도 어려워집니다.\n주인장이 재즈를 즐기는 가장 큰 요소가 각 악기의 창의적인 솔로잉이기에 보통 트리오/쿼텟 구성을 좋아하고 멜로디 악기도 둘 이상 놓는걸 좋아하지 않습니다.\n제 취향이 이렇다보니 이 사이트의 앨범 목록에서도 빅밴드나 오케스트라의 재즈 앨범은 찾아보기 어려우실 겁니다.\n\n다만, 압도적인 완성도 앞에서 취향은 무의미해집니다.\n\n마리아 슈나이더 오케스트라는 세계 최고의 재즈 연주자들이 모여 활동하는 18인조 재즈 오케스트라로, 보통 일년에 1-3주 정도를 함께 투어하고 활동합니다. 내한 당시 인터뷰에서는 \"세계 최고의 연주자들이다 보니, 이들을 모두 모아서 활동하는건 태양계 행성을 일렬로 정렬시키는 것과 같다\"는 말을 남겼습니다.\n짧은 활동 기간에도 30년이 넘는 세월동안 활동한 팀이다 보니 연주를 의심할 이유는 전혀 없습니다.\n\n마리아 슈나이더는 스트리밍 사이트와 음반 소매 사이트들의 비합리적인 수익 구조에 대항해 음원을 전혀 스트리밍 사이트에 올리지 않고, 음반 판매도 아티스트셰어라는 플랫폼만을 통해 진행합니다.\n이렇다 보니 몇개 되지도 않는 유튜브 라이브 영상 몇 개 말고는 마리아 슈나이더의 음악을 들어볼 기회가 많지 않습니다. 하지만 들을 기회가 있다면 팬이 될 확률이 높다고 저는 확신합니다.\n\n이 앨범은 마리아 슈나이더의 30년 가랑의 경력을 총망라한 3LP 박스셋입니다. 정규 앨범을 산다면 큰 돈을 주고 수많은 CD를 구매해야지 들을 수 있을 곡들을 한 앨범으로 들을 수 있는 기회입니다. 이 박스셋은 전 세계 908세트만 판매된 한정판입니다. 그리고 주인장은 마리아 슈나이더 오케스트라 내한 당시 큰 돈을 주고 이 앨범을 구매해서 사인을 받아놨습니다. 그래서 이 앨범에서 신청곡을 적어주시면 가진 앨범 중 가장 귀한 이 앨범을 꺼내서 자랑할 생각에 신이 난 주인장을 보실 수 있을겁니다.",
+    "descriptionEn": "The owner is not, in fact, especially fond of big-band or orchestral jazz.\nWith an ensemble this large, it is difficult for the character of each instrument to come through, and the solos are inevitably reduced or disappear altogether. The individual players have less room for creativity, and when everyone is playing together, it is also harder to focus on each instrument. Since what the owner enjoys most about jazz is the creative soloing of each instrument, he usually prefers trio or quartet lineups and does not care for having more than two melody instruments. Given these tastes, you will probably have a hard time finding big-band or orchestral jazz albums in this archive.\n\nBut in the face of overwhelming excellence, taste becomes irrelevant.\n\nThe Maria Schneider Orchestra is an 18-piece jazz orchestra made up of some of the finest jazz musicians in the world. They usually tour and work together for only one to three weeks a year. In an interview during their visit to Korea, Schneider said, “They are the best players in the world, so getting them all together is like aligning the planets of the solar system.” Even with such brief periods together, they have been playing as a group for more than 30 years, so there is no reason whatsoever to doubt the musicianship.\n\nMaria Schneider has taken a stand against the unreasonable revenue structures of streaming services and record retailers. She puts none of her music on streaming platforms and sells her records exclusively through ArtistShare.\nThat leaves very few chances to hear her music beyond the handful of live videos on YouTube. But I am certain that if you do get the chance to listen, there is a good chance you will become a fan.\n\n[Decades] is a 3LP box set spanning nearly 30 years of Maria Schneider’s career. It is a chance to hear on a single release songs that would otherwise require spending a considerable sum on numerous CDs. Only 908 copies of this limited-edition box set were sold worldwide. The owner paid a handsome price for it when the Maria Schneider Orchestra came to Korea and had it signed. So if you request something from this album, you will get to see him light up at the prospect of pulling out—and showing off—the rarest record in his collection.",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
     "id": "album-ms46qzw8",
     "title": "Mr Bongo Record Club, Vol. 8",
     "artist": "여러 아티스트",
@@ -87,8 +161,8 @@ const ALBUMS = [
   {
     "id": "album-ms45r9xt",
     "title": "Javelin",
-    "artist": "Sufjan Stevens",
-    "artistKo": "Sufjan Stevens",
+    "artist": "수프얀 스티븐스",
+    "artistKo": "수프얀 스티븐스",
     "artistEn": "Sufjan Stevens",
     "addedAt": "2026-07-28T04:30:50.897Z",
     "year": "2023",
@@ -4733,8 +4807,8 @@ const ALBUMS = [
   {
     "id": "album-ms2kglk1",
     "title": "The Bridge",
-    "artist": "Sonny Rollins",
-    "artistKo": "Sonny Rollins",
+    "artist": "소니 롤린스",
+    "artistKo": "소니 롤린스",
     "artistEn": "Sonny Rollins",
     "addedAt": "2026-07-27T01:46:54.625Z",
     "year": "1962",
