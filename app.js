@@ -352,6 +352,7 @@
     let activeInteraction = null;
     let suppressNextClick = false;
     let suppressClickTimer = null;
+    let cancelledMotionTimer = null;
 
     const clearClickSuppression = () => {
       suppressNextClick = false;
@@ -367,7 +368,13 @@
       suppressClickTimer = window.setTimeout(clearClickSuppression, 5000);
     };
 
+    const clearCancelledMotionTimer = () => {
+      if (cancelledMotionTimer) window.clearTimeout(cancelledMotionTimer);
+      cancelledMotionTimer = null;
+    };
+
     const stopMotion = ({ suppressClick = false } = {}) => {
+      clearCancelledMotionTimer();
       video.pause();
       card.classList.remove('is-motion-playing');
       if (suppressClick) armClickSuppression();
@@ -408,6 +415,22 @@
       stopMotion({ suppressClick: suppressClick && heldLongEnough });
     };
 
+    const keepMotionAfterBrowserCancel = () => {
+      if (!activeInteraction) return;
+
+      // 네이버 인앱 브라우저는 손가락을 계속 누르는 중에도 touchcancel을 보낼 수 있습니다.
+      // 이 신호만으로 영상을 끄지 않고, 실제 해제 신호를 조금 더 기다립니다.
+      activeInteraction.browserCancelled = true;
+      activeInteraction.cancelledAt = performance.now();
+      armClickSuppression();
+      clearCancelledMotionTimer();
+      cancelledMotionTimer = window.setTimeout(() => {
+        if (!activeInteraction?.browserCancelled) return;
+        activeInteraction = null;
+        stopMotion({ suppressClick: true });
+      }, 8000);
+    };
+
     const touchCapable = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
 
     card.addEventListener('pointerdown', event => {
@@ -435,6 +458,12 @@
       card.addEventListener('touchstart', event => {
         const touch = event.changedTouches[0];
         if (!touch) return;
+
+        // 이전 터치를 브라우저가 취소한 뒤 새 손가락 입력이 오면 남은 재생 상태를 정리합니다.
+        if (activeInteraction?.browserCancelled) {
+          activeInteraction = null;
+          stopMotion();
+        }
         if (!activeInteraction) clearClickSuppression();
         startMotion({
           type: 'touch',
@@ -473,13 +502,18 @@
       card.addEventListener('touchend', finishTouch, { passive: true });
       card.addEventListener('touchcancel', event => {
         if (activeInteraction?.type !== 'touch') return;
-        const touch = Array.from(event.changedTouches)
+        const changedTouches = Array.from(event.changedTouches || []);
+        const touch = changedTouches
           .find(item => item.identifier === activeInteraction.id);
-        if (!touch) return;
-        finishInteraction({
-          type: 'touch',
-          id: touch.identifier,
-        });
+        if (changedTouches.length && !touch) return;
+
+        const heldLongEnough = performance.now() - activeInteraction.startedAt >= 160;
+        if (heldLongEnough) {
+          keepMotionAfterBrowserCancel();
+          return;
+        }
+
+        finishInteraction({ type: 'touch', id: activeInteraction.id, suppressClick: false });
       }, { passive: true });
     }
 
@@ -488,12 +522,22 @@
 
     return {
       shouldSuppressClick: () => {
-        // 일부 인앱 브라우저는 touchend 전에 click을 보내므로 재생 중인 길게 누르기도 즉시 차단합니다.
+        // 네이버는 손가락을 떼기 전에도 합성 click을 보낼 수 있습니다.
+        // 상세 화면 이동만 막고, 실제 touchend 전까지 영상은 계속 재생합니다.
+        if (activeInteraction?.browserCancelled) {
+          const timeSinceCancel = performance.now() - activeInteraction.cancelledAt;
+          if (timeSinceCancel > 350) {
+            activeInteraction = null;
+            stopMotion({ suppressClick: true });
+          } else {
+            armClickSuppression();
+          }
+          return true;
+        }
+
         if (activeInteraction
           && performance.now() - activeInteraction.startedAt >= 160) {
-          activeInteraction = null;
-          stopMotion();
-          clearClickSuppression();
+          armClickSuppression();
           return true;
         }
         if (!suppressNextClick) return false;
