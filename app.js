@@ -782,13 +782,21 @@
     return (list || []).some(item => fieldMatches(item, q));
   }
 
+  function albumHasTrackSearchMatch(album, query = state.query) {
+    // 앨범명과 곡명이 동시에 검색되어도 트랙 일치 정보를 별도로 유지합니다.
+    // 결과 문구가 '앨범명에서 검색됨'이어도 상세 화면에서는 해당 곡을 강조할 수 있습니다.
+    const q = normalize(query);
+    if (!q) return false;
+    return listMatches(album.tracklist, q) || listMatches(album.recommendedTracks, q);
+  }
+
   function getSearchMatchType(album) {
     const q = normalize(state.query);
     if (!q) return '';
     if (fieldMatches(album.title, q)) return 'title';
     if (fieldMatches(album.artist, q) || fieldMatches(album.artistKo, q) || fieldMatches(album.artistEn, q)) return 'artist';
     // 추천곡 검색도 손님 화면에서는 트랙리스트 검색으로 통합합니다.
-    if (listMatches(album.tracklist, q) || listMatches(album.recommendedTracks, q)) return 'tracklist';
+    if (albumHasTrackSearchMatch(album, q)) return 'tracklist';
     return '';
   }
 
@@ -1193,6 +1201,7 @@
     const card = document.createElement('button');
     const recentlyAdded = isRecentlyAdded(album);
     const searchMatchType = getSearchMatchType(album);
+    const trackSearchQuery = albumHasTrackSearchMatch(album) ? state.query : '';
     card.type = 'button';
     card.className = 'album-card';
     card.dataset.recent = String(recentlyAdded);
@@ -1202,7 +1211,7 @@
         return;
       }
       openAlbum(album.id, {
-        trackSearchQuery: searchMatchType === 'tracklist' ? state.query : '',
+        trackSearchQuery,
       });
     });
     const cover = createCover(album, 'grid-cover');
