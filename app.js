@@ -110,8 +110,9 @@
       requestGuideLine1: '신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요.',
       requestGuideLine2: '리스트에 없는 곡은 스트리밍으로 재생됩니다.',
       released: year => `${year}년 발매`,
-      searchSection: '음반 검색과 필터',
-      albumSearch: '음반 검색',
+      searchSection: '검색과 필터',
+      albumSearch: '검색',
+      searchPlaceholder: '음반명·아티스트·곡 제목',
       clearSearch: '검색어 지우기',
       filters: '필터',
       sort: '정렬',
@@ -176,8 +177,9 @@
       requestGuideLine1: 'Please write your request on the slip provided and hand it to a member of staff.',
       requestGuideLine2: 'Songs not on the list will be played via streaming.',
       released: year => `Released in ${year}`,
-      searchSection: 'Album search and filters',
-      albumSearch: 'Search albums',
+      searchSection: 'Search and filters',
+      albumSearch: 'Search',
+      searchPlaceholder: 'Album · artist · track title',
       clearSearch: 'Clear search',
       filters: 'Filters',
       sort: 'Sort',
@@ -590,21 +592,14 @@
     ];
   }
   function getSearchableText(album) {
-    // 검색 대상 구성: 설명(description)은 일부러 제외합니다.
-    // 손님이 개인적인 설명 문장까지 검색하는 상황을 막기 위한 처리입니다.
+    // 검색 대상 구성: 음반명, 아티스트, 곡 제목만 포함합니다.
+    // 설명(description), 연도, 포맷, 장르는 일부러 제외하고 각 필터에서만 다룹니다.
     return [
       album.title,
       album.artist,
       album.artistKo,
       album.artistEn,
       getLocalizedArtist(album),
-      album.year,
-      album.format,
-      formatLabel(album.format, 'ko'),
-      formatLabel(album.format, 'en'),
-      album.genre,
-      getGenreLabel(album.genre, 'ko'),
-      getGenreLabel(album.genre, 'en'),
       ...(album.recommendedTracks || []),
       ...(album.tracklist || []),
     ].join(' ');
@@ -792,9 +787,6 @@
     if (!q) return '';
     if (fieldMatches(album.title, q)) return 'title';
     if (fieldMatches(album.artist, q) || fieldMatches(album.artistKo, q) || fieldMatches(album.artistEn, q)) return 'artist';
-    if (fieldMatches(album.year, q)) return 'year';
-    if (fieldMatches(album.format, q) || fieldMatches(formatLabel(album.format, 'ko'), q) || fieldMatches(formatLabel(album.format, 'en'), q)) return 'format';
-    if (fieldMatches(album.genre, q) || fieldMatches(getGenreLabel(album.genre, 'ko'), q) || fieldMatches(getGenreLabel(album.genre, 'en'), q)) return 'genre';
     // 추천곡 검색도 손님 화면에서는 트랙리스트 검색으로 통합합니다.
     if (listMatches(album.tracklist, q) || listMatches(album.recommendedTracks, q)) return 'tracklist';
     return '';
@@ -1696,7 +1688,20 @@
     }
 
     app.replaceChildren(node);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const firstTrackSearchMatch = app.querySelector('.track-row.is-search-match');
+    if (trackSearchQuery && firstTrackSearchMatch) {
+      // 곡 제목 검색으로 상세 화면을 연 경우, 첫 번째로 일치한 곡을 은은한 강조와 함께 화면 중앙에 보여줍니다.
+      requestAnimationFrame(() => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        firstTrackSearchMatch.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          block: 'center',
+        });
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   siteHeader.addEventListener('click', goHome);

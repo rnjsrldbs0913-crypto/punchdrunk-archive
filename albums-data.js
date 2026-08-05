@@ -3,6 +3,104 @@
 
 const ALBUMS = [
   {
+    "id": "album-msfglcb8",
+    "title": "Breezin'",
+    "artist": "조지 벤슨",
+    "artistKo": "조지 벤슨",
+    "artistEn": "George Benson",
+    "addedAt": "2026-08-05T02:19:37.748Z",
+    "year": "1976",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "coverImage": "covers/album-msfglcb8.jpg",
+    "recommendedTracks": [
+      "1. Breezin'"
+    ],
+    "tracklist": [
+      "1. Breezin'",
+      "2. This Masquerade",
+      "3. Six To Four",
+      "4. Affirmation",
+      "5. So This is Love?",
+      "6. Lady"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-msfgg78q",
+    "title": "나의 쓸모",
+    "artist": "요조",
+    "artistKo": "요조",
+    "artistEn": "Yozoh",
+    "addedAt": "2026-08-05T02:15:37.898Z",
+    "year": "2013",
+    "format": "CD",
+    "genre": "한국음악",
+    "coverImage": "covers/album-msfgg78q.jpg",
+    "recommendedTracks": [
+      "1. 나의 쓸모",
+      "2. 화분",
+      "5. 춤",
+      "10. My Name Is Yozoh (33 Years Old Version)"
+    ],
+    "tracklist": [
+      "1. 나의 쓸모",
+      "2. 화분",
+      "3. 이불빨래",
+      "4. 안식 없는 평안",
+      "5. 춤",
+      "6. Mr. Smith",
+      "7. 나영이 (with 이영훈)",
+      "8. 그런 사람 (with 루빈)",
+      "9. The Selfish",
+      "10. My Name Is Yozoh (33 Years Old Version)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-msfgg6k1",
+    "title": "Traveler",
+    "artist": "요조",
+    "artistKo": "요조",
+    "artistEn": "Yozoh",
+    "addedAt": "2026-08-05T02:15:37.009Z",
+    "year": "2008",
+    "format": "CD",
+    "genre": "한국음악",
+    "coverImage": "covers/album-msfgg6k1.jpg",
+    "recommendedTracks": [
+      "3. 에구구구",
+      "4. 하모니카 소리",
+      "9. Sunday"
+    ],
+    "tracklist": [
+      "1. Giant",
+      "2. 아침 먹고 땡",
+      "3. 에구구구",
+      "4. 하모니카 소리",
+      "5. 모닝 스타",
+      "6. 아 외로워",
+      "7. Happy Birthday",
+      "8. 바오밥나무",
+      "9. Sunday",
+      "10. 하모니카 소리 (Belle Epoque Version)",
+      "11. 그렇게 너에게"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
     "id": "album-mscp5pqe",
     "title": "Amplified",
     "artist": "큐 팁",
@@ -33,8 +131,8 @@ const ALBUMS = [
       "11. Do It, See It, Be It",
       "12. End of Time (feat. Korn)"
     ],
-    "description": "",
-    "descriptionEn": "",
+    "description": "1998년 The Love Movement를 마지막으로 ATCQ는 해체를 발표했습니다.\n멤버들 중 가장 인기 있던 큐팁은 바로 다음 해인 1999년 솔로 1집을 발표합니다.\n\n큐팁은 이 앨범에서 갑자기 털 코트를 입고서 강한 베이스의 클럽 음악 위에 과시적이고 때론 성적인 랩을 뱉기 시작합니다.\n재지하고 철학적이며 학구적인 음악을 하던 그룹의 핵심 멤버의 첫 솔로 1집은 많은 사람들을 당황시킵니다.\n이 앨범이 좋은 퀄리티에도 '상업적인 변절'이라며 팬들과 평론가들의 비판을 받은 이유입니다.\n\n하지만 조금만 자세히 들여다보면, 큐팁 입장에서 이 앨범은 딱히 변절으로 볼 수 없습니다.\n\n우선 주제적으로 보면, 사실 큐팁이 발매한 곡 중 가장 처음 (15살때) 썼다고 알려진 ATCQ의 Bonita Applebum이나 이후 발매된 ATCQ의 많은 곡은 장난스럽고 성적인 가사를 담고 있습니다.\n특히 ATCQ의 1집은 사실 장난스러운 곡들이 더 많은, 십대 소년들의 앨범처럼 보이기도 합니다.\n다만 ATCQ의 진지한 이미지 때문에 이런 곡들이 상대적으로 ATCQ를 대표한다고 보기 어려워진 탓이 큽니다.\n\n그리고 사운드적으로도, 사실 ATCQ가 가장 사랑받던 시기인 The Low End Theory 앨범 때를 생각해보면, 애초에 이 앨범이 차량용 오디오 시스템을 노린 앨범이라 저음이 과하다 싶을정도로 강조되어 있습니다.\n이 앨범에서 말하는 '클럽 사운드'는 사실 이 때가 기원이라고 볼 수 있습니다.\n\n그러니 큐팁 입장에서는, 사운드나 랩이나 항상 하던 걸 하던 와중에 더 세련되고 더 뛰어난 음악을 가져왔는데 욕을 먹은 것이 좀 억울할 수도 있습니다.\n\n저는 이 앨범을 참 좋아합니다. '상업적 변절'이 아닌 '이지 리스닝'으로 마음을 활짝 열고 한번 들어보세요.",
+    "descriptionEn": "In 1998, after [The Love Movement], ATCQ announced their breakup.\nQ-Tip, the group’s most popular member, released his solo debut the very next year, in 1999.\n\nOn this album, Q-Tip suddenly puts on a fur coat and starts dropping boastful, sometimes sexual rhymes over bass-heavy club tracks.\nMany people were taken aback by this first solo album from the key member of a group known for jazzy, philosophical, cerebral music.\nThat is why, for all its quality, the album drew criticism from fans and critics as a “commercial sellout.”\n\nBut look a little closer, and from Q-Tip’s point of view, this album hardly seems like a betrayal.\n\nFirst, in terms of subject matter, Bonita Applebum—said to be the first song Q-Tip ever wrote, at fifteen—and many other ATCQ songs that followed have playful, sexual lyrics.\nTheir debut album in particular can feel like an album made by teenage boys, with more playful songs than serious ones.\nIt is largely ATCQ’s serious image that has made it harder to see those songs as representative of the group.\n\nThe same goes for the sound. Think back to [The Low End Theory], from ATCQ’s most beloved period: it was designed with car stereo systems in mind, and the low end is emphasized almost to excess.\nThe “club sound” on [Amplified] can really be traced back to that period.\n\nSo from Q-Tip’s perspective, he may have felt a little hard done by: he was doing what he had always done, both in sound and in his rapping, only with sleeker, stronger music—and got slammed for it.\n\nI really love this album. Open your mind and give it a listen as “easy listening,” not a “commercial sellout.”",
     "weeklyReason": "",
     "weeklyReasonEn": "",
     "isWeekly": false
@@ -70,8 +168,8 @@ const ALBUMS = [
       "F1. Sputnik",
       "F2. Data Lords"
     ],
-    "description": "주인장은 사실 빅밴드나 오케스트라 재즈를 별로 좋아하지 않습니다.\n이렇게 큰 구성의 연주에서는 각각의 악기의 개성이 드러나기 어렵고, 솔로 비중도 축소되거나 사라질 수 밖에 없습니다.\n각 악기 연주자의 창의성도 줄어들고, 함께 연주될 때 각 악기에 집중해서 감상하기도 어려워집니다.\n주인장이 재즈를 즐기는 가장 큰 요소가 각 악기의 창의적인 솔로잉이기에 보통 트리오/쿼텟 구성을 좋아하고 멜로디 악기도 둘 이상 놓는걸 좋아하지 않습니다.\n제 취향이 이렇다보니 이 사이트의 앨범 목록에서도 빅밴드나 오케스트라의 재즈 앨범은 찾아보기 어려우실 겁니다.\n\n다만, 압도적인 완성도 앞에서 취향은 무의미해집니다.\n\n마리아 슈나이더 오케스트라는 세계 최고의 재즈 연주자들이 모여 활동하는 18인조 재즈 오케스트라로, 보통 일년에 1-3주 정도를 함께 투어하고 활동합니다. 내한 당시 인터뷰에서는 \"세계 최고의 연주자들이다 보니, 이들을 모두 모아서 활동하는건 태양계 행성을 일렬로 정렬시키는 것과 같다\"는 말을 남겼습니다.\n짧은 활동 기간에도 30년이 넘는 세월동안 활동한 팀이다 보니 연주를 의심할 이유는 전혀 없습니다.\n\n마리아 슈나이더는 스트리밍 사이트와 음반 소매 사이트들의 비합리적인 수익 구조에 대항해 음원을 전혀 스트리밍 사이트에 올리지 않고, 음반 판매도 아티스트셰어라는 플랫폼만을 통해 진행합니다.\n이렇다 보니 몇개 되지도 않는 유튜브 라이브 영상 몇 개 말고는 마리아 슈나이더의 음악을 들어볼 기회가 많지 않습니다. 하지만 들을 기회가 있다면 팬이 될 확률이 높다고 저는 확신합니다.\n\n이 앨범은 마리아 슈나이더의 30년 가랑의 경력을 총망라한 3LP 박스셋입니다. 정규 앨범을 산다면 큰 돈을 주고 수많은 CD를 구매해야지 들을 수 있을 곡들을 한 앨범으로 들을 수 있는 기회입니다. 이 박스셋은 전 세계 908세트만 판매된 한정판입니다. 그리고 주인장은 마리아 슈나이더 오케스트라 내한 당시 큰 돈을 주고 이 앨범을 구매해서 사인을 받아놨습니다. 그래서 이 앨범에서 신청곡을 적어주시면 가진 앨범 중 가장 귀한 이 앨범을 꺼내서 자랑할 생각에 신이 난 주인장을 보실 수 있을겁니다.",
-    "descriptionEn": "The owner is not, in fact, especially fond of big-band or orchestral jazz.\nWith an ensemble this large, it is difficult for the character of each instrument to come through, and the solos are inevitably reduced or disappear altogether. The individual players have less room for creativity, and when everyone is playing together, it is also harder to focus on each instrument. Since what the owner enjoys most about jazz is the creative soloing of each instrument, he usually prefers trio or quartet lineups and does not care for having more than two melody instruments. Given these tastes, you will probably have a hard time finding big-band or orchestral jazz albums in this archive.\n\nBut in the face of overwhelming excellence, taste becomes irrelevant.\n\nThe Maria Schneider Orchestra is an 18-piece jazz orchestra made up of some of the finest jazz musicians in the world. They usually tour and work together for only one to three weeks a year. In an interview during their visit to Korea, Schneider said, “They are the best players in the world, so getting them all together is like aligning the planets of the solar system.” Even with such brief periods together, they have been playing as a group for more than 30 years, so there is no reason whatsoever to doubt the musicianship.\n\nMaria Schneider has taken a stand against the unreasonable revenue structures of streaming services and record retailers. She puts none of her music on streaming platforms and sells her records exclusively through ArtistShare.\nThat leaves very few chances to hear her music beyond the handful of live videos on YouTube. But I am certain that if you do get the chance to listen, there is a good chance you will become a fan.\n\n[Decades] is a 3LP box set spanning nearly 30 years of Maria Schneider’s career. It is a chance to hear on a single release songs that would otherwise require spending a considerable sum on numerous CDs. Only 908 copies of this limited-edition box set were sold worldwide. The owner paid a handsome price for it when the Maria Schneider Orchestra came to Korea and had it signed. So if you request something from this album, you will get to see him light up at the prospect of pulling out—and showing off—the rarest record in his collection.",
+    "description": "주인장은 사실 빅밴드나 오케스트라 재즈를 별로 좋아하지 않습니다.\n이렇게 큰 구성의 연주에서는 각각의 악기의 개성이 드러나기 어렵고, 솔로 비중도 축소되거나 사라질 수 밖에 없습니다.\n각 악기 연주자의 창의성도 줄어들고, 함께 연주될 때 각 악기에 집중해서 감상하기도 어려워집니다.\n주인장이 재즈를 즐기는 가장 큰 요소가 각 악기의 창의적인 솔로잉이기에 보통 트리오/쿼텟 구성을 좋아하고 멜로디 악기도 둘 이상 놓는걸 좋아하지 않습니다.\n제 취향이 이렇다보니 이 사이트의 앨범 목록에서도 빅밴드나 오케스트라의 재즈 앨범은 찾아보기 어려우실 겁니다.\n\n다만, 압도적인 완성도 앞에서 개인의 취향은 무력합니다.\n이 정도로 만들면, 제 취향이 어떻고 저떻고는 크게 의미가 없어집니다.\n\n마리아 슈나이더 오케스트라는 세계 최고의 재즈 연주자들이 모여 활동하는 18인조 재즈 오케스트라로, 보통 일년에 1-3주 정도를 함께 투어하고 활동합니다. 내한 당시 인터뷰에서는 \"세계 최고의 연주자들이다 보니, 이들을 모두 모아서 활동하는건 태양계 행성을 일렬로 정렬시키는 것과 같다\"는 말을 남겼습니다.\n짧은 활동 기간에도 30년이 넘는 세월동안 활동한 팀이다 보니 연주를 의심할 이유는 전혀 없습니다.\n\n마리아 슈나이더는 스트리밍 사이트와 음반 소매 사이트들의 비합리적인 수익 구조에 대항해 음원을 전혀 스트리밍 사이트에 올리지 않고, 음반 판매도 아티스트셰어라는 플랫폼만을 통해 진행합니다.\n이렇다 보니 몇개 되지도 않는 유튜브 라이브 영상 몇 개 말고는 마리아 슈나이더의 음악을 들어볼 기회가 많지 않습니다. 하지만 들을 기회가 있다면 팬이 될 확률이 높다고 저는 확신합니다.\n\n이 앨범은 마리아 슈나이더의 30년 가랑의 경력을 총망라한 3LP 박스셋입니다. 정규 앨범을 산다면 큰 돈을 주고 수많은 CD를 구매해야지 들을 수 있을 곡들을 한 앨범으로 들을 수 있는 기회입니다. 이 박스셋은 전 세계 908세트만 판매된 한정판입니다. 그리고 주인장은 마리아 슈나이더 오케스트라 내한 당시 큰 돈을 주고 이 앨범을 구매해서 사인을 받아놨습니다. 그래서 이 앨범에서 신청곡을 적어주시면 가진 앨범 중 가장 귀한 이 앨범을 꺼내서 자랑할 생각에 신이 난 주인장을 보실 수 있을겁니다.",
+    "descriptionEn": "Truth be told, the owner isn’t much of a fan of big-band or orchestral jazz.\nWith an ensemble this large, it is hard for each instrument’s character to come through, and solo space inevitably shrinks or disappears altogether. The individual players have less room for creativity, and when everyone plays together, it is also harder to focus on each instrument. Since what I enjoy most about jazz is the creative soloing of individual instruments, I usually prefer trio or quartet settings and don’t care for having more than one melodic instrument. Given my taste, you will have a hard time finding big-band or orchestral jazz albums in this archive.\n\nBut personal taste is powerless in the face of overwhelming craftsmanship.\nWhen something is made this well, what I happen to like or dislike no longer matters much.\n\nThe Maria Schneider Orchestra is an 18-piece jazz orchestra made up of some of the world’s finest jazz musicians. They usually tour and work together for only one to three weeks a year. In an interview during their visit to Korea, Schneider said, “They are the best musicians in the world, so getting them all together is like aligning the planets of the solar system.” Even with so little time together each year, they have been playing as a group for more than three decades, so there is absolutely no reason to doubt the performances.\n\nMaria Schneider has taken a stand against the unreasonable revenue structures of streaming services and online record retailers. She keeps her music off streaming platforms entirely and sells her records exclusively through ArtistShare. As a result, apart from the handful of live videos on YouTube, there are few chances to hear her music. But I am convinced that if you do get the chance, you are very likely to become a fan.\n\n[Decades] is a 3-LP box set spanning nearly thirty years of Maria Schneider’s career. It is a chance to hear in one collection songs that would otherwise require spending a considerable sum on numerous CDs. Only 908 copies of this box set were sold worldwide. And when the Maria Schneider Orchestra came to Korea, the owner paid a handsome price for one and had it signed. So if you request a song from this album, you will get to see him light up at the chance to pull out—and show off—the most precious record in his collection.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
     "isWeekly": false
@@ -13554,8 +13652,8 @@ const ALBUMS = [
       "6. The Great Outdoors (with. Julian Lage, Asante Santi Debriano & Will Calhoun)",
       "7. Congregation (with. Julian Lage, Asante Santi Debriano & Will Calhoun)"
     ],
-    "description": "",
-    "descriptionEn": "",
+    "description": "2025년, 조 로바노와 줄리안 라지가 '파라마운트 쿼텟'이라는 이름으로 투어를 시작한다는 얘기를 들었을 때, 주인장은 주변에 이 조합으로 앨범 내줬으면 좋겠단 얘기를 엄청 하고 다녔지만, 사실 실제로 이뤄질거라고 생각하진 못했습니다.\n이제는 줄리안 라지의 체급이 워낙 커져서 누구 세션으로 참가하지 않을 것 같기도 했고, 뭣보다 조 로바노는 ECM소속, 줄리안 라지는 블루노트 간판이라 재밌는 그림이고, 재즈 쪽에서는 세션으로 참여할 때 기존 레이블 계약의 구속력이 강하지 않음에도 크게 기대는 안했습니다.\n\n그런데 2026년, 파라마운트 쿼텟이란 이름이 슬슬 잊혀져 갈 때 쯤, ECM에서 이 앨범이 발표됐습니다.\n\n조 로바노라는 거장은 자신의 넓은 음악적 레인지를 과시하며 멋진 연주들을 들려주고, 줄리안 라지는 확실히 프런트맨 자리를 양보한 채 뒤로 물러나 연주하지만 본인 특유의 톤 세팅으로 자신의 개성과 색깔은 확실히 드러냅니다.\n재즈팬들에게는 꿈과도 같은 이 콜라보 앨범. ECM 커버에서 줄리안 라지의 이름을 보는 재미도 있습니다.",
+    "descriptionEn": "When I heard in 2025 that Joe Lovano and Julian Lage were going on tour as the Paramount Quartet, I went around telling everyone how much I wanted this lineup to make an album. Truthfully, though, I never thought it would actually happen.\n\nJulian Lage had grown into such a major name that it was hard to imagine him joining someone else’s session. More than anything, Joe Lovano was with ECM while Julian Lage was one of Blue Note’s leading artists, which made for an intriguing picture. Even knowing that label contracts in jazz are not especially binding when it comes to session work, I did not get my hopes up.\n\nThen, in 2026, just as the name Paramount Quartet was beginning to fade from memory, ECM released this album.\n\nJoe Lovano, a true master, shows off the breadth of his musical range with some superb playing. Julian Lage clearly cedes the frontman’s spot and plays from the back, yet his distinctive tone makes his personality and color unmistakable.\n\nFor jazz fans, this collaboration is something of a dream. And there is a certain pleasure in seeing Julian Lage’s name on an ECM cover.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
     "isWeekly": false
@@ -13589,8 +13687,8 @@ const ALBUMS = [
       "9. Hang It On The Shelf",
       "10. Taken Out of The Picture"
     ],
-    "description": "",
-    "descriptionEn": "",
+    "description": "2026년 어느 날, 인스타에서 이 앨범의 한 곡을 들은 주인장은 좋은 옛날 음악을 발견했다는 마음에 신나서 앨범을 들어봅니다.\n옛스럽고 펑키한 이 앨범은 제 취향에 너무 잘 맞았고, 당연히 70년대쯤 음악이겠거니 하고 앨범 발매일을 찾아봤습니다.\n그런데 짜잔! 나온지 2주도 안된 앨범이 아니겠어요?\n\n그래서 사장은 '아! 히트 모음집인가 보다!'하고 생각합니다. 옛날에 활동하던 뮤지션의 히트곡 모음집이 2주 전에 나온거라구요.\n그런데 짜잔! 아티스트인 제일런 은곤다는 1994년생으로 사장이랑 동갑이었습니다!\n\n저에게 이건 옛날 앨범이라는 확신을 준 멜로디 라인은 그 때의 느낌을 물씬 살리지만, 사실 춤을 추기위한 드럼 브레이크 등을 빼서 컴팩트하게 곡의 메인 아이디어 위주로 빡빡 들려주고 다음곡으로 넘어가는 구성은 상당히 엠제뜨스럽습니다.\n오히려 올드한 부분을 덜어내고 더 가볍게 즐길 수 있습니다. 모두 곡 자체에 자신이 있기 때문에 가능한 구성입니다.\n\n기절초풍하게 그 시절 느낌을 잘 살린 이 앨범은 순식간에 저의 여름 주제곡 앨범 중 하나가 되었습니다.\n여러분의 여름에도 도움이 되길 바랍니다.",
+    "descriptionEn": "One day in 2026, the owner heard a track from this album on Instagram. Thrilled to have stumbled onto some great old music, I put on the album.\nIts vintage, funky sound was exactly my taste, and I naturally assumed it must be from sometime in the ’70s, so I looked up the release date.\nBut—ta-da! It hadn’t even been out for two weeks.\n\nSo the owner thought, “Ah! It must be a greatest-hits collection!” A compilation of hits by a musician from back in the day, released two weeks ago.\nBut—ta-da! Jalen Ngonda was born in 1994, the same year as the owner.\n\nThe melodic lines that had me convinced this was an old album are steeped in the sound of that era. But the way the songs cut out things like dance-floor drum breaks, pack their main ideas into tight, compact arrangements, and move straight on to the next track feels very Gen Z.\nBy trimming away the more dated elements, the album is actually lighter and easier to enjoy. It is an approach that only works because every song can stand on its own.\n\nThis album captures the feel of that era so astonishingly well that it instantly became one of my summer-soundtrack records.\nI hope it does something for your summer too.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
     "isWeekly": false
