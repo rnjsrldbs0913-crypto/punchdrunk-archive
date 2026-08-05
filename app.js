@@ -353,6 +353,9 @@
     let suppressNextClick = false;
     let suppressClickTimer = null;
     let cancelledMotionTimer = null;
+    let playbackWatchdog = null;
+    let resumeAttemptTimer = null;
+    let shouldKeepMotionPlaying = false;
 
     const clearClickSuppression = () => {
       suppressNextClick = false;
@@ -373,8 +376,52 @@
       cancelledMotionTimer = null;
     };
 
+    const clearPlaybackWatchdog = () => {
+      if (playbackWatchdog) window.clearInterval(playbackWatchdog);
+      if (resumeAttemptTimer) window.clearTimeout(resumeAttemptTimer);
+      playbackWatchdog = null;
+      resumeAttemptTimer = null;
+    };
+
+    const requestMotionPlay = ({ initial = false, requestKey = '' } = {}) => {
+      if (!shouldKeepMotionPlaying || !activeInteraction) return;
+      video.muted = true;
+      video.defaultMuted = true;
+
+      if (video.ended) video.currentTime = 0;
+      const playRequest = video.play();
+      if (!playRequest || typeof playRequest.then !== 'function') return;
+
+      playRequest.then(() => {
+        if (!initial) return;
+        const activeKey = activeInteraction
+          ? `${activeInteraction.type}:${activeInteraction.id}`
+          : '';
+        if (activeKey !== requestKey) video.pause();
+      }).catch(error => {
+        if (!initial || !shouldKeepMotionPlaying) return;
+        activeInteraction = null;
+        stopMotion();
+        console.warn('Weekly motion preview could not start.', error);
+      });
+    };
+
+    const startPlaybackWatchdog = () => {
+      clearPlaybackWatchdog();
+      playbackWatchdog = window.setInterval(() => {
+        // 일부 인앱 브라우저는 길게 누르는 도중 video를 임의로 pause합니다.
+        // 손가락 입력이 살아 있는 동안에는 재생 상태를 짧은 간격으로 복구합니다.
+        if (!shouldKeepMotionPlaying || !activeInteraction) return;
+        if (video.paused || video.ended) requestMotionPlay();
+      }, 250);
+    };
+
     const stopMotion = ({ suppressClick = false } = {}) => {
+      shouldKeepMotionPlaying = false;
       clearCancelledMotionTimer();
+      clearPlaybackWatchdog();
+      video.autoplay = false;
+      video.removeAttribute('autoplay');
       video.pause();
       card.classList.remove('is-motion-playing');
       if (suppressClick) armClickSuppression();
@@ -388,23 +435,22 @@
       };
       const requestKey = `${interaction.type}:${interaction.id}`;
       card.classList.add('is-motion-playing');
+      shouldKeepMotionPlaying = true;
       video.muted = true;
-
-      const playRequest = video.play();
-      if (playRequest && typeof playRequest.then === 'function') {
-        playRequest.then(() => {
-          const activeKey = activeInteraction
-            ? `${activeInteraction.type}:${activeInteraction.id}`
-            : '';
-          if (activeKey !== requestKey) video.pause();
-        }).catch(error => {
-          activeInteraction = null;
-          stopMotion();
-          console.warn('Weekly motion preview could not start.', error);
-        });
-      }
+      video.autoplay = true;
+      video.setAttribute('autoplay', '');
+      startPlaybackWatchdog();
+      requestMotionPlay({ initial: true, requestKey });
       return true;
     };
+
+    video.addEventListener('pause', () => {
+      if (!shouldKeepMotionPlaying || !activeInteraction || resumeAttemptTimer) return;
+      resumeAttemptTimer = window.setTimeout(() => {
+        resumeAttemptTimer = null;
+        requestMotionPlay();
+      }, 40);
+    });
 
     const finishInteraction = ({ type, id, suppressClick = true } = {}) => {
       if (!activeInteraction
@@ -482,7 +528,7 @@
           touch.clientX - activeInteraction.startX,
           touch.clientY - activeInteraction.startY,
         );
-        if (distance > 14) {
+        if (distance > 32) {
           finishInteraction({
             type: 'touch',
             id: touch.identifier,
