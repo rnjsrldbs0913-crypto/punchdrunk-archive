@@ -350,12 +350,27 @@
     video.load();
 
     let activeInteraction = null;
-    let suppressClickUntil = 0;
+    let suppressNextClick = false;
+    let suppressClickTimer = null;
+
+    const clearClickSuppression = () => {
+      suppressNextClick = false;
+      if (suppressClickTimer) window.clearTimeout(suppressClickTimer);
+      suppressClickTimer = null;
+    };
+
+    const armClickSuppression = () => {
+      // 네이버 같은 인앱 브라우저는 길게 누른 뒤 수 초 후 합성 click을 보내기도 합니다.
+      // 시간만 재지 않고 같은 터치 뒤의 다음 click 한 번을 막되, 새 터치가 시작되면 바로 해제합니다.
+      suppressNextClick = true;
+      if (suppressClickTimer) window.clearTimeout(suppressClickTimer);
+      suppressClickTimer = window.setTimeout(clearClickSuppression, 5000);
+    };
 
     const stopMotion = ({ suppressClick = false } = {}) => {
       video.pause();
       card.classList.remove('is-motion-playing');
-      if (suppressClick) suppressClickUntil = performance.now() + 500;
+      if (suppressClick) armClickSuppression();
     };
 
     const startMotion = interaction => {
@@ -397,6 +412,7 @@
 
     card.addEventListener('pointerdown', event => {
       if (event.button > 0 || (touchCapable && event.pointerType === 'touch')) return;
+      if (!activeInteraction) clearClickSuppression();
       if (!startMotion({ type: 'pointer', id: event.pointerId })) return;
       try {
         card.setPointerCapture(event.pointerId);
@@ -412,13 +428,14 @@
     card.addEventListener('pointerup', finishPointer);
     card.addEventListener('pointercancel', finishPointer);
     card.addEventListener('lostpointercapture', event => {
-      finishInteraction({ type: 'pointer', id: event.pointerId, suppressClick: false });
+      finishInteraction({ type: 'pointer', id: event.pointerId });
     });
 
     if (touchCapable) {
       card.addEventListener('touchstart', event => {
         const touch = event.changedTouches[0];
         if (!touch) return;
+        if (!activeInteraction) clearClickSuppression();
         startMotion({
           type: 'touch',
           id: touch.identifier,
@@ -462,15 +479,27 @@
         finishInteraction({
           type: 'touch',
           id: touch.identifier,
-          suppressClick: false,
         });
       }, { passive: true });
     }
 
     card.addEventListener('contextmenu', event => event.preventDefault());
+    card.addEventListener('keydown', clearClickSuppression);
 
     return {
-      shouldSuppressClick: () => performance.now() < suppressClickUntil,
+      shouldSuppressClick: () => {
+        // 일부 인앱 브라우저는 touchend 전에 click을 보내므로 재생 중인 길게 누르기도 즉시 차단합니다.
+        if (activeInteraction
+          && performance.now() - activeInteraction.startedAt >= 160) {
+          activeInteraction = null;
+          stopMotion();
+          clearClickSuppression();
+          return true;
+        }
+        if (!suppressNextClick) return false;
+        clearClickSuppression();
+        return true;
+      },
     };
   }
 
