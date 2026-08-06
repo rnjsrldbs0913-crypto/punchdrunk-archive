@@ -240,6 +240,7 @@ select:focus-visible,
   z-index: 0;
   object-fit: cover;
   object-position: center 48%;
+  pointer-events: none;
   opacity: 0.27;
   filter: saturate(0.72) contrast(1.08);
   transform: scale(1.015);

@@ -411,8 +411,9 @@
         || activeInteraction.type !== type
         || activeInteraction.id !== id) return;
       const heldLongEnough = performance.now() - activeInteraction.startedAt >= 160;
+      const movedWhilePressed = Boolean(activeInteraction.moved);
       activeInteraction = null;
-      stopMotion({ suppressClick: suppressClick && heldLongEnough });
+      stopMotion({ suppressClick: suppressClick && (heldLongEnough || movedWhilePressed) });
     };
 
     const keepMotionAfterBrowserCancel = () => {
@@ -478,17 +479,15 @@
         const touch = Array.from(event.changedTouches)
           .find(item => item.identifier === activeInteraction.id);
         if (!touch) return;
+
         const distance = Math.hypot(
           touch.clientX - activeInteraction.startX,
           touch.clientY - activeInteraction.startY,
         );
-        if (distance > 14) {
-          finishInteraction({
-            type: 'touch',
-            id: touch.identifier,
-            suppressClick: false,
-          });
-        }
+
+        // 손가락 이동은 영상 정지 조건이 아닙니다. 누른 채 스크롤해도 재생을 유지합니다.
+        // 대신 이동한 터치는 손을 뗀 뒤 상세 화면을 여는 클릭으로 처리되지 않게 기록합니다.
+        if (distance > 6) activeInteraction.moved = true;
       }, { passive: true });
 
       const finishTouch = event => {
