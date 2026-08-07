@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PUNCH-DRUNK ARCHIVE 관리자</title>
+  <link rel="stylesheet" href="styles.css?v=20260807212109" />
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-header">
+      <div>
+        <div class="brand-mark">PUNCH-DRUNK</div>
+        <div class="brand-sub">archive admin</div>
+      </div>
+      <a class="admin-link" href="index.html">손님용 화면 보기</a>
+    </header>
+
+    <section class="admin-warning">
+      이 관리자 페이지를 <strong>로컬 관리자 실행기</strong>로 열면 MYBOX 원본에 자동 연결됩니다.
+      보안 프로그램의 파일 첨부 제한과 관계없이 <strong>저장하기</strong>만 누르면 데이터, 커버, 변경 전 자동 백업을 저장할 수 있습니다.
+      작업 폴더 연결은 로컬 실행기를 사용할 수 없을 때만 쓰는 예비 방식입니다.
+      실제 인터넷에 올릴 때는 손님용 화면만 공개하고, 이 관리자 페이지는 비밀번호가 있는 곳에 따로 두는 것을 권장합니다.
+    </section>
+
+    <section class="admin-tool-panel local-lock-panel" data-local-lock-panel>
+      <div>
+        <strong>관리자 로컬 잠금</strong>
+        <p class="helper-text" data-local-lock-status>이 브라우저에서만 쓰는 간단한 잠금입니다. 실제 인터넷 보안용 로그인은 호스팅 방식이 정해진 뒤 따로 붙이는 것이 안전합니다.</p>
+      </div>
+      <div class="direct-actions">
+        <input type="password" data-local-lock-code placeholder="잠금 코드" autocomplete="off" />
+        <button type="button" class="admin-button compact" data-enable-local-lock>잠금 켜기</button>
+        <button type="button" class="text-button" data-disable-local-lock>잠금 끄기</button>
+      </div>
+    </section>
+
+    <section class="draft-recovery-panel" data-draft-recovery hidden>
+      <div>
+        <strong>브라우저 임시 저장본 발견</strong>
+        <p data-draft-recovery-text>새로고침 전에 작업하던 내용이 남아있을 수 있습니다.</p>
+      </div>
+      <div class="direct-actions">
+        <button type="button" class="admin-button primary" data-restore-draft>임시 저장본 복구</button>
+        <button type="button" class="admin-button" data-export-draft>복구본 ZIP 받기</button>
+        <button type="button" class="text-button" data-dismiss-draft>닫기</button>
+      </div>
+    </section>
+
+    <section class="admin-tool-panel draft-manager-panel" data-draft-manager hidden>
+      <div class="tool-panel-head">
+        <div>
+          <strong>임시저장본 관리</strong>
+          <p class="helper-text">브라우저에 남아 있는 임시저장본을 확인하고, 필요한 것만 복구하거나 전부 비울 수 있습니다.</p>
+        </div>
+        <div class="direct-actions">
+          <button type="button" class="admin-button compact" data-refresh-drafts>새로고침</button>
+          <button type="button" class="danger-button compact" data-clear-drafts>임시저장 모두 비우기</button>
+          <button type="button" class="text-button" data-close-draft-manager>닫기</button>
+        </div>
+      </div>
+      <div class="draft-list" data-draft-list></div>
+    </section>
+
+    <section class="save-panel">
+      <div>
+        <strong>저장</strong>
+        <p data-project-status>로컬 관리자 실행기에 연결하고 있습니다. 연결되면 폴더 선택 없이 MYBOX에 바로 저장합니다.</p>
+        <p class="save-status-line" data-save-status>마지막 저장: 아직 없음</p>
+        <p class="save-status-line" data-backup-folder-status>자동 백업: 폴더 미연결</p>
+        <p class="save-status-line" data-publish-status>배포 상태를 확인하고 있습니다.</p>
+        <p class="save-status-line collaboration-status" data-collaboration-status data-state="checking">다른 컴퓨터의 편집 상태를 확인하고 있습니다.</p>
+        <p class="save-status-line" data-autosave-status>자동 임시 저장 대기 중</p>
+      </div>
+      <div class="direct-actions">
+        <button type="button" class="admin-button primary large" data-save-main>저장하기</button>
+        <button type="button" class="admin-button" data-connect-project>작업 폴더 연결</button>
+        <button type="button" class="admin-button" data-connect-backup-folder>자동 백업 폴더 연결</button>
+        <button type="button" class="admin-button" data-export-backup>현재 데이터 백업 ZIP 받기</button>
+      </div>
+    </section>
+
+    <section class="save-feedback" data-save-feedback data-state="idle" hidden></section>
+
+    <section class="admin-dashboard" data-admin-dashboard aria-label="관리 현황"></section>
+
+    <section class="admin-mode-bar">
+      <label class="admin-mode-toggle">
+        <input type="checkbox" data-description-mode />
+        <span>설명 보완 항목 표시</span>
+      </label>
+      <p class="helper-text">지금은 음반 등록에 집중할 수 있도록 설명 없음 표시를 숨깁니다. 나중에 설명을 채울 때 켜세요.</p>
+    </section>
+
+    <section class="weekly-admin-panel">
+      <div>
+        <strong>현재 금주의 음반</strong>
+        <p data-current-weekly>불러오는 중</p>
+      </div>
+      <button type="button" class="admin-button" data-set-current-weekly>현재 음반을 금주의 음반으로</button>
+    </section>
+
+    <main class="admin-layout">
+      <aside class="album-sidebar">
+        <div class="sidebar-actions">
+          <button type="button" class="admin-button primary" data-new-album>새 음반</button>
+        </div>
+        <div class="album-list-tools">
+          <label class="album-list-search-label">
+            <span>음반 찾기</span>
+            <input type="search" data-album-list-search placeholder="앨범명, 아티스트, 장르, 연도" autocomplete="off" />
+          </label>
+          <div class="album-list-controls">
+            <select data-album-list-sort aria-label="앨범 목록 정렬">
+              <option value="recent">최근 추가순</option>
+              <option value="artist">아티스트순</option>
+              <option value="title">앨범명순</option>
+              <option value="year-newest">최근 발매순</option>
+              <option value="year-oldest">오래된 발매순</option>
+              <option value="genre">장르순</option>
+            </select>
+            <button type="button" class="admin-button compact" data-focus-current>현재</button>
+          </div>
+          <div class="album-list-filters" data-album-list-filters aria-label="음반 목록 빠른 필터">
+            <button type="button" data-list-filter="all" data-active="true">전체</button>
+            <button type="button" data-list-filter="Vinyl">LP</button>
+            <button type="button" data-list-filter="CD">CD</button>
+            <button type="button" data-list-filter="weekly">금주의 음반</button>
+            <button type="button" data-list-filter="missing-cover">커버 없음</button>
+            <button type="button" data-list-filter="missing-tracks">트랙 없음</button>
+            <button type="button" data-list-filter="missing-description">설명 없음</button>
+            <button type="button" data-list-filter="missing-description-en">영문 설명 없음</button>
+            <button type="button" data-list-filter="missing-artist-labels">아티스트 표기 없음</button>
+            <button type="button" data-list-filter="cover-path-issue">커버 경로 확인</button>
+          </div>
+          <p data-album-list-summary>0장의 음반</p>
+        </div>
+        <div class="mini-actions">
+          <button type="button" class="text-button" data-save-draft>브라우저 임시 저장</button>
+          <button type="button" class="text-button" data-load-draft>임시 저장 불러오기</button>
+          <button type="button" class="text-button" data-open-draft-manager>임시저장 관리</button>
+        </div>
+        <div class="album-edit-list" data-album-list></div>
+      </aside>
+
+      <section class="editor-panel" aria-label="음반 편집">
+        <div class="editor-topline">
+          <h1 data-editor-title>음반 편집</h1>
+          <div class="editor-actions">
+            <a class="admin-button" data-preview-current href="index.html" rel="noopener" target="_blank">손님 화면에서 보기</a>
+            <button type="button" class="danger-button" data-delete-album>현재 음반 삭제</button>
+          </div>
+        </div>
+
+        <nav class="admin-section-nav" data-admin-section-nav aria-label="음반 편집 구간 바로가기">
+          <button type="button" data-admin-section-target="admin-section-basic">기본 정보</button>
+          <button type="button" data-admin-section-target="admin-section-apple">Apple 검색</button>
+          <button type="button" data-admin-section-target="admin-section-cover">커버</button>
+          <button type="button" data-admin-section-target="admin-section-tracks">트랙</button>
+          <button type="button" data-admin-section-target="admin-section-description">설명</button>
+        </nav>
+
+        <div class="form-grid admin-jump-section" id="admin-section-basic" data-admin-section="basic">
+          <label>
+            <span>ID</span>
+            <input type="text" data-field="id" placeholder="album-id" readonly />
+            <small class="field-note">자동 생성됩니다. 제목을 바꿔도 고정됩니다.</small>
+          </label>
+          <label>
+            <span>앨범명</span>
+            <input type="text" data-field="title" placeholder="Illmatic" />
+          </label>
+          <input type="hidden" data-field="artist" />
+          <label>
+            <span>아티스트 한글표기</span>
+            <input type="text" data-field="artistKo" placeholder="나스" />
+          </label>
+          <label>
+            <span>아티스트 영문표기</span>
+            <input type="text" data-field="artistEn" placeholder="Nas" />
+          </label>
+          <label>
+            <span>발매연도</span>
+            <input type="text" data-field="year" placeholder="1994" />
+          </label>
+          <label>
+            <span>포맷</span>
+            <select data-field="format">
+              <option value="Vinyl">LP</option>
+              <option value="CD">CD</option>
+            </select>
+          </label>
+          <label>
+            <span>장르</span>
+            <select data-field="genre" aria-label="장르 선택"></select>
+          </label>
+          <div class="artist-language-tools">
+            <p class="helper-text">한글표기와 영문표기가 둘 다 채워진 경우에만 손님용 언어 전환에서 아티스트명이 바뀝니다. 하나만 있으면 원래 아티스트명을 그대로 보여줍니다.</p>
+            <button type="button" class="admin-button compact" data-guess-artist-labels>Apple/iTunes로 표기 추정</button>
+            <p class="helper-text" data-artist-label-status>잘못 들어간 표기는 언제든 직접 수정할 수 있습니다.</p>
+          </div>
+          <p class="helper-text genre-helper">Apple/iTunes에서 가져온 세부 장르는 재즈, 소울/펑크, 힙합처럼 큰 장르로 자동 분류됩니다.</p>
+        </div>
+
+        <section class="admin-section apple-import-panel admin-jump-section" id="admin-section-apple" data-admin-section="apple">
+          <h2>Apple/iTunes에서 초안 가져오기</h2>
+          <p class="helper-text">앨범 후보를 찾아 입력칸에 채웁니다. 바로 저장되지는 않으니, 적용 후 직접 확인하고 저장하세요.</p>
+          <div class="apple-search-row">
+            <input type="text" data-apple-search-term placeholder="아티스트와 앨범명으로 검색" />
+            <select data-apple-country aria-label="Apple/iTunes 검색 국가">
+              <option value="KR">KR</option>
+              <option value="US">US</option>
+              <option value="JP">JP</option>
+              <option value="GB">GB</option>
+            </select>
+            <button type="button" class="admin-button" data-apple-fill-current>현재 음반명 넣기</button>
+            <button type="button" class="admin-button primary" data-apple-search>검색</button>
+          </div>
+          <p class="helper-text" data-apple-status>한국 음반은 국가를 KR로 두고 검색하세요. 검색 후보는 최대 50개까지 찾고 10개씩 표시합니다. 앨범 검색에서 빠진 후보는 곡 검색으로 보완합니다. 트랙리스트는 선택한 국가 자료만 사용해서 영어권 제목으로 바뀌는 일을 줄였습니다.</p>
+          <div class="apple-results" data-apple-results></div>
+        </section>
+
+        <label class="check-row">
+          <input type="checkbox" data-field="isWeekly" />
+          <span>이 음반을 금주의 음반으로 설정</span>
+        </label>
+
+        <section class="admin-section" data-weekly-reason-section hidden>
+          <h2>금주의 음반 선정 이유</h2>
+          <p class="helper-text">손님용 첫 화면의 금주의 음반 카드 오른쪽 아래에 표시됩니다.</p>
+          <textarea data-field="weeklyReason" rows="5" placeholder="이번 주 이 음반을 고른 이유를 적습니다."></textarea>
+          <label class="language-textarea">
+            <span>영문 선정 이유</span>
+            <textarea data-field="weeklyReasonEn" rows="5" placeholder="English reason for the album of the week."></textarea>
+          </label>
+        </section>
+
+        <section class="admin-section admin-jump-section" id="admin-section-cover" data-admin-section="cover">
+          <h2>커버 이미지</h2>
+          <p class="helper-text">탐색기에서 이미지를 선택한 뒤 저장하기를 누르면 MYBOX의 covers 폴더에 원본과 목록용 썸네일이 함께 저장됩니다. 폴더를 따로 선택할 필요가 없습니다.</p>
+          <p class="helper-text">새로 고른 큰 이미지는 긴 변 2000px 안쪽의 웹용 JPG로 복사합니다. 원본 파일은 내 컴퓨터에 그대로 남고, 금주의 음반 확대에도 무리 없는 크기입니다.</p>
+          <div class="cover-editor">
+            <div class="cover-preview" data-cover-preview></div>
+            <label class="cover-path-label">
+              <span>선택된 커버 경로</span>
+              <input type="text" data-field="coverImage" placeholder="covers/illmatic.jpg" />
+            </label>
+          </div>
+
+          <div class="cover-tools">
+            <input type="file" data-cover-file-input accept="image/*" multiple hidden />
+            <button type="button" class="admin-button" data-pick-cover-files>탐색기에서 커버 추가</button>
+            <input type="text" data-new-cover-path placeholder="covers/new-cover.jpg" />
+            <button type="button" class="admin-button" data-add-cover-path>경로 직접 추가</button>
+            <button type="button" class="admin-button" data-export-covers>covers-list.js 내보내기</button>
+          </div>
+          <p class="helper-text cover-file-note">선택한 이미지는 저장하기를 누를 때 covers 폴더로 복사됩니다. 로컬 관리자 실행기를 사용할 수 없는 예비 방식에서만 작업 폴더 연결이 필요합니다.</p>
+          <p class="helper-text" data-cover-optimize-status>커버 최적화 대기 중입니다.</p>
+          <div class="cover-library-panel" data-cover-library-panel>
+            <div class="cover-library-head">
+              <div>
+                <strong>기존 커버 목록</strong>
+                <p class="helper-text" data-cover-gallery-summary>목록을 열면 covers 폴더에 저장된 이미지를 다시 선택할 수 있습니다.</p>
+              </div>
+              <button type="button" class="admin-button compact" data-toggle-cover-gallery>기존 커버 목록 열기</button>
+            </div>
+            <input type="search" data-cover-gallery-search placeholder="파일명으로 커버 검색" autocomplete="off" hidden />
+            <div class="cover-gallery" data-cover-gallery hidden></div>
+          </div>
+
+          <div class="cover-audit-panel">
+            <div class="cover-library-head">
+              <div>
+                <strong>커버 정리 점검</strong>
+                <p class="helper-text" data-cover-audit-summary>안 쓰는 커버와 경로 문제를 확인할 수 있습니다. 파일은 자동으로 삭제하지 않습니다.</p>
+              </div>
+              <div class="direct-actions">
+                <button type="button" class="admin-button compact" data-run-cover-audit>커버 점검</button>
+                <button type="button" class="admin-button compact" data-export-cover-audit disabled>점검 보고서 받기</button>
+              </div>
+            </div>
+            <div class="cover-audit-results" data-cover-audit-results hidden></div>
+          </div>
+        </section>
+
+        <section class="admin-section admin-jump-section" id="admin-section-tracks" data-admin-section="tracks">
+          <h2>트랙리스트와 추천곡</h2>
+          <p class="helper-text">트랙리스트는 한 줄에 한 곡씩 입력합니다. 예: A1. The World Is Yours</p>
+          <textarea data-field="tracklist" rows="10" placeholder="A1. 첫 번째 곡&#10;A2. 두 번째 곡"></textarea>
+          <div class="recommend-editor">
+            <h3>추천곡 표시</h3>
+            <p class="helper-text">체크한 곡은 손님용 상세 화면에서 곡 번호 왼쪽에 작은 점이 찍힙니다.</p>
+            <div data-recommend-checks></div>
+          </div>
+        </section>
+
+        <section class="admin-section admin-jump-section" id="admin-section-description" data-admin-section="description">
+          <h2>설명</h2>
+          <label class="language-textarea">
+            <span>한글 설명</span>
+            <textarea data-field="description" rows="7" placeholder="이 음반에 대한 내 설명을 적습니다."></textarea>
+          </label>
+          <div class="translation-panel">
+            <div class="translation-actions">
+              <button type="button" class="admin-button primary" data-translate-description>Codex로 영문 설명 채우기</button>
+              <button type="button" class="admin-button" data-copy-translation-prompt>번역 프롬프트 복사</button>
+            </div>
+            <p class="helper-text" data-translation-status>로컬 Codex 연결을 확인하고 있습니다. 일시적인 실패는 한 번 자동으로 다시 시도합니다.</p>
+            <details class="translation-api-fallback" data-api-fallback>
+              <summary>OpenAI API 키 방식 (예비)</summary>
+              <p class="helper-text">로컬 Codex를 사용할 수 없을 때만 쓰는 예비 기능입니다. API 사용료는 별도로 청구되며, 키는 이 관리자 탭을 닫을 때 사라집니다.</p>
+              <div class="translation-settings">
+                <label>
+                  <span>OpenAI API 키</span>
+                  <input type="password" data-openai-api-key placeholder="sk-..." autocomplete="off" />
+                </label>
+                <label>
+                  <span>번역 모델</span>
+                  <input type="text" data-openai-model value="gpt-5-mini" />
+                </label>
+              </div>
+              <div class="translation-actions">
+                <button type="button" class="admin-button" data-translate-api>API로 영문 설명 채우기</button>
+                <button type="button" class="text-button" data-clear-openai-api-key>입력한 API 키 지우기</button>
+              </div>
+            </details>
+          </div>
+          <label class="language-textarea">
+            <span>영문 설명</span>
+            <textarea data-field="descriptionEn" rows="7" placeholder="English description shown on the English page."></textarea>
+          </label>
+        </section>
+      </section>
+    </main>
+
+    <div class="admin-sticky-save" data-sticky-save>
+      <div class="admin-sticky-save-info">
+        <strong data-sticky-save-state>저장 완료</strong>
+        <span data-sticky-folder>작업 폴더 미연결</span>
+      </div>
+      <button type="button" class="admin-button primary large" data-save-main>저장하기</button>
+    </div>
+
+    <div class="delete-undo-toast" data-delete-undo hidden>
+      <span data-delete-undo-text>음반을 삭제했습니다.</span>
+      <button type="button" data-undo-delete>삭제 취소</button>
+    </div>
+  </div>
+
+  <script src="albums-data.js?v=20260805a"></script>
+  <script src="covers-list.js?v=20260805a"></script>
+  <script src="admin.js?v=20260807212109"></script>
+</body>
+</html>
