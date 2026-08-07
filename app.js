@@ -11,17 +11,17 @@
   const GENRE_ALL = '전체 장르';
   const NEW_ALBUM_DAYS = 14;
   const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
-  const SHORTLIST_STORAGE_KEY = 'pd-request-shortlist-v1';
+  const REQUEST_TRACKS_STORAGE_KEY = 'pd-request-tracks-v1';
   const CUSTOMER_FEATURES = {
     // false로 바꾸면 원본 커버만 사용하므로 썸네일 기능만 간단히 되돌릴 수 있습니다.
     gridThumbnails: true,
     // 2026-08-07 손님 화면 개선입니다. 항목별로 false로 바꾸면 각각 원래 상태로 돌아갑니다.
     priorityCovers: true,
-    requestShortlist: true,
+    requestTrackList: true,
     coverTransitions: true,
     higherContrast: true,
   };
-  document.documentElement.classList.toggle('feature-customer-request-shortlist', CUSTOMER_FEATURES.requestShortlist);
+  document.documentElement.classList.toggle('feature-customer-request-track-list', CUSTOMER_FEATURES.requestTrackList);
   document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
   document.documentElement.classList.toggle('feature-customer-higher-contrast', CUSTOMER_FEATURES.higherContrast);
   const WEEKLY_MOTION_TEST = Object.freeze({
@@ -47,11 +47,11 @@
     genre: GENRE_ALL,
     sort: 'default',
     recentOnly: false,
-    shortlistOnly: false,
     filtersExpanded: false,
     page: 1,
     lastRandomAlbumId: '',
     detailTrackSearch: null,
+    detailTrackFocus: null,
     language: getInitialLanguage(),
   };
   let suppressAlbumCardClickUntil = 0;
@@ -60,7 +60,9 @@
   let swipeHintTimer = 0;
   let swipeHintQueued = false;
   let swipeHintSection = null;
-  let shortlistIds = loadShortlistIds();
+  let requestTracks = loadRequestTracks();
+  let requestListOverlay = null;
+  let requestToastTimer = 0;
 
   const STANDARD_GENRES = [
     '재즈',
@@ -135,11 +137,16 @@
       randomAlbum: '랜덤 음반',
       newAlbums: '새로 온 음반',
       resetFilters: '필터 초기화',
-      shortlistCount: count => `신청 후보 ${count}`,
-      shortlistFilter: '신청 후보만 보기',
-      addToShortlist: '신청 후보에 담기',
-      removeFromShortlist: '신청 후보에서 빼기',
-      shortlistEmpty: '신청 후보에 담은 음반이 없습니다.',
+      requestListCount: count => `신청곡 ${count}`,
+      requestListTitle: '신청곡 목록',
+      requestListOpen: '담아둔 신청곡 보기',
+      requestTrackAdd: '신청곡에 담기',
+      requestTrackRemove: '신청곡에서 빼기',
+      requestListEmpty: '아직 담아둔 신청곡이 없습니다.',
+      requestListClear: '전체 비우기',
+      requestListClose: '신청곡 목록 닫기',
+      requestAdded: '신청곡에 담았습니다.',
+      requestListView: '목록 보기',
       albumList: '앨범 목록',
       albumListPage: '앨범 목록 페이지',
       emptyAlbums: '조건에 맞는 음반이 없습니다.',
@@ -207,11 +214,16 @@
       randomAlbum: 'Random album',
       newAlbums: 'New arrivals',
       resetFilters: 'Reset filters',
-      shortlistCount: count => `Shortlist ${count}`,
-      shortlistFilter: 'Show shortlist only',
-      addToShortlist: 'Add to request shortlist',
-      removeFromShortlist: 'Remove from request shortlist',
-      shortlistEmpty: 'Your request shortlist is empty.',
+      requestListCount: count => `Requests ${count}`,
+      requestListTitle: 'Request list',
+      requestListOpen: 'View saved requests',
+      requestTrackAdd: 'Add to request list',
+      requestTrackRemove: 'Remove from request list',
+      requestListEmpty: 'You have not saved any tracks yet.',
+      requestListClear: 'Clear all',
+      requestListClose: 'Close request list',
+      requestAdded: 'Added to your request list.',
+      requestListView: 'View list',
       albumList: 'Album list',
       albumListPage: 'Album list pages',
       emptyAlbums: 'No albums match these filters.',
@@ -259,70 +271,235 @@
     return typeof value === 'function' ? value : String(value);
   }
 
-  function loadShortlistIds() {
-    if (!CUSTOMER_FEATURES.requestShortlist) return new Set();
+  function getRequestTrackId(albumId, trackIndex) {
+    return `${String(albumId)}::${Number(trackIndex)}`;
+  }
+
+  function resolveRequestTrack(entry) {
+    const album = albums.find(item => String(item.id) === String(entry?.albumId));
+    if (!album || !Array.isArray(album.tracklist)) return null;
+    let trackIndex = Number(entry?.trackIndex);
+    const savedTrack = String(entry?.track || '');
+    if (!Number.isInteger(trackIndex) || album.tracklist[trackIndex] !== savedTrack) {
+      trackIndex = album.tracklist.findIndex(track => String(track) === savedTrack);
+    }
+    if (trackIndex < 0 || !album.tracklist[trackIndex]) return null;
+    return { album, trackIndex, track: String(album.tracklist[trackIndex]) };
+  }
+
+  function loadRequestTracks() {
+    if (!CUSTOMER_FEATURES.requestTrackList) return [];
     try {
-      const saved = JSON.parse(localStorage.getItem(SHORTLIST_STORAGE_KEY) || '[]');
-      const validIds = new Set(albums.map(album => String(album.id)));
-      return new Set(Array.isArray(saved)
-        ? saved.map(String).filter(albumId => validIds.has(albumId))
-        : []);
+      const saved = JSON.parse(localStorage.getItem(REQUEST_TRACKS_STORAGE_KEY) || '[]');
+      const seen = new Set();
+      return (Array.isArray(saved) ? saved : []).reduce((list, entry) => {
+        const resolved = resolveRequestTrack(entry);
+        if (!resolved) return list;
+        const id = getRequestTrackId(resolved.album.id, resolved.trackIndex);
+        if (seen.has(id)) return list;
+        seen.add(id);
+        list.push({ albumId: String(resolved.album.id), trackIndex: resolved.trackIndex, track: resolved.track });
+        return list;
+      }, []);
     } catch (error) {
       console.warn(error);
-      return new Set();
+      return [];
     }
   }
 
-  function saveShortlistIds() {
-    if (!CUSTOMER_FEATURES.requestShortlist) return;
+  function saveRequestTracks() {
+    if (!CUSTOMER_FEATURES.requestTrackList) return;
     try {
-      localStorage.setItem(SHORTLIST_STORAGE_KEY, JSON.stringify(Array.from(shortlistIds)));
+      localStorage.setItem(REQUEST_TRACKS_STORAGE_KEY, JSON.stringify(requestTracks));
     } catch (error) {
       console.warn(error);
     }
   }
 
-  function isShortlisted(albumId) {
-    return CUSTOMER_FEATURES.requestShortlist && shortlistIds.has(String(albumId));
+  function isTrackRequested(albumId, trackIndex) {
+    const id = getRequestTrackId(albumId, trackIndex);
+    return requestTracks.some(entry => getRequestTrackId(entry.albumId, entry.trackIndex) === id);
   }
 
-  function toggleShortlist(albumId) {
-    const id = String(albumId || '');
-    if (!id || !CUSTOMER_FEATURES.requestShortlist) return false;
-    if (shortlistIds.has(id)) shortlistIds.delete(id);
-    else shortlistIds.add(id);
-    saveShortlistIds();
-    return shortlistIds.has(id);
+  function toggleRequestTrack(album, trackIndex) {
+    if (!CUSTOMER_FEATURES.requestTrackList || !album?.tracklist?.[trackIndex]) return false;
+    const id = getRequestTrackId(album.id, trackIndex);
+    const existingIndex = requestTracks.findIndex(entry => getRequestTrackId(entry.albumId, entry.trackIndex) === id);
+    if (existingIndex >= 0) requestTracks.splice(existingIndex, 1);
+    else requestTracks.push({ albumId: String(album.id), trackIndex, track: String(album.tracklist[trackIndex]) });
+    saveRequestTracks();
+    return existingIndex < 0;
   }
 
-  function refreshShortlistUi(root = app) {
+  function refreshRequestTrackUi(root = app) {
     if (!root) return;
-    const filterButton = root.querySelector('[data-shortlist-filter]');
-    if (filterButton) {
-      filterButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
-      filterButton.textContent = t('shortlistCount')(shortlistIds.size);
-      filterButton.title = t('shortlistFilter');
-      filterButton.setAttribute('aria-label', t('shortlistFilter'));
-      filterButton.setAttribute('aria-pressed', String(state.shortlistOnly));
-      filterButton.dataset.active = String(state.shortlistOnly);
-    }
-
-    root.querySelectorAll('[data-shortlist-album]').forEach(button => {
-      const selected = isShortlisted(button.dataset.shortlistAlbum);
-      const label = selected ? t('removeFromShortlist') : t('addToShortlist');
-      button.textContent = selected ? '♥' : '♡';
+    root.querySelectorAll('[data-request-list]').forEach(button => {
+      button.hidden = !CUSTOMER_FEATURES.requestTrackList;
+      button.textContent = t('requestListCount')(requestTracks.length);
+      button.title = t('requestListOpen');
+      button.setAttribute('aria-label', t('requestListOpen'));
+    });
+    root.querySelectorAll('[data-request-track]').forEach(button => {
+      const selected = isTrackRequested(button.dataset.albumId, Number(button.dataset.trackIndex));
+      const label = selected ? t('requestTrackRemove') : t('requestTrackAdd');
+      button.textContent = selected ? '✓' : '+';
       button.title = label;
       button.setAttribute('aria-label', label);
       button.setAttribute('aria-pressed', String(selected));
     });
+  }
 
-    const detailButton = root.querySelector('[data-detail-shortlist]');
-    if (detailButton) {
-      detailButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
-      const selected = isShortlisted(detailButton.dataset.albumId);
-      detailButton.textContent = selected ? `♥ ${t('removeFromShortlist')}` : `♡ ${t('addToShortlist')}`;
-      detailButton.setAttribute('aria-pressed', String(selected));
+  function closeRequestTrackList() {
+    if (!requestListOverlay) return;
+    requestListOverlay.hidden = true;
+    document.body.classList.remove('request-list-open');
+  }
+
+  function ensureRequestListOverlay() {
+    if (requestListOverlay) return requestListOverlay;
+    requestListOverlay = document.createElement('div');
+    requestListOverlay.className = 'request-list-overlay';
+    requestListOverlay.hidden = true;
+    requestListOverlay.setAttribute('role', 'dialog');
+    requestListOverlay.setAttribute('aria-modal', 'true');
+    requestListOverlay.addEventListener('click', event => {
+      if (event.target === requestListOverlay) closeRequestTrackList();
+    });
+    requestListOverlay.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeRequestTrackList();
+    });
+    document.body.append(requestListOverlay);
+    return requestListOverlay;
+  }
+
+  function renderRequestTrackList() {
+    const overlay = ensureRequestListOverlay();
+    const resolvedEntries = requestTracks.map(entry => ({ entry, resolved: resolveRequestTrack(entry) })).filter(item => item.resolved);
+    if (resolvedEntries.length !== requestTracks.length) {
+      requestTracks = resolvedEntries.map(({ resolved }) => ({
+        albumId: String(resolved.album.id),
+        trackIndex: resolved.trackIndex,
+        track: resolved.track,
+      }));
+      saveRequestTracks();
     }
+
+    const panel = document.createElement('section');
+    panel.className = 'request-list-panel';
+    const header = document.createElement('header');
+    header.className = 'request-list-header';
+    const title = document.createElement('h2');
+    title.textContent = t('requestListCount')(requestTracks.length);
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'request-list-close';
+    closeButton.textContent = '×';
+    closeButton.setAttribute('aria-label', t('requestListClose'));
+    closeButton.addEventListener('click', closeRequestTrackList);
+    header.append(title, closeButton);
+
+    const content = document.createElement('div');
+    content.className = 'request-list-content';
+    if (!resolvedEntries.length) {
+      const empty = document.createElement('p');
+      empty.className = 'request-list-empty';
+      empty.textContent = t('requestListEmpty');
+      content.append(empty);
+    } else {
+      resolvedEntries.forEach(({ resolved }) => {
+        const row = document.createElement('article');
+        row.className = 'request-list-item';
+        const openButton = document.createElement('button');
+        openButton.type = 'button';
+        openButton.className = 'request-list-item-main';
+        const cover = createCover(resolved.album, 'request-list-cover');
+        const text = document.createElement('span');
+        text.className = 'request-list-item-text';
+        const trackParts = splitTrackLine(resolved.track);
+        const trackTitle = document.createElement('strong');
+        trackTitle.textContent = trackParts.title;
+        const trackNumber = document.createElement('span');
+        trackNumber.className = 'request-list-track-number';
+        trackNumber.textContent = trackParts.number || '';
+        const albumMeta = document.createElement('span');
+        albumMeta.className = 'request-list-album-meta';
+        albumMeta.textContent = `${getLocalizedArtist(resolved.album) || ''} · ${resolved.album.title || ''}`;
+        text.append(trackTitle, trackNumber, albumMeta);
+        openButton.append(cover, text);
+        openButton.addEventListener('click', () => {
+          openAlbum(resolved.album.id, {
+            focusTrackIndex: resolved.trackIndex,
+            transitionSource: cover,
+          });
+          closeRequestTrackList();
+        });
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'request-list-remove';
+        removeButton.textContent = '×';
+        removeButton.setAttribute('aria-label', t('requestTrackRemove'));
+        removeButton.addEventListener('click', () => {
+          const id = getRequestTrackId(resolved.album.id, resolved.trackIndex);
+          requestTracks = requestTracks.filter(entry => getRequestTrackId(entry.albumId, entry.trackIndex) !== id);
+          saveRequestTracks();
+          renderRequestTrackList();
+          refreshRequestTrackUi(app);
+        });
+        row.append(openButton, removeButton);
+        content.append(row);
+      });
+    }
+
+    const footer = document.createElement('footer');
+    footer.className = 'request-list-footer';
+    if (resolvedEntries.length) {
+      const clearButton = document.createElement('button');
+      clearButton.type = 'button';
+      clearButton.textContent = t('requestListClear');
+      clearButton.addEventListener('click', () => {
+        requestTracks = [];
+        saveRequestTracks();
+        renderRequestTrackList();
+        refreshRequestTrackUi(app);
+      });
+      footer.append(clearButton);
+    }
+    panel.append(header, content, footer);
+    overlay.replaceChildren(panel);
+    overlay.setAttribute('aria-label', t('requestListTitle'));
+  }
+
+  function openRequestTrackList() {
+    if (!CUSTOMER_FEATURES.requestTrackList) return;
+    renderRequestTrackList();
+    requestListOverlay.hidden = false;
+    document.body.classList.add('request-list-open');
+    requestListOverlay.querySelector('.request-list-close')?.focus();
+  }
+
+  function showRequestAddedToast() {
+    let toast = document.querySelector('[data-request-toast]');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'request-toast';
+      toast.dataset.requestToast = '';
+      document.body.append(toast);
+    }
+    const message = document.createElement('span');
+    message.textContent = t('requestAdded');
+    const listButton = document.createElement('button');
+    listButton.type = 'button';
+    listButton.textContent = t('requestListView');
+    listButton.addEventListener('click', () => {
+      window.clearTimeout(requestToastTimer);
+      toast.remove();
+      openRequestTrackList();
+    });
+    toast.replaceChildren(message, listButton);
+    toast.dataset.visible = 'true';
+    window.clearTimeout(requestToastTimer);
+    requestToastTimer = window.setTimeout(() => toast.remove(), 2300);
   }
 
   function getGenreLabel(genre, language = state.language) {
@@ -740,8 +917,7 @@
     const relevant = albums.filter(album => {
       const formatOk = state.format === FORMAT_ALL || album.format === state.format;
       const recentOk = !state.recentOnly || isRecentlyAdded(album);
-      const shortlistOk = !state.shortlistOnly || isShortlisted(album.id);
-      return formatOk && recentOk && shortlistOk;
+      return formatOk && recentOk;
     });
     const counts = relevant.reduce((map, album) => {
       const genre = classifyGenre(album.genre);
@@ -777,8 +953,7 @@
       const genreOk = state.genre === GENRE_ALL || albumGenre === state.genre;
       const queryOk = !q || normalize(getSearchableText(album)).includes(q);
       const recentOk = !state.recentOnly || isRecentlyAdded(album);
-      const shortlistOk = !state.shortlistOnly || isShortlisted(album.id);
-      return formatOk && genreOk && queryOk && recentOk && shortlistOk;
+      return formatOk && genreOk && queryOk && recentOk;
     });
   }
   function parseYear(year) {
@@ -994,61 +1169,127 @@
     }
   }
 
+  function animateCoverIntoDetail(transitionSource, commitDetailOpen) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sourceRect = transitionSource?.getBoundingClientRect();
+    const canAnimate = CUSTOMER_FEATURES.coverTransitions
+      && transitionSource
+      && !reduceMotion
+      && sourceRect
+      && sourceRect.width > 8
+      && sourceRect.height > 8;
+    if (!canAnimate) {
+      commitDetailOpen(false);
+      return;
+    }
+
+    const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
+    const clone = transitionSource.cloneNode(true);
+    clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
+    clone.querySelectorAll('img').forEach(image => {
+      image.loading = 'eager';
+      image.removeAttribute('fetchpriority');
+    });
+    clone.className = 'cover-transition-clone';
+    Object.assign(clone.style, {
+      position: 'fixed',
+      left: `${sourceRect.left}px`,
+      top: `${sourceRect.top}px`,
+      width: `${sourceRect.width}px`,
+      height: `${sourceRect.height}px`,
+      margin: '0',
+      transformOrigin: 'top left',
+      zIndex: '1000',
+      pointerEvents: 'none',
+    });
+    document.body.append(clone);
+    document.documentElement.classList.add('is-cover-zoom-running');
+
+    commitDetailOpen(true);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    const destination = app.querySelector('[data-detail-cover] .cover-frame');
+    const destinationRect = destination?.getBoundingClientRect();
+    if (!destination || !destinationRect?.width || !destinationRect?.height) {
+      clone.remove();
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      return;
+    }
+
+    destination.style.visibility = 'hidden';
+    const translateX = destinationRect.left - sourceRect.left;
+    const translateY = destinationRect.top - sourceRect.top;
+    const scaleX = destinationRect.width / sourceRect.width;
+    const scaleY = destinationRect.height / sourceRect.height;
+    let cleaned = false;
+    const finish = () => {
+      if (cleaned) return;
+      cleaned = true;
+      clone.remove();
+      destination.style.visibility = '';
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      const detailPage = app.querySelector('.detail-page');
+      detailPage?.classList.add('is-cover-zoom-revealing');
+      window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
+    };
+    const destinationTransform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scaleX}, ${scaleY})`;
+    const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
+    if (typeof clone.animate === 'function') {
+      const animation = clone.animate([
+        {
+          transform: 'translate3d(0, 0, 0) scale(1, 1)',
+          borderRadius: sourceBorderRadius,
+          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
+        },
+        {
+          transform: destinationTransform,
+          borderRadius: destinationRadius,
+          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
+        },
+      ], {
+        duration: 500,
+        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+        fill: 'forwards',
+      });
+      animation.finished.then(finish).catch(finish);
+    } else {
+      // 일부 인앱 브라우저는 Web Animations API를 감추므로 같은 이동을 CSS transition으로 실행합니다.
+      clone.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+      clone.style.borderRadius = sourceBorderRadius;
+      clone.style.boxShadow = '0 5px 16px rgba(0, 0, 0, 0.28)';
+      clone.style.transition = 'transform 500ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius 500ms ease, box-shadow 500ms ease';
+      requestAnimationFrame(() => {
+        clone.style.transform = destinationTransform;
+        clone.style.borderRadius = destinationRadius;
+        clone.style.boxShadow = '0 22px 48px rgba(0, 0, 0, 0.42)';
+      });
+    }
+    window.setTimeout(finish, 650);
+  }
+
   function openAlbum(albumId, options = {}) {
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
     const detailHash = getAlbumHash(album.id);
     const trackSearchQuery = String(options.trackSearchQuery || '').trim();
+    const focusTrackIndex = Number(options.focusTrackIndex);
     state.detailTrackSearch = trackSearchQuery ? { albumId: album.id, query: trackSearchQuery } : null;
+    state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
+      ? { albumId: album.id, trackIndex: focusTrackIndex }
+      : null;
     const detailState = { view: 'detail', albumId: album.id };
     if (trackSearchQuery) detailState.trackSearchQuery = trackSearchQuery;
+    if (state.detailTrackFocus) detailState.focusTrackIndex = state.detailTrackFocus.trackIndex;
 
-    const commitDetailOpen = () => {
+    const commitDetailOpen = skipInitialScroll => {
       // 브라우저 뒤로가기 지원: 상세 화면을 열 때 방문 기록에 한 단계를 쌓아 목록으로 돌아갈 수 있게 합니다.
       if (window.location.hash !== detailHash) {
         history.pushState(detailState, '', `${getBaseUrl()}${detailHash}`);
       } else {
         history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
       }
-      renderDetail(album.id);
+      renderDetail(album.id, { skipInitialScroll });
     };
-
-    const transitionSource = options.transitionSource;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const canUseNativeTransition = CUSTOMER_FEATURES.coverTransitions
-      && transitionSource
-      && !reduceMotion
-      && typeof document.startViewTransition === 'function';
-
-    if (canUseNativeTransition) {
-      let transitionDestination = null;
-      transitionSource.style.viewTransitionName = 'pd-album-cover';
-      try {
-        const transition = document.startViewTransition(() => {
-          commitDetailOpen();
-          transitionDestination = app.querySelector('[data-detail-cover] .cover-frame');
-          if (transitionDestination) transitionDestination.style.viewTransitionName = 'pd-album-cover';
-        });
-        transition.finished.finally(() => {
-          transitionSource.style.viewTransitionName = '';
-          if (transitionDestination) transitionDestination.style.viewTransitionName = '';
-        });
-        return;
-      } catch (error) {
-        transitionSource.style.viewTransitionName = '';
-        console.warn(error);
-      }
-    }
-
-    commitDetailOpen();
-    if (CUSTOMER_FEATURES.coverTransitions && transitionSource && !reduceMotion) {
-      // View Transition을 지원하지 않는 브라우저에서는 상세 커버에 짧은 대체 효과를 사용합니다.
-      app.classList.remove('is-cover-transition-entering');
-      requestAnimationFrame(() => {
-        app.classList.add('is-cover-transition-entering');
-        window.setTimeout(() => app.classList.remove('is-cover-transition-entering'), 380);
-      });
-    }
+    animateCoverIntoDetail(options.transitionSource, commitDetailOpen);
   }
 
   function openRandomAlbum() {
@@ -1068,7 +1309,6 @@
     const genreText = getGenreLabel(state.genre);
     const parts = [formatText, genreText];
     if (state.recentOnly) parts.unshift(t('newAlbums'));
-    if (state.shortlistOnly) parts.unshift(t('shortlistFilter'));
 
     const sortKeyByValue = {
       newest: 'sortNewest',
@@ -1180,23 +1420,15 @@
       state.genre = GENRE_ALL;
       state.sort = 'default';
       state.recentOnly = false;
-      state.shortlistOnly = false;
       state.filtersExpanded = false;
       resetAlbumPage();
       renderHome();
     });
 
-    const shortlistFilterButton = node.querySelector('[data-shortlist-filter]');
-    if (shortlistFilterButton) {
-      shortlistFilterButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
-      if (CUSTOMER_FEATURES.requestShortlist) {
-        shortlistFilterButton.addEventListener('click', () => {
-          state.shortlistOnly = !state.shortlistOnly;
-          state.genre = GENRE_ALL;
-          resetAlbumPage();
-          renderHome();
-        });
-      }
+    const requestListButton = node.querySelector('[data-request-list]');
+    if (requestListButton) {
+      requestListButton.hidden = !CUSTOMER_FEATURES.requestTrackList;
+      requestListButton.addEventListener('click', openRequestTrackList);
     }
 
     renderFormatFilters(node.querySelector('[data-format-filters]'));
@@ -1204,7 +1436,7 @@
     updateFilterPanel(node);
     setupAlbumSwipe(node.querySelector('[data-grid-section]'));
     app.replaceChildren(node);
-    refreshShortlistUi(app);
+    refreshRequestTrackUi(app);
     updateAlbumGrid();
     scheduleSearchToolLabelFit();
   }
@@ -1459,25 +1691,7 @@
       card.append(match);
     }
 
-    if (!CUSTOMER_FEATURES.requestShortlist) return card;
-
-    // 상세 화면을 열어 주는 버튼 안에 다른 버튼을 넣지 않도록 별도 껍데기에 신청 후보 버튼을 둡니다.
-    const shell = document.createElement('article');
-    shell.className = 'album-card-shell';
-    const shortlistButton = document.createElement('button');
-    shortlistButton.type = 'button';
-    shortlistButton.className = 'album-card-shortlist';
-    shortlistButton.dataset.shortlistAlbum = String(album.id);
-    shortlistButton.addEventListener('pointerdown', event => event.stopPropagation());
-    shortlistButton.addEventListener('click', event => {
-      event.stopPropagation();
-      toggleShortlist(album.id);
-      if (state.shortlistOnly) updateAlbumGrid();
-      else refreshShortlistUi(app);
-    });
-    shell.append(card, shortlistButton);
-    refreshShortlistUi(shell);
-    return shell;
+    return card;
   }
 
   function getPageAlbums(list, page, perPage) {
@@ -1765,7 +1979,6 @@
 
     const baseFormatText = state.format === FORMAT_ALL ? t('all') : formatLabel(state.format);
     const summaryPrefixes = [];
-    if (state.shortlistOnly) summaryPrefixes.push(t('shortlistCount')(shortlistIds.size));
     if (state.recentOnly) summaryPrefixes.push(t('newAlbums'));
     const formatText = [...summaryPrefixes, baseFormatText].join(' · ');
     const genreText = getGenreLabel(state.genre);
@@ -1792,9 +2005,9 @@
       }
     }
 
-    empty.textContent = state.shortlistOnly ? t('shortlistEmpty') : t('emptyAlbums');
+    empty.textContent = t('emptyAlbums');
     empty.hidden = filtered.length !== 0;
-    refreshShortlistUi(app);
+    refreshRequestTrackUi(app);
     renderPagination(pagination, filtered.length, totalPages);
     scheduleSwipeDiscoveryHint(app.querySelector('[data-grid-section]'), totalPages);
     if (options.scrollToGrid) {
@@ -1847,6 +2060,7 @@
 
   function goHome() {
     state.detailTrackSearch = null;
+    state.detailTrackFocus = null;
     history.replaceState({ view: 'home' }, '', getBaseUrl());
     renderHome();
   }
@@ -1857,6 +2071,7 @@
 
   function goAlbumList() {
     state.detailTrackSearch = null;
+    state.detailTrackFocus = null;
     history.pushState({ view: 'home' }, '', getBaseUrl());
     renderHome();
     requestAnimationFrame(() => {
@@ -1864,29 +2079,18 @@
     });
   }
 
-  function renderDetail(albumId) {
+  function renderDetail(albumId, options = {}) {
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
 
     const node = detailTemplate.content.cloneNode(true);
     applyStaticTranslations(node);
+    node.querySelectorAll('[data-request-list]').forEach(button => button.addEventListener('click', openRequestTrackList));
     node.querySelector('[data-history-back]').addEventListener('click', goPreviousView);
     node.querySelector('[data-album-list]').addEventListener('click', goAlbumList);
     node.querySelector('[data-detail-cover]').append(createCover(album, 'detail-cover', { priority: true }));
     node.querySelector('[data-detail-title]').textContent = album.title || '';
     node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
-
-    const detailShortlistButton = node.querySelector('[data-detail-shortlist]');
-    if (detailShortlistButton) {
-      detailShortlistButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
-      detailShortlistButton.dataset.albumId = String(album.id);
-      if (CUSTOMER_FEATURES.requestShortlist) {
-        detailShortlistButton.addEventListener('click', () => {
-          toggleShortlist(album.id);
-          refreshShortlistUi(app);
-        });
-      }
-    }
 
     const tags = [formatLabel(album.format), getGenreLabel(classifyGenre(album.genre)), album.year].filter(Boolean);
     node.querySelector('[data-detail-tags]').replaceChildren(...tags.map(tag => {
@@ -1897,19 +2101,23 @@
     }));
 
     const trackList = node.querySelector('[data-detail-tracklist]');
-    const tracks = album.tracklist && album.tracklist.length ? album.tracklist : [t('tracklistEmpty')];
+    const hasTracklist = Boolean(album.tracklist && album.tracklist.length);
+    const tracks = hasTracklist ? album.tracklist : [t('tracklistEmpty')];
     const recommendedTracks = album.recommendedTracks || [];
     const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
       ? state.detailTrackSearch.query
       : '';
 
-    trackList.replaceChildren(...tracks.map(track => {
+    trackList.replaceChildren(...tracks.map((track, trackIndex) => {
       const { number, title } = splitTrackLine(track);
       const li = document.createElement('li');
       li.className = 'track-row';
       if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
       const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
       if (isSearchMatch) li.classList.add('is-search-match');
+      const isRequestFocus = state.detailTrackFocus?.albumId === album.id
+        && state.detailTrackFocus.trackIndex === trackIndex;
+      if (isRequestFocus) li.classList.add('is-request-focus');
 
       const dot = document.createElement('span');
       dot.className = 'recommend-dot';
@@ -1929,8 +2137,24 @@
         titleSpan.append(searchMarker);
       }
 
+      const requestButton = document.createElement(hasTracklist && CUSTOMER_FEATURES.requestTrackList ? 'button' : 'span');
+      requestButton.className = 'track-request-button';
+      if (requestButton instanceof HTMLButtonElement) {
+        requestButton.type = 'button';
+        requestButton.dataset.requestTrack = '';
+        requestButton.dataset.albumId = String(album.id);
+        requestButton.dataset.trackIndex = String(trackIndex);
+        requestButton.addEventListener('click', () => {
+          const added = toggleRequestTrack(album, trackIndex);
+          refreshRequestTrackUi(app);
+          if (added) showRequestAddedToast();
+        });
+      } else {
+        requestButton.setAttribute('aria-hidden', 'true');
+      }
+
       // 추천곡 점 렌더링: 시각적 순서가 추천점 → 곡 번호 → 곡명으로 보이게 합니다.
-      li.append(dot, numberSpan, titleSpan);
+      li.append(dot, numberSpan, titleSpan, requestButton);
       return li;
     }));
 
@@ -1954,19 +2178,21 @@
     }
 
     app.replaceChildren(node);
-    refreshShortlistUi(app);
+    refreshRequestTrackUi(app);
 
     const firstTrackSearchMatch = app.querySelector('.track-row.is-search-match');
-    if (trackSearchQuery && firstTrackSearchMatch) {
-      // 곡 제목 검색으로 상세 화면을 연 경우, 첫 번째로 일치한 곡을 은은한 강조와 함께 화면 중앙에 보여줍니다.
-      requestAnimationFrame(() => {
+    const focusedRequestTrack = app.querySelector('.track-row.is-request-focus');
+    const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
+    if (trackToReveal) {
+      // 신청곡 목록이나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
+      window.setTimeout(() => requestAnimationFrame(() => {
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        firstTrackSearchMatch.scrollIntoView({
+        trackToReveal.scrollIntoView({
           behavior: reduceMotion ? 'auto' : 'smooth',
           block: 'center',
         });
-      });
-    } else {
+      }), options.skipInitialScroll ? 540 : 0);
+    } else if (!options.skipInitialScroll) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
@@ -2002,11 +2228,18 @@
       const trackSearchQuery = history.state?.albumId === albumId
         ? String(history.state.trackSearchQuery || '').trim()
         : '';
+      const focusTrackIndex = history.state?.albumId === albumId
+        ? Number(history.state.focusTrackIndex)
+        : Number.NaN;
       state.detailTrackSearch = trackSearchQuery ? { albumId, query: trackSearchQuery } : null;
+      state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
+        ? { albumId, trackIndex: focusTrackIndex }
+        : null;
       renderDetail(albumId);
       return;
     }
     state.detailTrackSearch = null;
+    state.detailTrackFocus = null;
     if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
     renderHome();
   }

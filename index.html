@@ -11,7 +11,7 @@
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/png" href="logo-punchdrunk-circle.png" />
   <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
-  <link rel="stylesheet" href="styles.css?v=20260807114148" />
+  <link rel="stylesheet" href="styles.css?v=20260807130542" />
 </head>
 <body class="customer-page">
   <div class="app-shell">
@@ -111,7 +111,7 @@
       <div class="result-summary-row">
         <div class="result-summary" data-result-summary></div>
         <div class="result-action-buttons">
-          <button class="tool-button shortlist-filter-button" type="button" data-shortlist-filter aria-pressed="false">신청 후보 0</button>
+          <button class="tool-button request-list-button" type="button" data-request-list>신청곡 0</button>
           <!-- 랜덤 음반은 필터와 무관한 탐색 기능이므로 결과 요약 옆에 따로 둡니다. -->
           <button class="tool-button result-random-button" type="button" data-random-album data-i18n="randomAlbum">랜덤 음반</button>
         </div>
@@ -136,10 +136,12 @@
         <div class="detail-tags" data-detail-tags></div>
         <h1 data-detail-title></h1>
         <p data-detail-artist></p>
-        <button class="detail-shortlist-button" type="button" data-detail-shortlist aria-pressed="false"></button>
       </div>
       <section class="detail-section">
-        <h2 data-i18n="tracklist">트랙리스트</h2>
+        <div class="detail-section-heading">
+          <h2 data-i18n="tracklist">트랙리스트</h2>
+          <button class="detail-request-list-button" type="button" data-request-list>신청곡 0</button>
+        </div>
         <ol class="tracklist" data-detail-tracklist></ol>
         <p class="tracklist-hint"><span class="tiny-dot"></span> <span data-i18n="recommendedHint">표시는 추천곡입니다.</span></p>
       </section>
@@ -156,7 +158,7 @@
     </article>
   </template>
 
-  <script src="albums-data.js?v=20260807114148"></script>
-  <script src="app.js?v=20260807114148"></script>
+  <script src="albums-data.js?v=20260807130542"></script>
+  <script src="app.js?v=20260807130542"></script>
 </body>
 </html>
