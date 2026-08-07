@@ -905,6 +905,10 @@ select:focus-visible,
   touch-action: pan-y;
 }
 
+.feature-customer-native-pager .grid-section {
+  touch-action: pan-x pan-y;
+}
+
 /* SWIPE-AFFORDANCE-2-NUDGE: 목록이 처음 보일 때 옆 페이지를 살짝 드러내는 1회 동작입니다. */
 .grid-section.is-swipe-hinting[data-swipe-hint-direction='next'] .album-swipe-track {
   animation: album-swipe-hint-next 920ms cubic-bezier(0.22, 0.72, 0.16, 1) both;
@@ -1220,6 +1224,35 @@ select:focus-visible,
   cursor: grabbing;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.album-grid.is-persistent-pager {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.album-grid.is-persistent-pager::-webkit-scrollbar {
+  display: none;
+}
+
+.album-grid.is-persistent-pager .album-grid-page {
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.album-grid.is-persistent-pager .album-card {
+  touch-action: manipulation;
 }
 
 .album-swipe-track {
@@ -3602,6 +3635,57 @@ body.request-list-open {
 }
 
 /* CUSTOMER-7-COVER-TRANSITION: 누른 커버가 원래 위치에서 상세 커버 자리까지 직접 확대됩니다. */
+#app.has-persistent-view-layers {
+  position: relative;
+}
+
+.customer-view-layer {
+  width: 100%;
+}
+
+.customer-detail-view {
+  display: none;
+  isolation: isolate;
+}
+
+#app.is-detail-staging .customer-detail-view,
+#app.is-detail-active .customer-detail-view {
+  display: block;
+}
+
+#app.is-detail-staging .customer-detail-view {
+  position: absolute;
+  z-index: 40;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+#app.is-detail-active .customer-home-view {
+  position: absolute;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#app.is-detail-active .customer-detail-view {
+  position: relative;
+  z-index: 1;
+}
+
+#app.is-detail-staging .customer-detail-view::before,
+#app.is-detail-active .customer-detail-view::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(132deg, rgba(255, 70, 92, 0.12) 0%, transparent 30%),
+    linear-gradient(228deg, rgba(75, 116, 255, 0.16) 0%, transparent 34%),
+    linear-gradient(180deg, #111017 0%, #08080b 46%, #050506 100%);
+  content: '';
+  pointer-events: none;
+}
+
 .cover-transition-clone {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -3623,6 +3707,10 @@ body.request-list-open {
 
 .is-cover-zoom-running .detail-cover-wrap {
   visibility: hidden;
+}
+
+.feature-customer-direct-cover-transition.is-cover-zoom-running .detail-cover-wrap {
+  visibility: visible;
 }
 
 .detail-page.is-cover-zoom-revealing > *:not(.detail-cover-wrap) {
@@ -3764,6 +3852,7 @@ body.detail-cover-viewer-open {
 
 /* 상세 화면의 작은 로고는 화면 상단 중앙에 배치합니다. */
 body.is-detail-view .site-header {
+  z-index: 100;
   align-items: center;
   justify-content: center;
   min-height: 40px;

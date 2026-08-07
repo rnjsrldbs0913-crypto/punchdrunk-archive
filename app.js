@@ -25,6 +25,10 @@
     detailCoverViewer: true,
     smoothSwipeTracking: true,
     seamlessCoverTransitions: true,
+    // 2026-08-07 지속형 화면 전환입니다. 세 항목은 서로 독립적으로 되돌릴 수 있습니다.
+    nativeMobilePager: true,
+    persistentDetailLayers: true,
+    directCoverTransition: true,
   };
   document.documentElement.classList.toggle('feature-customer-request-track-list', CUSTOMER_FEATURES.requestTrackList);
   document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
@@ -32,6 +36,9 @@
   document.documentElement.classList.toggle('feature-customer-detail-cover-viewer', CUSTOMER_FEATURES.detailCoverViewer);
   document.documentElement.classList.toggle('feature-customer-smooth-swipe', CUSTOMER_FEATURES.smoothSwipeTracking);
   document.documentElement.classList.toggle('feature-customer-seamless-cover-transition', CUSTOMER_FEATURES.seamlessCoverTransitions);
+  document.documentElement.classList.toggle('feature-customer-native-pager', CUSTOMER_FEATURES.nativeMobilePager);
+  document.documentElement.classList.toggle('feature-customer-persistent-detail', CUSTOMER_FEATURES.persistentDetailLayers);
+  document.documentElement.classList.toggle('feature-customer-direct-cover-transition', CUSTOMER_FEATURES.directCoverTransition);
   const WEEKLY_MOTION_TEST = Object.freeze({
     enabled: true,
     albumId: 'album-mrdetafz',
@@ -73,6 +80,11 @@
   let requestToastTimer = 0;
   let detailCoverViewer = null;
   let detailCoverViewerTrigger = null;
+  let homeViewLayer = null;
+  let detailViewLayer = null;
+  let homeViewReady = false;
+  let homeScrollPosition = 0;
+  let homeAlbumPage = 1;
 
   const STANDARD_GENRES = [
     '재즈',
@@ -553,6 +565,7 @@
     }
     updateLanguageButtons();
     applyStaticTranslations(document);
+    if (CUSTOMER_FEATURES.persistentDetailLayers) homeViewReady = false;
     renderRouteFromLocation();
   }
 
@@ -1248,8 +1261,16 @@
     const totalPages = getAlbumTotalPages();
     const nextPage = Math.min(Math.max(1, page), totalPages);
     if (nextPage === state.page) return false;
-    const direction = nextPage > state.page ? 'next' : 'prev';
+    const previousPage = state.page;
+    const direction = nextPage > previousPage ? 'next' : 'prev';
     state.page = nextPage;
+    const persistentGrid = app.querySelector('[data-album-grid].is-persistent-pager');
+    if (CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager() && persistentGrid?._pdPager) {
+      const behavior = options.behavior || (Math.abs(nextPage - previousPage) === 1 ? 'smooth' : 'auto');
+      persistentGrid._pdPager.goTo(nextPage, behavior);
+      updateAlbumGrid({ ...options, direction, preservePersistentTrack: true });
+      return true;
+    }
     updateAlbumGrid({ ...options, direction });
     return true;
   }
@@ -1413,6 +1434,156 @@
     ]);
   }
 
+  const transitionCoverPreloads = new Map();
+
+  function preloadTransitionCover(album) {
+    const source = String(album?.coverImage || '').trim();
+    if (!source) return Promise.resolve();
+    if (transitionCoverPreloads.has(source)) return transitionCoverPreloads.get(source);
+
+    const promise = new Promise(resolve => {
+      const image = new Image();
+      const finish = () => {
+        if (typeof image.decode !== 'function' || !image.naturalWidth) {
+          resolve();
+          return;
+        }
+        image.decode().catch(() => undefined).then(resolve);
+      };
+      image.addEventListener('load', finish, { once: true });
+      image.addEventListener('error', resolve, { once: true });
+      image.src = source;
+      if (image.complete) finish();
+    });
+    transitionCoverPreloads.set(source, promise);
+    return promise;
+  }
+
+  async function animateDirectCoverIntoDetail(album, transitionSource, commitDetailOpen) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sourceRect = transitionSource?.getBoundingClientRect();
+    const canAnimate = CUSTOMER_FEATURES.coverTransitions
+      && transitionSource
+      && !reduceMotion
+      && sourceRect
+      && sourceRect.width > 8
+      && sourceRect.height > 8;
+    if (!canAnimate) {
+      commitDetailOpen(false);
+      return;
+    }
+
+    const coverReady = preloadTransitionCover(album);
+    const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
+    const clone = transitionSource.cloneNode(true);
+    clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
+    clone.className = 'cover-transition-clone';
+    Object.assign(clone.style, {
+      position: 'fixed',
+      left: `${sourceRect.left}px`,
+      top: `${sourceRect.top}px`,
+      width: `${sourceRect.width}px`,
+      height: `${sourceRect.height}px`,
+      margin: '0',
+      borderRadius: sourceBorderRadius,
+      transformOrigin: 'top left',
+      zIndex: '1000',
+      pointerEvents: 'none',
+    });
+    document.body.append(clone);
+    document.documentElement.classList.add('is-cover-zoom-running');
+
+    commitDetailOpen(true);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
+    const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
+    const detailPage = detailRoot.querySelector('.detail-page');
+    if (!destination) {
+      clone.remove();
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
+      return;
+    }
+
+    destination.style.visibility = 'hidden';
+    await Promise.all([
+      coverReady,
+      waitForTransitionCoverImage(destination, 4000),
+    ]);
+
+    const destinationRect = destination.getBoundingClientRect();
+    if (!destinationRect.width || !destinationRect.height) {
+      clone.remove();
+      destination.style.visibility = '';
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
+      return;
+    }
+
+    const inverseTransform = `translate3d(${sourceRect.left - destinationRect.left}px, ${sourceRect.top - destinationRect.top}px, 0) scale(${sourceRect.width / destinationRect.width}, ${sourceRect.height / destinationRect.height})`;
+    const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
+    destination.style.visibility = '';
+    destination.style.transformOrigin = 'top left';
+    destination.style.willChange = 'transform, border-radius, box-shadow';
+
+    let revealed = false;
+    const revealDetail = () => {
+      if (revealed) return;
+      revealed = true;
+      clone.remove();
+      destination.style.visibility = '';
+      destination.style.transform = '';
+      destination.style.transformOrigin = '';
+      destination.style.willChange = '';
+      destination.style.transition = '';
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
+      detailPage?.classList.add('is-cover-zoom-revealing');
+      window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
+    };
+
+    if (typeof destination.animate === 'function') {
+      const coverAnimation = destination.animate([
+        {
+          transform: inverseTransform,
+          borderRadius: sourceBorderRadius,
+          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
+        },
+        {
+          transform: 'translate3d(0, 0, 0) scale(1, 1)',
+          borderRadius: destinationRadius,
+          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
+        },
+      ], {
+        duration: 520,
+        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+        fill: 'forwards',
+      });
+      clone.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 90,
+        easing: 'ease-out',
+        fill: 'forwards',
+      });
+      coverAnimation.finished.then(revealDetail).catch(revealDetail);
+      window.setTimeout(revealDetail, 700);
+      return;
+    }
+
+    destination.style.transform = inverseTransform;
+    destination.style.borderRadius = sourceBorderRadius;
+    destination.style.boxShadow = '0 5px 16px rgba(0, 0, 0, 0.28)';
+    destination.getBoundingClientRect();
+    destination.style.transition = 'transform 520ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius 520ms ease, box-shadow 520ms ease';
+    clone.style.transition = 'opacity 90ms ease-out';
+    clone.style.opacity = '0';
+    requestAnimationFrame(() => {
+      destination.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+      destination.style.borderRadius = destinationRadius;
+      destination.style.boxShadow = '0 22px 48px rgba(0, 0, 0, 0.42)';
+    });
+    window.setTimeout(revealDetail, 620);
+  }
+
   function animateCoverIntoDetail(transitionSource, commitDetailOpen) {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sourceRect = transitionSource?.getBoundingClientRect();
@@ -1456,6 +1627,7 @@
     if (!destination || !destinationRect?.width || !destinationRect?.height) {
       clone.remove();
       document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
       return;
     }
 
@@ -1504,6 +1676,7 @@
         clone.remove();
         destination.style.opacity = '';
         destination.style.transition = '';
+        activatePersistentDetailView();
         window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
         return;
       }
@@ -1511,6 +1684,7 @@
       clone.remove();
       destination.style.visibility = '';
       document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
       detailPage?.classList.add('is-cover-zoom-revealing');
       window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
     };
@@ -1552,6 +1726,12 @@
   function openAlbum(albumId, options = {}) {
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
+    if (CUSTOMER_FEATURES.persistentDetailLayers && !document.body.classList.contains('is-detail-view')) {
+      homeScrollPosition = window.scrollY;
+      homeAlbumPage = state.page;
+      if (homeViewLayer) homeViewLayer.dataset.preservedAlbumPage = String(homeAlbumPage);
+      app.querySelector('[data-album-grid].is-persistent-pager')?._pdPager?.suspend();
+    }
     const detailHash = getAlbumHash(album.id);
     const trackSearchQuery = String(options.trackSearchQuery || '').trim();
     const focusTrackIndex = Number(options.focusTrackIndex);
@@ -1572,7 +1752,11 @@
       }
       renderDetail(album.id, { skipInitialScroll });
     };
-    animateCoverIntoDetail(options.transitionSource, commitDetailOpen);
+    if (CUSTOMER_FEATURES.persistentDetailLayers && CUSTOMER_FEATURES.directCoverTransition) {
+      animateDirectCoverIntoDetail(album, options.transitionSource, commitDetailOpen);
+    } else {
+      animateCoverIntoDetail(options.transitionSource, commitDetailOpen);
+    }
   }
 
   function openRandomAlbum() {
@@ -1615,7 +1799,63 @@
     summary.textContent = getFilterToggleSummary();
   }
 
-  function renderHome() {
+  function ensurePersistentViewLayers() {
+    if (!CUSTOMER_FEATURES.persistentDetailLayers) return false;
+    if (homeViewLayer?.isConnected && detailViewLayer?.isConnected) return true;
+
+    homeViewLayer = document.createElement('div');
+    homeViewLayer.className = 'customer-view-layer customer-home-view';
+    homeViewLayer.dataset.customerHomeView = '';
+    detailViewLayer = document.createElement('div');
+    detailViewLayer.className = 'customer-view-layer customer-detail-view';
+    detailViewLayer.dataset.customerDetailView = '';
+    detailViewLayer.setAttribute('aria-hidden', 'true');
+    app.classList.add('has-persistent-view-layers');
+    app.replaceChildren(homeViewLayer, detailViewLayer);
+    return true;
+  }
+
+  function stagePersistentDetailView(animated) {
+    if (!ensurePersistentViewLayers()) return;
+    app.classList.toggle('is-detail-staging', animated);
+    app.classList.toggle('is-detail-active', !animated);
+    homeViewLayer.setAttribute('aria-hidden', 'true');
+    detailViewLayer.removeAttribute('aria-hidden');
+  }
+
+  function activatePersistentDetailView() {
+    if (!CUSTOMER_FEATURES.persistentDetailLayers || !detailViewLayer?.isConnected) return;
+    app.classList.remove('is-detail-staging');
+    app.classList.add('is-detail-active');
+    homeViewLayer?.setAttribute('aria-hidden', 'true');
+    detailViewLayer.removeAttribute('aria-hidden');
+  }
+
+  function revealPersistentHomeView(options = {}) {
+    if (!CUSTOMER_FEATURES.persistentDetailLayers || !homeViewReady || !homeViewLayer?.isConnected) return false;
+    closeDetailCoverViewer({ restoreFocus: false });
+    document.body.classList.remove('is-detail-view');
+    cancelSwipeDiscoveryHint();
+    app.classList.remove('is-detail-staging', 'is-detail-active');
+    homeViewLayer.removeAttribute('aria-hidden');
+    detailViewLayer?.setAttribute('aria-hidden', 'true');
+    const preservedPage = Number.parseInt(homeViewLayer.dataset.preservedAlbumPage || '', 10);
+    if (Number.isInteger(preservedPage)) homeAlbumPage = preservedPage;
+    state.page = Math.min(getAlbumTotalPages(), Math.max(1, homeAlbumPage));
+    const persistentGrid = homeViewLayer.querySelector('[data-album-grid].is-persistent-pager');
+    persistentGrid?._pdPager?.resume(state.page);
+    refreshRequestTrackUi(app);
+    if (persistentGrid) updateAlbumGrid({ preservePersistentTrack: true });
+    scheduleSearchToolLabelFit();
+
+    const targetScroll = Number.isFinite(options.scrollY) ? options.scrollY : homeScrollPosition;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      window.scrollTo({ top: Math.max(0, targetScroll), left: 0, behavior: 'auto' });
+    }));
+    return true;
+  }
+
+  function renderHome(options = {}) {
     closeDetailCoverViewer({ restoreFocus: false });
     document.body.classList.remove('is-detail-view');
     cancelSwipeDiscoveryHint();
@@ -1641,6 +1881,8 @@
           transitionSource: weeklyButton.querySelector('.cover-frame'),
         });
       });
+      weeklyButton.addEventListener('pointerdown', () => preloadTransitionCover(weekly), { passive: true });
+      weeklyButton.addEventListener('focus', () => preloadTransitionCover(weekly));
     } else {
       weeklyButton.disabled = true;
       weeklyButton.classList.add('is-empty');
@@ -1720,7 +1962,19 @@
     renderGenreFilters(node.querySelector('[data-genre-filters]'));
     updateFilterPanel(node);
     setupAlbumSwipe(node.querySelector('[data-grid-section]'));
-    app.replaceChildren(node);
+    if (ensurePersistentViewLayers()) {
+      homeViewLayer.replaceChildren(node);
+      homeViewReady = true;
+      if (options.keepInactive) {
+        homeViewLayer.setAttribute('aria-hidden', 'true');
+      } else {
+        app.classList.remove('is-detail-staging', 'is-detail-active');
+        homeViewLayer.removeAttribute('aria-hidden');
+        detailViewLayer.setAttribute('aria-hidden', 'true');
+      }
+    } else {
+      app.replaceChildren(node);
+    }
     refreshRequestTrackUi(app);
     updateAlbumGrid();
     scheduleSearchToolLabelFit();
@@ -1954,6 +2208,9 @@
         transitionSource: cover,
       });
     });
+    card.addEventListener('pointerdown', () => preloadTransitionCover(album), { passive: true });
+    card.addEventListener('focus', () => preloadTransitionCover(album));
+    card.addEventListener('mouseenter', () => preloadTransitionCover(album), { once: true });
     const cover = createCover(album, 'grid-cover', { priority: cardOptions.priorityCover === true });
     if (recentlyAdded) {
       const badge = document.createElement('span');
@@ -1988,11 +2245,131 @@
   function renderAlbumGridPage(albums, options = {}) {
     const page = document.createElement('div');
     page.className = `album-grid-page${options.empty ? ' is-empty' : ''}`;
-    if (options.hidden) page.setAttribute('aria-hidden', 'true');
+    if (Number.isInteger(options.page)) page.dataset.page = String(options.page);
+    if (options.hidden) {
+      page.setAttribute('aria-hidden', 'true');
+      page.inert = true;
+    }
     page.replaceChildren(...albums.map(album => createAlbumCard(album, {
       priorityCover: options.priorityCovers === true,
     })));
     return page;
+  }
+
+  function setPersistentPagerCurrentPage(grid, pageNumber) {
+    Array.from(grid.children).forEach((page, index) => {
+      const active = index + 1 === pageNumber;
+      page.inert = !active;
+      if (active) page.removeAttribute('aria-hidden');
+      else page.setAttribute('aria-hidden', 'true');
+    });
+  }
+
+  function renderPersistentMobileGrid(grid, filtered, perPage, totalPages) {
+    grid.classList.add('is-persistent-pager');
+    grid.classList.remove('is-swipe-pager', 'is-dragging', 'is-touching');
+    delete grid.dataset.slide;
+
+    const pages = Array.from({ length: totalPages }, (_, index) => renderAlbumGridPage([], {
+      page: index + 1,
+      hidden: index + 1 !== state.page,
+    }));
+    grid.replaceChildren(...pages);
+
+    const hydrate = centerPage => {
+      const firstPage = Math.max(1, centerPage - 2);
+      const lastPage = Math.min(totalPages, centerPage + 2);
+      for (let pageNumber = firstPage; pageNumber <= lastPage; pageNumber += 1) {
+        const page = grid.children[pageNumber - 1];
+        if (!page || page.dataset.hydrated === 'true') continue;
+        const pageAlbums = getPageAlbums(filtered, pageNumber, perPage);
+        const priority = Math.abs(pageNumber - centerPage) <= 1;
+        page.replaceChildren(...pageAlbums.map(album => createAlbumCard(album, { priorityCover: priority })));
+        page.dataset.hydrated = 'true';
+      }
+    };
+
+    let scrollFrame = 0;
+    let settleTimer = 0;
+    let programmaticTarget = null;
+    let suspended = false;
+
+    const getPositionPage = () => {
+      const width = grid.clientWidth || 1;
+      return Math.min(totalPages, Math.max(1, Math.round(grid.scrollLeft / width) + 1));
+    };
+
+    const hydrateVisibleRange = () => {
+      const width = grid.clientWidth || 1;
+      const rawPage = grid.scrollLeft / width + 1;
+      hydrate(Math.min(totalPages, Math.max(1, Math.round(rawPage))));
+      hydrate(Math.min(totalPages, Math.max(1, Math.floor(rawPage))));
+      hydrate(Math.min(totalPages, Math.max(1, Math.ceil(rawPage))));
+    };
+
+    const settle = () => {
+      window.clearTimeout(settleTimer);
+      if (suspended) return;
+      const settledPage = programmaticTarget || getPositionPage();
+      programmaticTarget = null;
+      hydrate(settledPage);
+      setPersistentPagerCurrentPage(grid, settledPage);
+      if (state.page !== settledPage) state.page = settledPage;
+      updateAlbumGrid({ preservePersistentTrack: true });
+    };
+
+    grid._pdPager = {
+      hydrate,
+      goTo(pageNumber, behavior = 'smooth') {
+        const targetPage = Math.min(totalPages, Math.max(1, pageNumber));
+        programmaticTarget = targetPage;
+        hydrate(targetPage);
+        setPersistentPagerCurrentPage(grid, targetPage);
+        grid.scrollTo({ left: (targetPage - 1) * grid.clientWidth, top: 0, behavior });
+        window.clearTimeout(settleTimer);
+        settleTimer = window.setTimeout(settle, behavior === 'smooth' ? 520 : 40);
+      },
+      realign() {
+        hydrate(state.page);
+        grid.scrollTo({ left: (state.page - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
+        setPersistentPagerCurrentPage(grid, state.page);
+      },
+      suspend() {
+        suspended = true;
+        programmaticTarget = null;
+        window.clearTimeout(settleTimer);
+        if (scrollFrame) cancelAnimationFrame(scrollFrame);
+        scrollFrame = 0;
+      },
+      resume(pageNumber) {
+        const targetPage = Math.min(totalPages, Math.max(1, pageNumber));
+        suspended = false;
+        programmaticTarget = null;
+        window.clearTimeout(settleTimer);
+        hydrate(targetPage);
+        grid.scrollTo({ left: (targetPage - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
+        setPersistentPagerCurrentPage(grid, targetPage);
+      },
+    };
+
+    grid.addEventListener('scroll', () => {
+      if (suspended) return;
+      suppressAlbumCardClickUntil = Date.now() + 180;
+      markSwipeDiscoveryHintSeen();
+      cancelSwipeDiscoveryHint();
+      if (!scrollFrame) {
+        scrollFrame = requestAnimationFrame(() => {
+          scrollFrame = 0;
+          hydrateVisibleRange();
+        });
+      }
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settle, 110);
+    }, { passive: true });
+    if ('onscrollend' in window) grid.addEventListener('scrollend', settle, { passive: true });
+
+    hydrate(state.page);
+    requestAnimationFrame(() => grid._pdPager?.realign());
   }
 
   function renderMobileSwipeGrid(grid, filtered, perPage, totalPages) {
@@ -2334,13 +2711,20 @@
       end: shownEnd,
     });
 
-    if (isMobileAlbumPager() && filtered.length && totalPages > 1 && options.preserveMobileTrack) {
+    if (isMobileAlbumPager() && filtered.length && totalPages > 1 && CUSTOMER_FEATURES.nativeMobilePager && options.preservePersistentTrack && grid.classList.contains('is-persistent-pager')) {
+      grid.classList.remove('is-dragging', 'is-touching');
+      delete grid.dataset.slide;
+      if (options.realignPersistentTrack) requestAnimationFrame(() => grid._pdPager?.realign());
+    } else if (isMobileAlbumPager() && filtered.length && totalPages > 1 && CUSTOMER_FEATURES.nativeMobilePager) {
+      renderPersistentMobileGrid(grid, filtered, perPage, totalPages);
+    } else if (isMobileAlbumPager() && filtered.length && totalPages > 1 && options.preserveMobileTrack) {
       grid.classList.remove('is-dragging', 'is-touching');
       delete grid.dataset.slide;
     } else if (isMobileAlbumPager() && filtered.length && totalPages > 1) {
       renderMobileSwipeGrid(grid, filtered, perPage, totalPages);
     } else {
-      grid.classList.remove('is-swipe-pager', 'is-dragging', 'is-touching');
+      grid.classList.remove('is-persistent-pager', 'is-swipe-pager', 'is-dragging', 'is-touching');
+      delete grid._pdPager;
       grid.replaceChildren(...pagedAlbums.map(createAlbumCard));
       if (options.direction) {
         grid.dataset.slide = options.direction;
@@ -2406,10 +2790,11 @@
   }
 
   function goHome() {
+    const returningFromDetail = document.body.classList.contains('is-detail-view');
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     history.replaceState({ view: 'home' }, '', getBaseUrl());
-    renderHome();
+    if (!revealPersistentHomeView({ scrollY: returningFromDetail ? homeScrollPosition : 0 })) renderHome();
   }
 
   function goPreviousView() {
@@ -2420,7 +2805,7 @@
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     history.pushState({ view: 'home' }, '', getBaseUrl());
-    renderHome();
+    if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
     requestAnimationFrame(() => {
       document.querySelector('.search-section')?.scrollIntoView({ block: 'start' });
     });
@@ -2430,6 +2815,8 @@
     document.body.classList.toggle('is-detail-view', CUSTOMER_FEATURES.compactDetailHeader);
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
+    const persistentLayers = ensurePersistentViewLayers();
+    const detailRoot = persistentLayers ? detailViewLayer : app;
 
     const node = detailTemplate.content.cloneNode(true);
     applyStaticTranslations(node);
@@ -2543,11 +2930,12 @@
       nextButton.addEventListener('click', () => openAlbum(nextAlbum.id));
     }
 
-    app.replaceChildren(node);
+    detailRoot.replaceChildren(node);
+    if (persistentLayers) stagePersistentDetailView(Boolean(options.skipInitialScroll));
     refreshRequestTrackUi(app);
 
-    const firstTrackSearchMatch = app.querySelector('.track-row.is-search-match');
-    const focusedRequestTrack = app.querySelector('.track-row.is-request-focus');
+    const firstTrackSearchMatch = detailRoot.querySelector('.track-row.is-search-match');
+    const focusedRequestTrack = detailRoot.querySelector('.track-row.is-request-focus');
     const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
     if (trackToReveal) {
       // 신청곡 메모나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
@@ -2580,10 +2968,25 @@
   });
 
   let resizeTimer = null;
+  let resizePreservedAlbumPage = 1;
+  let resizeHeldPersistentPager = false;
   window.addEventListener('resize', () => {
+    const persistentGrid = app.querySelector('[data-album-grid].is-persistent-pager');
+    if (CUSTOMER_FEATURES.nativeMobilePager && persistentGrid?._pdPager) {
+      resizePreservedAlbumPage = state.page;
+      resizeHeldPersistentPager = true;
+      persistentGrid._pdPager.suspend();
+    }
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      updateAlbumGrid();
+      if (resizeHeldPersistentPager && CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager()) {
+        state.page = Math.min(getAlbumTotalPages(), Math.max(1, resizePreservedAlbumPage));
+      }
+      updateAlbumGrid({
+        preservePersistentTrack: CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager(),
+      });
+      app.querySelector('[data-album-grid].is-persistent-pager')?._pdPager?.resume(state.page);
+      resizeHeldPersistentPager = false;
       scheduleSearchToolLabelFit();
     }, 120);
   });
@@ -2601,13 +3004,14 @@
       state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
         ? { albumId, trackIndex: focusTrackIndex }
         : null;
+      if (CUSTOMER_FEATURES.persistentDetailLayers && !homeViewReady) renderHome({ keepInactive: true });
       renderDetail(albumId);
       return;
     }
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
-    renderHome();
+    if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
   }
 
   window.addEventListener('popstate', renderRouteFromLocation);
@@ -2619,6 +3023,7 @@
     // 상세 주소로 바로 들어온 손님도 뒤로가기를 누르면 사이트 밖이 아니라 목록으로 돌아가게 합니다.
     history.replaceState({ view: 'home' }, '', getBaseUrl());
     history.pushState({ view: 'detail', albumId: initialAlbumId }, '', `${getBaseUrl()}${getAlbumHash(initialAlbumId)}`);
+    if (CUSTOMER_FEATURES.persistentDetailLayers) renderHome({ keepInactive: true });
     renderDetail(initialAlbumId);
   } else {
     if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());

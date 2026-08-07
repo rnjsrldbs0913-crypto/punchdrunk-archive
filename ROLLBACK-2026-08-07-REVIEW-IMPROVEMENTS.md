@@ -43,6 +43,26 @@ requestTrackList: false,
 
 다른 항목은 `true`인 채로 두면 그대로 유지됩니다.
 
+## 2026-08-07 지속형 화면 전환
+
+깜빡임을 없애기 위해 추가한 구조 변경도 `app.js` 맨 위에서 각각 되돌릴 수 있습니다.
+
+- 모바일 목록을 교체하지 않는 네이티브 가로 스크롤: `nativeMobilePager`
+- 음반 목록을 지우지 않고 상세 화면과 함께 유지하는 이중 레이어: `persistentDetailLayers`
+- 복제 커버를 인계하지 않고 실제 상세 커버 자체를 이동하는 전환: `directCoverTransition`
+
+세 항목을 모두 이전 방식으로 되돌리려면 다음처럼 바꿉니다.
+
+```js
+nativeMobilePager: false,
+persistentDetailLayers: false,
+directCoverTransition: false,
+```
+
+이번 구조 변경 직전 파일은 다음 MYBOX 백업 폴더에 있습니다.
+
+`N:\개인\Punch-drunk Archive Backups\2026-08-07-before-persistent-mobile-navigation`
+
 ## 참고
 
 - 신청곡 메모는 손님의 현재 브라우저에만 저장되며 자동으로 신청되지 않습니다. 손님이 신청 용지에 직접 옮겨 적어야 합니다.
