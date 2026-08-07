@@ -34,30 +34,23 @@ body {
   letter-spacing: 0;
 }
 
-/* 손님 페이지의 빨강·파랑 배경이 목록 아래까지 자연스럽게 이어지도록 한다. */
+/* 손님 페이지 어디까지 내려가도 빨강·파랑 배경이 보이도록 화면 뒤에 고정한다. */
 body.customer-page {
+  position: relative;
+  isolation: isolate;
+  background: #08080b;
+}
+
+body.customer-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
-    linear-gradient(
-      132deg,
-      rgba(255, 70, 92, 0.13) 0%,
-      rgba(255, 70, 92, 0.035) 19%,
-      transparent 36%,
-      rgba(75, 116, 255, 0.04) 54%,
-      transparent 70%,
-      rgba(255, 91, 157, 0.038) 86%,
-      transparent 100%
-    ),
-    linear-gradient(
-      228deg,
-      rgba(75, 116, 255, 0.17) 0%,
-      rgba(75, 116, 255, 0.04) 20%,
-      transparent 38%,
-      rgba(255, 91, 157, 0.035) 55%,
-      transparent 72%,
-      rgba(75, 116, 255, 0.045) 88%,
-      transparent 100%
-    ),
-    linear-gradient(180deg, #111017 0%, #0c0b11 34%, #0a090e 68%, #08080b 100%);
+    linear-gradient(132deg, rgba(255, 70, 92, 0.18) 0%, rgba(255, 70, 92, 0.055) 36%, transparent 68%),
+    linear-gradient(228deg, rgba(75, 116, 255, 0.22) 0%, rgba(75, 116, 255, 0.065) 40%, transparent 72%),
+    linear-gradient(180deg, #111017 0%, #0b0a10 58%, #08080b 100%);
 }
 
 button,
