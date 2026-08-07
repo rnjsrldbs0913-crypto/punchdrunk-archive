@@ -3302,7 +3302,7 @@ body.request-list-open {
 
 .request-list-panel {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   width: min(620px, 100%);
   max-height: min(760px, calc(100svh - 40px));
   overflow: hidden;
@@ -3324,6 +3324,16 @@ body.request-list-open {
 .request-list-header h2 {
   margin: 0;
   font-size: 17px;
+}
+
+.request-list-notice {
+  margin: 0;
+  padding: 11px 18px;
+  border-bottom: 1px solid rgba(75, 116, 255, 0.2);
+  background: rgba(75, 116, 255, 0.08);
+  color: rgba(246, 241, 234, 0.78);
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .request-list-close,
@@ -3579,6 +3589,33 @@ body.request-list-open {
 .feature-customer-higher-contrast .tracklist-hint,
 .feature-customer-higher-contrast .detail-head p {
   color: rgba(246, 241, 234, 0.76);
+}
+
+/* 상세 화면에서는 로고와 언어 버튼을 같은 높이의 양쪽 도구처럼 배치합니다. */
+body.is-detail-view .site-header {
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 40px;
+  margin: 2px auto 12px;
+  padding-top: 0;
+}
+
+body.is-detail-view .site-home-button {
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+body.is-detail-view .site-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.28);
+}
+
+body.is-detail-view .language-switch {
+  top: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

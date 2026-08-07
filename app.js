@@ -20,6 +20,7 @@
     requestTrackList: true,
     coverTransitions: true,
     higherContrast: true,
+    compactDetailHeader: true,
   };
   document.documentElement.classList.toggle('feature-customer-request-track-list', CUSTOMER_FEATURES.requestTrackList);
   document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
@@ -137,16 +138,17 @@
       randomAlbum: '랜덤 음반',
       newAlbums: '새로 온 음반',
       resetFilters: '필터 초기화',
-      requestListCount: count => `신청곡 ${count}`,
-      requestListTitle: '신청곡 목록',
-      requestListOpen: '담아둔 신청곡 보기',
-      requestTrackAdd: '신청곡에 담기',
-      requestTrackRemove: '신청곡에서 빼기',
-      requestListEmpty: '아직 담아둔 신청곡이 없습니다.',
+      requestListCount: count => `신청곡 메모 ${count}`,
+      requestListTitle: '신청곡 메모',
+      requestListOpen: '신청곡 메모 보기',
+      requestTrackAdd: '신청곡 메모에 담기',
+      requestTrackRemove: '신청곡 메모에서 빼기',
+      requestListEmpty: '아직 메모해 둔 신청곡이 없습니다.',
+      requestListNotice: '이 메모는 자동으로 신청되지 않습니다. 신청 용지에 곡을 적어 직원에게 건네주세요.',
       requestListClear: '전체 비우기',
-      requestListClose: '신청곡 목록 닫기',
-      requestAdded: '신청곡에 담았습니다.',
-      requestListView: '목록 보기',
+      requestListClose: '신청곡 메모 닫기',
+      requestAdded: '신청곡 메모에 담았습니다.',
+      requestListView: '메모 보기',
       albumList: '앨범 목록',
       albumListPage: '앨범 목록 페이지',
       emptyAlbums: '조건에 맞는 음반이 없습니다.',
@@ -214,16 +216,17 @@
       randomAlbum: 'Random album',
       newAlbums: 'New arrivals',
       resetFilters: 'Reset filters',
-      requestListCount: count => `Requests ${count}`,
-      requestListTitle: 'Request list',
-      requestListOpen: 'View saved requests',
-      requestTrackAdd: 'Add to request list',
-      requestTrackRemove: 'Remove from request list',
-      requestListEmpty: 'You have not saved any tracks yet.',
+      requestListCount: count => `Request notes ${count}`,
+      requestListTitle: 'Request notes',
+      requestListOpen: 'View request notes',
+      requestTrackAdd: 'Add to request notes',
+      requestTrackRemove: 'Remove from request notes',
+      requestListEmpty: 'You have not saved any tracks in your notes yet.',
+      requestListNotice: 'This note does not submit a request automatically. Write the track on the request slip and hand it to a member of staff.',
       requestListClear: 'Clear all',
-      requestListClose: 'Close request list',
-      requestAdded: 'Added to your request list.',
-      requestListView: 'View list',
+      requestListClose: 'Close request notes',
+      requestAdded: 'Added to your request notes.',
+      requestListView: 'View notes',
       albumList: 'Album list',
       albumListPage: 'Album list pages',
       emptyAlbums: 'No albums match these filters.',
@@ -398,6 +401,10 @@
     closeButton.addEventListener('click', closeRequestTrackList);
     header.append(title, closeButton);
 
+    const notice = document.createElement('p');
+    notice.className = 'request-list-notice';
+    notice.textContent = t('requestListNotice');
+
     const content = document.createElement('div');
     content.className = 'request-list-content';
     if (!resolvedEntries.length) {
@@ -465,7 +472,7 @@
       });
       footer.append(clearButton);
     }
-    panel.append(header, content, footer);
+    panel.append(header, notice, content, footer);
     overlay.replaceChildren(panel);
     overlay.setAttribute('aria-label', t('requestListTitle'));
   }
@@ -1333,6 +1340,7 @@
   }
 
   function renderHome() {
+    document.body.classList.remove('is-detail-view');
     cancelSwipeDiscoveryHint();
     const node = homeTemplate.content.cloneNode(true);
     applyStaticTranslations(node);
@@ -2080,6 +2088,7 @@
   }
 
   function renderDetail(albumId, options = {}) {
+    document.body.classList.toggle('is-detail-view', CUSTOMER_FEATURES.compactDetailHeader);
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
 
@@ -2184,7 +2193,7 @@
     const focusedRequestTrack = app.querySelector('.track-row.is-request-focus');
     const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
     if (trackToReveal) {
-      // 신청곡 목록이나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
+      // 신청곡 메모나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
       window.setTimeout(() => requestAnimationFrame(() => {
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         trackToReveal.scrollIntoView({
