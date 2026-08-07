@@ -11,10 +11,19 @@
   const GENRE_ALL = '전체 장르';
   const NEW_ALBUM_DAYS = 14;
   const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
+  const SHORTLIST_STORAGE_KEY = 'pd-request-shortlist-v1';
   const CUSTOMER_FEATURES = {
     // false로 바꾸면 원본 커버만 사용하므로 썸네일 기능만 간단히 되돌릴 수 있습니다.
     gridThumbnails: true,
+    // 2026-08-07 손님 화면 개선입니다. 항목별로 false로 바꾸면 각각 원래 상태로 돌아갑니다.
+    priorityCovers: true,
+    requestShortlist: true,
+    coverTransitions: true,
+    higherContrast: true,
   };
+  document.documentElement.classList.toggle('feature-customer-request-shortlist', CUSTOMER_FEATURES.requestShortlist);
+  document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
+  document.documentElement.classList.toggle('feature-customer-higher-contrast', CUSTOMER_FEATURES.higherContrast);
   const WEEKLY_MOTION_TEST = Object.freeze({
     enabled: true,
     albumId: 'album-mrdetafz',
@@ -38,6 +47,7 @@
     genre: GENRE_ALL,
     sort: 'default',
     recentOnly: false,
+    shortlistOnly: false,
     filtersExpanded: false,
     page: 1,
     lastRandomAlbumId: '',
@@ -50,6 +60,7 @@
   let swipeHintTimer = 0;
   let swipeHintQueued = false;
   let swipeHintSection = null;
+  let shortlistIds = loadShortlistIds();
 
   const STANDARD_GENRES = [
     '재즈',
@@ -124,6 +135,11 @@
       randomAlbum: '랜덤 음반',
       newAlbums: '새로 온 음반',
       resetFilters: '필터 초기화',
+      shortlistCount: count => `신청 후보 ${count}`,
+      shortlistFilter: '신청 후보만 보기',
+      addToShortlist: '신청 후보에 담기',
+      removeFromShortlist: '신청 후보에서 빼기',
+      shortlistEmpty: '신청 후보에 담은 음반이 없습니다.',
       albumList: '앨범 목록',
       albumListPage: '앨범 목록 페이지',
       emptyAlbums: '조건에 맞는 음반이 없습니다.',
@@ -191,6 +207,11 @@
       randomAlbum: 'Random album',
       newAlbums: 'New arrivals',
       resetFilters: 'Reset filters',
+      shortlistCount: count => `Shortlist ${count}`,
+      shortlistFilter: 'Show shortlist only',
+      addToShortlist: 'Add to request shortlist',
+      removeFromShortlist: 'Remove from request shortlist',
+      shortlistEmpty: 'Your request shortlist is empty.',
       albumList: 'Album list',
       albumListPage: 'Album list pages',
       emptyAlbums: 'No albums match these filters.',
@@ -236,6 +257,72 @@
   function t(key) {
     const value = UI_TEXT[state.language]?.[key] ?? UI_TEXT.ko[key] ?? '';
     return typeof value === 'function' ? value : String(value);
+  }
+
+  function loadShortlistIds() {
+    if (!CUSTOMER_FEATURES.requestShortlist) return new Set();
+    try {
+      const saved = JSON.parse(localStorage.getItem(SHORTLIST_STORAGE_KEY) || '[]');
+      const validIds = new Set(albums.map(album => String(album.id)));
+      return new Set(Array.isArray(saved)
+        ? saved.map(String).filter(albumId => validIds.has(albumId))
+        : []);
+    } catch (error) {
+      console.warn(error);
+      return new Set();
+    }
+  }
+
+  function saveShortlistIds() {
+    if (!CUSTOMER_FEATURES.requestShortlist) return;
+    try {
+      localStorage.setItem(SHORTLIST_STORAGE_KEY, JSON.stringify(Array.from(shortlistIds)));
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
+  function isShortlisted(albumId) {
+    return CUSTOMER_FEATURES.requestShortlist && shortlistIds.has(String(albumId));
+  }
+
+  function toggleShortlist(albumId) {
+    const id = String(albumId || '');
+    if (!id || !CUSTOMER_FEATURES.requestShortlist) return false;
+    if (shortlistIds.has(id)) shortlistIds.delete(id);
+    else shortlistIds.add(id);
+    saveShortlistIds();
+    return shortlistIds.has(id);
+  }
+
+  function refreshShortlistUi(root = app) {
+    if (!root) return;
+    const filterButton = root.querySelector('[data-shortlist-filter]');
+    if (filterButton) {
+      filterButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
+      filterButton.textContent = t('shortlistCount')(shortlistIds.size);
+      filterButton.title = t('shortlistFilter');
+      filterButton.setAttribute('aria-label', t('shortlistFilter'));
+      filterButton.setAttribute('aria-pressed', String(state.shortlistOnly));
+      filterButton.dataset.active = String(state.shortlistOnly);
+    }
+
+    root.querySelectorAll('[data-shortlist-album]').forEach(button => {
+      const selected = isShortlisted(button.dataset.shortlistAlbum);
+      const label = selected ? t('removeFromShortlist') : t('addToShortlist');
+      button.textContent = selected ? '♥' : '♡';
+      button.title = label;
+      button.setAttribute('aria-label', label);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+
+    const detailButton = root.querySelector('[data-detail-shortlist]');
+    if (detailButton) {
+      detailButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
+      const selected = isShortlisted(detailButton.dataset.albumId);
+      detailButton.textContent = selected ? `♥ ${t('removeFromShortlist')}` : `♡ ${t('addToShortlist')}`;
+      detailButton.setAttribute('aria-pressed', String(selected));
+    }
   }
 
   function getGenreLabel(genre, language = state.language) {
@@ -603,7 +690,7 @@
     return `covers/thumbs/${baseName}-${(hash >>> 0).toString(16).padStart(8, '0')}.jpg`;
   }
 
-  function createCover(album, className = '') {
+  function createCover(album, className = '', options = {}) {
     const wrap = document.createElement('div');
     wrap.className = `cover-frame ${className}`.trim();
 
@@ -614,10 +701,13 @@
         ? getCoverThumbnailPath(originalSource)
         : '';
       let triedOriginal = !thumbnailSource;
+      const priority = CUSTOMER_FEATURES.priorityCovers && options.priority === true;
       img.src = thumbnailSource || originalSource;
       img.alt = `${getLocalizedArtist(album) || ''} - ${album.title || ''}`.trim();
-      img.loading = 'lazy';
+      // 첫 화면의 금주의 음반과 상세 커버는 목록 커버보다 먼저 불러와 빈 화면을 줄입니다.
+      img.loading = priority ? 'eager' : 'lazy';
       img.decoding = 'async';
+      if (priority) img.fetchPriority = 'high';
       img.onerror = () => {
         if (!triedOriginal && originalSource) {
           triedOriginal = true;
@@ -650,7 +740,8 @@
     const relevant = albums.filter(album => {
       const formatOk = state.format === FORMAT_ALL || album.format === state.format;
       const recentOk = !state.recentOnly || isRecentlyAdded(album);
-      return formatOk && recentOk;
+      const shortlistOk = !state.shortlistOnly || isShortlisted(album.id);
+      return formatOk && recentOk && shortlistOk;
     });
     const counts = relevant.reduce((map, album) => {
       const genre = classifyGenre(album.genre);
@@ -686,7 +777,8 @@
       const genreOk = state.genre === GENRE_ALL || albumGenre === state.genre;
       const queryOk = !q || normalize(getSearchableText(album)).includes(q);
       const recentOk = !state.recentOnly || isRecentlyAdded(album);
-      return formatOk && genreOk && queryOk && recentOk;
+      const shortlistOk = !state.shortlistOnly || isShortlisted(album.id);
+      return formatOk && genreOk && queryOk && recentOk && shortlistOk;
     });
   }
   function parseYear(year) {
@@ -911,13 +1003,52 @@
     const detailState = { view: 'detail', albumId: album.id };
     if (trackSearchQuery) detailState.trackSearchQuery = trackSearchQuery;
 
-    // 브라우저 뒤로가기 지원: 상세 화면을 열 때 방문 기록에 한 단계를 쌓아 목록으로 돌아갈 수 있게 합니다.
-    if (window.location.hash !== detailHash) {
-      history.pushState(detailState, '', `${getBaseUrl()}${detailHash}`);
-    } else {
-      history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
+    const commitDetailOpen = () => {
+      // 브라우저 뒤로가기 지원: 상세 화면을 열 때 방문 기록에 한 단계를 쌓아 목록으로 돌아갈 수 있게 합니다.
+      if (window.location.hash !== detailHash) {
+        history.pushState(detailState, '', `${getBaseUrl()}${detailHash}`);
+      } else {
+        history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
+      }
+      renderDetail(album.id);
+    };
+
+    const transitionSource = options.transitionSource;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canUseNativeTransition = CUSTOMER_FEATURES.coverTransitions
+      && transitionSource
+      && !reduceMotion
+      && typeof document.startViewTransition === 'function';
+
+    if (canUseNativeTransition) {
+      let transitionDestination = null;
+      transitionSource.style.viewTransitionName = 'pd-album-cover';
+      try {
+        const transition = document.startViewTransition(() => {
+          commitDetailOpen();
+          transitionDestination = app.querySelector('[data-detail-cover] .cover-frame');
+          if (transitionDestination) transitionDestination.style.viewTransitionName = 'pd-album-cover';
+        });
+        transition.finished.finally(() => {
+          transitionSource.style.viewTransitionName = '';
+          if (transitionDestination) transitionDestination.style.viewTransitionName = '';
+        });
+        return;
+      } catch (error) {
+        transitionSource.style.viewTransitionName = '';
+        console.warn(error);
+      }
     }
-    renderDetail(album.id);
+
+    commitDetailOpen();
+    if (CUSTOMER_FEATURES.coverTransitions && transitionSource && !reduceMotion) {
+      // View Transition을 지원하지 않는 브라우저에서는 상세 커버에 짧은 대체 효과를 사용합니다.
+      app.classList.remove('is-cover-transition-entering');
+      requestAnimationFrame(() => {
+        app.classList.add('is-cover-transition-entering');
+        window.setTimeout(() => app.classList.remove('is-cover-transition-entering'), 380);
+      });
+    }
   }
 
   function openRandomAlbum() {
@@ -937,6 +1068,7 @@
     const genreText = getGenreLabel(state.genre);
     const parts = [formatText, genreText];
     if (state.recentOnly) parts.unshift(t('newAlbums'));
+    if (state.shortlistOnly) parts.unshift(t('shortlistFilter'));
 
     const sortKeyByValue = {
       newest: 'sortNewest',
@@ -968,7 +1100,7 @@
     const weeklyButton = node.querySelector('[data-weekly-open]');
 
     if (weekly) {
-      node.querySelector('[data-weekly-cover]').append(createCover(weekly, 'weekly-cover-art'));
+      node.querySelector('[data-weekly-cover]').append(createCover(weekly, 'weekly-cover-art', { priority: true }));
       node.querySelector('[data-weekly-format]').textContent = [formatLabel(weekly.format), getGenreLabel(classifyGenre(weekly.genre))].filter(Boolean).join(' · ');
       node.querySelector('[data-weekly-title]').textContent = weekly.title || t('chooseWeekly');
       node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
@@ -980,7 +1112,9 @@
           event.preventDefault();
           return;
         }
-        openAlbum(weekly.id);
+        openAlbum(weekly.id, {
+          transitionSource: weeklyButton.querySelector('.cover-frame'),
+        });
       });
     } else {
       weeklyButton.disabled = true;
@@ -1046,16 +1180,31 @@
       state.genre = GENRE_ALL;
       state.sort = 'default';
       state.recentOnly = false;
+      state.shortlistOnly = false;
       state.filtersExpanded = false;
       resetAlbumPage();
       renderHome();
     });
+
+    const shortlistFilterButton = node.querySelector('[data-shortlist-filter]');
+    if (shortlistFilterButton) {
+      shortlistFilterButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
+      if (CUSTOMER_FEATURES.requestShortlist) {
+        shortlistFilterButton.addEventListener('click', () => {
+          state.shortlistOnly = !state.shortlistOnly;
+          state.genre = GENRE_ALL;
+          resetAlbumPage();
+          renderHome();
+        });
+      }
+    }
 
     renderFormatFilters(node.querySelector('[data-format-filters]'));
     renderGenreFilters(node.querySelector('[data-genre-filters]'));
     updateFilterPanel(node);
     setupAlbumSwipe(node.querySelector('[data-grid-section]'));
     app.replaceChildren(node);
+    refreshShortlistUi(app);
     updateAlbumGrid();
     scheduleSearchToolLabelFit();
   }
@@ -1284,6 +1433,7 @@
       }
       openAlbum(album.id, {
         trackSearchQuery,
+        transitionSource: cover,
       });
     });
     const cover = createCover(album, 'grid-cover');
@@ -1309,7 +1459,25 @@
       card.append(match);
     }
 
-    return card;
+    if (!CUSTOMER_FEATURES.requestShortlist) return card;
+
+    // 상세 화면을 열어 주는 버튼 안에 다른 버튼을 넣지 않도록 별도 껍데기에 신청 후보 버튼을 둡니다.
+    const shell = document.createElement('article');
+    shell.className = 'album-card-shell';
+    const shortlistButton = document.createElement('button');
+    shortlistButton.type = 'button';
+    shortlistButton.className = 'album-card-shortlist';
+    shortlistButton.dataset.shortlistAlbum = String(album.id);
+    shortlistButton.addEventListener('pointerdown', event => event.stopPropagation());
+    shortlistButton.addEventListener('click', event => {
+      event.stopPropagation();
+      toggleShortlist(album.id);
+      if (state.shortlistOnly) updateAlbumGrid();
+      else refreshShortlistUi(app);
+    });
+    shell.append(card, shortlistButton);
+    refreshShortlistUi(shell);
+    return shell;
   }
 
   function getPageAlbums(list, page, perPage) {
@@ -1596,7 +1764,10 @@
     const shownEnd = Math.min(start + perPage, filtered.length);
 
     const baseFormatText = state.format === FORMAT_ALL ? t('all') : formatLabel(state.format);
-    const formatText = state.recentOnly ? `${t('newAlbums')} · ${baseFormatText}` : baseFormatText;
+    const summaryPrefixes = [];
+    if (state.shortlistOnly) summaryPrefixes.push(t('shortlistCount')(shortlistIds.size));
+    if (state.recentOnly) summaryPrefixes.push(t('newAlbums'));
+    const formatText = [...summaryPrefixes, baseFormatText].join(' · ');
     const genreText = getGenreLabel(state.genre);
     summary.textContent = t('resultSummary')({
       format: formatText,
@@ -1621,7 +1792,9 @@
       }
     }
 
+    empty.textContent = state.shortlistOnly ? t('shortlistEmpty') : t('emptyAlbums');
     empty.hidden = filtered.length !== 0;
+    refreshShortlistUi(app);
     renderPagination(pagination, filtered.length, totalPages);
     scheduleSwipeDiscoveryHint(app.querySelector('[data-grid-section]'), totalPages);
     if (options.scrollToGrid) {
@@ -1699,9 +1872,21 @@
     applyStaticTranslations(node);
     node.querySelector('[data-history-back]').addEventListener('click', goPreviousView);
     node.querySelector('[data-album-list]').addEventListener('click', goAlbumList);
-    node.querySelector('[data-detail-cover]').append(createCover(album, 'detail-cover'));
+    node.querySelector('[data-detail-cover]').append(createCover(album, 'detail-cover', { priority: true }));
     node.querySelector('[data-detail-title]').textContent = album.title || '';
     node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
+
+    const detailShortlistButton = node.querySelector('[data-detail-shortlist]');
+    if (detailShortlistButton) {
+      detailShortlistButton.hidden = !CUSTOMER_FEATURES.requestShortlist;
+      detailShortlistButton.dataset.albumId = String(album.id);
+      if (CUSTOMER_FEATURES.requestShortlist) {
+        detailShortlistButton.addEventListener('click', () => {
+          toggleShortlist(album.id);
+          refreshShortlistUi(app);
+        });
+      }
+    }
 
     const tags = [formatLabel(album.format), getGenreLabel(classifyGenre(album.genre)), album.year].filter(Boolean);
     node.querySelector('[data-detail-tags]').replaceChildren(...tags.map(tag => {
@@ -1769,6 +1954,7 @@
     }
 
     app.replaceChildren(node);
+    refreshShortlistUi(app);
 
     const firstTrackSearchMatch = app.querySelector('.track-row.is-search-match');
     if (trackSearchQuery && firstTrackSearchMatch) {

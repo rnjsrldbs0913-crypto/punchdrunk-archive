@@ -2181,6 +2181,70 @@ select:focus-visible,
   font-size: 12px;
 }
 
+/* 관리자 개선 2: 긴 제목이 왼쪽 목록 자체의 너비를 밀어내지 않게 합니다. */
+.feature-admin-sidebar-width-fix .album-sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.feature-admin-sidebar-width-fix .album-edit-list {
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.feature-admin-sidebar-width-fix .album-edit-item {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* 관리자 개선 5: 긴 편집 폼의 주요 구간으로 이동하는 고정 메뉴입니다. */
+.admin-section-nav {
+  display: none;
+}
+
+.feature-admin-section-jump-nav .admin-section-nav {
+  position: sticky;
+  top: 10px;
+  z-index: 20;
+  display: flex;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 7px;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(18, 15, 23, 0.94);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+  scrollbar-width: thin;
+}
+
+.feature-admin-section-jump-nav .admin-section-nav button {
+  flex: 1 0 auto;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(246, 241, 234, 0.72);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.feature-admin-section-jump-nav .admin-section-nav button:hover,
+.feature-admin-section-jump-nav .admin-section-nav button[data-active="true"] {
+  border-color: rgba(255, 91, 157, 0.36);
+  background: rgba(255, 91, 157, 0.12);
+  color: var(--text);
+}
+
+.feature-admin-section-jump-nav .admin-jump-section {
+  scroll-margin-top: 76px;
+}
+
 .album-list-group {
   margin: 11px 2px 2px;
   color: rgba(246, 241, 234, 0.58);
@@ -3136,4 +3200,138 @@ textarea:focus {
 
 .album-card-meta em {
   font-weight: 400;
+}
+
+/* CUSTOMER-6-SHORTLIST: 손님이 신청할 음반을 이 브라우저에 잠시 모아둘 수 있습니다. */
+.result-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.album-card-shell {
+  position: relative;
+  min-width: 0;
+  touch-action: pan-y pinch-zoom;
+}
+
+.album-card-shell .album-card {
+  width: 100%;
+}
+
+.album-card-shortlist {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(8, 8, 11, 0.72);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.album-card-shortlist[aria-pressed="true"] {
+  border-color: rgba(255, 91, 157, 0.72);
+  background: rgba(130, 24, 68, 0.86);
+  color: #ffd5e6;
+}
+
+.detail-shortlist-button {
+  min-height: 40px;
+  margin-top: 16px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 91, 157, 0.34);
+  border-radius: var(--radius);
+  background: rgba(255, 91, 157, 0.08);
+  color: rgba(246, 241, 234, 0.86);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.detail-shortlist-button[aria-pressed="true"] {
+  border-color: rgba(255, 91, 157, 0.64);
+  background: rgba(255, 91, 157, 0.16);
+  color: #fff;
+}
+
+@media (max-width: 479px) {
+  .feature-customer-request-shortlist .result-summary-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .feature-customer-request-shortlist .result-action-buttons {
+    justify-content: stretch;
+  }
+
+  .feature-customer-request-shortlist .result-action-buttons .tool-button {
+    flex: 1 1 0;
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+}
+
+/* CUSTOMER-7-COVER-TRANSITION: 목록 커버가 상세 커버로 이어지는 느낌을 줍니다. */
+::view-transition-group(pd-album-cover) {
+  animation-duration: 330ms;
+  animation-timing-function: cubic-bezier(0.2, 0.72, 0.2, 1);
+}
+
+::view-transition-old(pd-album-cover),
+::view-transition-new(pd-album-cover) {
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: normal;
+}
+
+.feature-customer-cover-transitions #app.is-cover-transition-entering .detail-cover-wrap {
+  animation: detail-cover-enter 360ms cubic-bezier(0.2, 0.72, 0.2, 1) both;
+}
+
+@keyframes detail-cover-enter {
+  from {
+    opacity: 0.38;
+    transform: translateY(14px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* CUSTOMER-8-HIGHER-CONTRAST: 작은 안내와 보조 정보만 한 단계 더 또렷하게 합니다. */
+.feature-customer-higher-contrast {
+  --muted: rgba(246, 241, 234, 0.76);
+  --faint: rgba(246, 241, 234, 0.56);
+}
+
+.feature-customer-higher-contrast .album-card-meta em,
+.feature-customer-higher-contrast .result-summary,
+.feature-customer-higher-contrast .filter-toggle-summary,
+.feature-customer-higher-contrast .section-note,
+.feature-customer-higher-contrast .weekly-year,
+.feature-customer-higher-contrast .track-number,
+.feature-customer-higher-contrast .tracklist-hint,
+.feature-customer-higher-contrast .detail-head p {
+  color: rgba(246, 241, 234, 0.76);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(pd-album-cover),
+  .feature-customer-cover-transitions #app.is-cover-transition-entering .detail-cover-wrap {
+    animation-duration: 1ms;
+  }
 }
