@@ -49,7 +49,7 @@ requestTrackList: false,
 
 - 모바일 목록을 교체하지 않는 네이티브 가로 스크롤: `nativeMobilePager`
 - 음반 목록을 지우지 않고 상세 화면과 함께 유지하는 이중 레이어: `persistentDetailLayers`
-- 복제 커버를 인계하지 않고 실제 상세 커버 자체를 이동하는 전환: `directCoverTransition`
+- 목록과 상세 화면을 한 장면처럼 직접 이어 주는 커버 전환: `directCoverTransition`
 
 세 항목을 모두 이전 방식으로 되돌리려면 다음처럼 바꿉니다.
 
@@ -62,6 +62,24 @@ directCoverTransition: false,
 이번 구조 변경 직전 파일은 다음 MYBOX 백업 폴더에 있습니다.
 
 `N:\개인\Punch-drunk Archive Backups\2026-08-07-before-persistent-mobile-navigation`
+
+## 2026-08-07 즉시 커버 전환과 연속 목록 간격
+
+이번에 추가한 두 항목도 `app.js` 맨 위에서 서로 따로 되돌릴 수 있습니다.
+
+- 터치 직후 썸네일 커버를 먼저 움직이고 원본 커버는 뒤에서 교체하는 전환: `instantCoverMotion`
+- 앞 페이지 마지막 음반과 다음 페이지 첫 음반 사이에도 일반 음반과 같은 간격을 두는 기능: `continuousPagerGutters`
+
+예를 들어 커버 전환만 이전 방식으로 되돌리려면 다음처럼 바꿉니다.
+
+```js
+instantCoverMotion: false,
+continuousPagerGutters: true,
+```
+
+이번 수정 직전 전체 파일은 다음 MYBOX 백업 폴더에 있습니다.
+
+`N:\개인\Punch-drunk Archive Backups\2026-08-07-before-instant-cover-continuous-pager`
 
 ## 참고
 

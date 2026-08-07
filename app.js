@@ -29,6 +29,9 @@
     nativeMobilePager: true,
     persistentDetailLayers: true,
     directCoverTransition: true,
+    // 아래 두 항목은 즉시 전환과 페이지 경계 간격만 각각 되돌리는 스위치입니다.
+    instantCoverMotion: true,
+    continuousPagerGutters: true,
   };
   document.documentElement.classList.toggle('feature-customer-request-track-list', CUSTOMER_FEATURES.requestTrackList);
   document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
@@ -39,6 +42,8 @@
   document.documentElement.classList.toggle('feature-customer-native-pager', CUSTOMER_FEATURES.nativeMobilePager);
   document.documentElement.classList.toggle('feature-customer-persistent-detail', CUSTOMER_FEATURES.persistentDetailLayers);
   document.documentElement.classList.toggle('feature-customer-direct-cover-transition', CUSTOMER_FEATURES.directCoverTransition);
+  document.documentElement.classList.toggle('feature-customer-instant-cover-motion', CUSTOMER_FEATURES.instantCoverMotion);
+  document.documentElement.classList.toggle('feature-customer-continuous-pager-gutters', CUSTOMER_FEATURES.continuousPagerGutters);
   const WEEKLY_MOTION_TEST = Object.freeze({
     enabled: true,
     albumId: 'album-mrdetafz',
@@ -1473,8 +1478,17 @@
       return;
     }
 
+    const instantMotion = CUSTOMER_FEATURES.instantCoverMotion;
     const coverReady = preloadTransitionCover(album);
+    const sourceImage = transitionSource.querySelector('img');
+    const sourceImageUrl = sourceImage?.currentSrc || sourceImage?.src || '';
     const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
+    const backdrop = instantMotion ? document.createElement('div') : null;
+    if (backdrop) {
+      backdrop.className = 'cover-transition-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.append(backdrop);
+    }
     const clone = transitionSource.cloneNode(true);
     clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
     clone.className = 'cover-transition-clone';
@@ -1493,6 +1507,113 @@
     document.body.append(clone);
     document.documentElement.classList.add('is-cover-zoom-running');
 
+    if (instantMotion) {
+      const sourceCenterX = sourceRect.left + sourceRect.width / 2;
+      const sourceCenterY = sourceRect.top + sourceRect.height / 2;
+      const bridgeTargetX = window.innerWidth / 2;
+      const bridgeTargetY = Math.max(180, siteHeader.getBoundingClientRect().bottom + 180);
+      const bridgeTransform = `translate3d(${(bridgeTargetX - sourceCenterX) * 0.16}px, ${(bridgeTargetY - sourceCenterY) * 0.16}px, 0) scale(1.045)`;
+      const bridgeAnimation = clone.animate([
+        { transform: 'translate3d(0, 0, 0) scale(1)' },
+        { transform: bridgeTransform },
+      ], {
+        duration: 180,
+        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+        fill: 'forwards',
+      });
+
+      // 첫 프레임을 먼저 화면에 내보낸 뒤 상세 뼈대를 조립해 터치와 움직임 사이의 공백을 없앱니다.
+      await new Promise(resolve => requestAnimationFrame(() => window.setTimeout(resolve, 0)));
+      commitDetailOpen(true);
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
+      const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
+      const detailPage = detailRoot.querySelector('.detail-page');
+      if (!destination) {
+        bridgeAnimation.cancel();
+        clone.remove();
+        backdrop?.remove();
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        activatePersistentDetailView();
+        return;
+      }
+
+      destination.style.visibility = 'hidden';
+      const destinationImage = destination.querySelector('img');
+      if (sourceImageUrl && destinationImage) {
+        destinationImage.src = sourceImageUrl;
+        destinationImage.loading = 'eager';
+        destinationImage.decoding = 'sync';
+        destinationImage.fetchPriority = 'high';
+      }
+
+      const destinationRect = destination.getBoundingClientRect();
+      if (!destinationRect.width || !destinationRect.height) {
+        bridgeAnimation.cancel();
+        clone.remove();
+        backdrop?.remove();
+        destination.style.visibility = '';
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        activatePersistentDetailView();
+        return;
+      }
+
+      const liveCloneRect = clone.getBoundingClientRect();
+      bridgeAnimation.cancel();
+      Object.assign(clone.style, {
+        left: `${liveCloneRect.left}px`,
+        top: `${liveCloneRect.top}px`,
+        width: `${liveCloneRect.width}px`,
+        height: `${liveCloneRect.height}px`,
+        transform: 'none',
+      });
+      const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
+      const finalTransform = `translate3d(${destinationRect.left - liveCloneRect.left}px, ${destinationRect.top - liveCloneRect.top}px, 0) scale(${destinationRect.width / liveCloneRect.width}, ${destinationRect.height / liveCloneRect.height})`;
+      const upgradeDestinationCover = () => {
+        const originalSource = String(album?.coverImage || '').trim();
+        if (!destinationImage || !originalSource) return;
+        coverReady.then(() => {
+          if (!destination.isConnected || destination.querySelector('img') !== destinationImage) return;
+          destinationImage.src = originalSource;
+          destinationImage.loading = 'eager';
+          destinationImage.decoding = 'async';
+          destinationImage.fetchPriority = 'high';
+        });
+      };
+      let revealed = false;
+      const revealDetail = () => {
+        if (revealed) return;
+        revealed = true;
+        clone.remove();
+        backdrop?.remove();
+        destination.style.visibility = '';
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        activatePersistentDetailView();
+        detailPage?.classList.add('is-cover-zoom-revealing');
+        upgradeDestinationCover();
+        window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
+      };
+      const coverAnimation = clone.animate([
+        {
+          transform: 'translate3d(0, 0, 0) scale(1)',
+          borderRadius: sourceBorderRadius,
+          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
+        },
+        {
+          transform: finalTransform,
+          borderRadius: destinationRadius,
+          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
+        },
+      ], {
+        duration: 400,
+        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+        fill: 'forwards',
+      });
+      coverAnimation.finished.then(revealDetail).catch(revealDetail);
+      window.setTimeout(revealDetail, 560);
+      return;
+    }
+
     commitDetailOpen(true);
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
@@ -1500,20 +1621,31 @@
     const detailPage = detailRoot.querySelector('.detail-page');
     if (!destination) {
       clone.remove();
+      backdrop?.remove();
       document.documentElement.classList.remove('is-cover-zoom-running');
       activatePersistentDetailView();
       return;
     }
 
     destination.style.visibility = 'hidden';
-    await Promise.all([
-      coverReady,
-      waitForTransitionCoverImage(destination, 4000),
-    ]);
+    const destinationImage = destination.querySelector('img');
+    if (instantMotion && sourceImageUrl && destinationImage) {
+      // 현재 화면에서 이미 디코딩된 썸네일을 그대로 사용해 클릭 다음 프레임부터 이동합니다.
+      destinationImage.src = sourceImageUrl;
+      destinationImage.loading = 'eager';
+      destinationImage.decoding = 'sync';
+      destinationImage.fetchPriority = 'high';
+    } else {
+      await Promise.all([
+        coverReady,
+        waitForTransitionCoverImage(destination, 4000),
+      ]);
+    }
 
     const destinationRect = destination.getBoundingClientRect();
     if (!destinationRect.width || !destinationRect.height) {
       clone.remove();
+      backdrop?.remove();
       destination.style.visibility = '';
       document.documentElement.classList.remove('is-cover-zoom-running');
       activatePersistentDetailView();
@@ -1526,11 +1658,24 @@
     destination.style.transformOrigin = 'top left';
     destination.style.willChange = 'transform, border-radius, box-shadow';
 
+    const upgradeDestinationCover = () => {
+      const originalSource = String(album?.coverImage || '').trim();
+      if (!instantMotion || !destinationImage || !originalSource) return;
+      coverReady.then(() => {
+        if (!destination.isConnected || destination.querySelector('img') !== destinationImage) return;
+        destinationImage.src = originalSource;
+        destinationImage.loading = 'eager';
+        destinationImage.decoding = 'async';
+        destinationImage.fetchPriority = 'high';
+      });
+    };
+
     let revealed = false;
     const revealDetail = () => {
       if (revealed) return;
       revealed = true;
       clone.remove();
+      backdrop?.remove();
       destination.style.visibility = '';
       destination.style.transform = '';
       destination.style.transformOrigin = '';
@@ -1539,8 +1684,11 @@
       document.documentElement.classList.remove('is-cover-zoom-running');
       activatePersistentDetailView();
       detailPage?.classList.add('is-cover-zoom-revealing');
+      upgradeDestinationCover();
       window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
     };
+
+    const motionDuration = instantMotion ? 440 : 520;
 
     if (typeof destination.animate === 'function') {
       const coverAnimation = destination.animate([
@@ -1555,17 +1703,17 @@
           boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
         },
       ], {
-        duration: 520,
+        duration: motionDuration,
         easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
         fill: 'forwards',
       });
       clone.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: 90,
+        duration: instantMotion ? 60 : 90,
         easing: 'ease-out',
         fill: 'forwards',
       });
       coverAnimation.finished.then(revealDetail).catch(revealDetail);
-      window.setTimeout(revealDetail, 700);
+      window.setTimeout(revealDetail, motionDuration + 180);
       return;
     }
 
@@ -1573,15 +1721,15 @@
     destination.style.borderRadius = sourceBorderRadius;
     destination.style.boxShadow = '0 5px 16px rgba(0, 0, 0, 0.28)';
     destination.getBoundingClientRect();
-    destination.style.transition = 'transform 520ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius 520ms ease, box-shadow 520ms ease';
-    clone.style.transition = 'opacity 90ms ease-out';
+    destination.style.transition = `transform ${motionDuration}ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius ${motionDuration}ms ease, box-shadow ${motionDuration}ms ease`;
+    clone.style.transition = `opacity ${instantMotion ? 60 : 90}ms ease-out`;
     clone.style.opacity = '0';
     requestAnimationFrame(() => {
       destination.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
       destination.style.borderRadius = destinationRadius;
       destination.style.boxShadow = '0 22px 48px rgba(0, 0, 0, 0.42)';
     });
-    window.setTimeout(revealDetail, 620);
+    window.setTimeout(revealDetail, motionDuration + 100);
   }
 
   function animateCoverIntoDetail(transitionSource, commitDetailOpen) {
@@ -1750,7 +1898,10 @@
       } else {
         history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
       }
-      renderDetail(album.id, { skipInitialScroll });
+      renderDetail(album.id, {
+        skipInitialScroll,
+        deferContent: skipInitialScroll && CUSTOMER_FEATURES.instantCoverMotion,
+      });
     };
     if (CUSTOMER_FEATURES.persistentDetailLayers && CUSTOMER_FEATURES.directCoverTransition) {
       animateDirectCoverIntoDetail(album, options.transitionSource, commitDetailOpen);
@@ -2852,102 +3003,125 @@
       span.textContent = tag;
       return span;
     }));
+    const detailPageNode = node.querySelector('.detail-page');
+    detailPageNode.dataset.albumId = String(album.id);
 
-    const trackList = node.querySelector('[data-detail-tracklist]');
-    const hasTracklist = Boolean(album.tracklist && album.tracklist.length);
-    const tracks = hasTracklist ? album.tracklist : [t('tracklistEmpty')];
-    const recommendedTracks = album.recommendedTracks || [];
-    const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
-      ? state.detailTrackSearch.query
-      : '';
+    const populateDetailContent = root => {
+      const activeDetailPage = root.querySelector('.detail-page');
+      if (!activeDetailPage || activeDetailPage.dataset.albumId !== String(album.id)) return '';
 
-    trackList.replaceChildren(...tracks.map((track, trackIndex) => {
-      const { number, title } = splitTrackLine(track);
-      const li = document.createElement('li');
-      li.className = 'track-row';
-      if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
-      const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
-      if (isSearchMatch) li.classList.add('is-search-match');
-      const isRequestFocus = state.detailTrackFocus?.albumId === album.id
-        && state.detailTrackFocus.trackIndex === trackIndex;
-      if (isRequestFocus) li.classList.add('is-request-focus');
+      const trackList = root.querySelector('[data-detail-tracklist]');
+      const hasTracklist = Boolean(album.tracklist && album.tracklist.length);
+      const tracks = hasTracklist ? album.tracklist : [t('tracklistEmpty')];
+      const recommendedTracks = album.recommendedTracks || [];
+      const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
+        ? state.detailTrackSearch.query
+        : '';
 
-      const dot = document.createElement('span');
-      dot.className = 'recommend-dot';
-      dot.setAttribute('aria-hidden', 'true');
+      trackList.replaceChildren(...tracks.map((track, trackIndex) => {
+        const { number, title } = splitTrackLine(track);
+        const li = document.createElement('li');
+        li.className = 'track-row';
+        if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
+        const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
+        if (isSearchMatch) li.classList.add('is-search-match');
+        const isRequestFocus = state.detailTrackFocus?.albumId === album.id
+          && state.detailTrackFocus.trackIndex === trackIndex;
+        if (isRequestFocus) li.classList.add('is-request-focus');
 
-      const numberSpan = document.createElement('span');
-      numberSpan.className = 'track-number';
-      numberSpan.textContent = number;
+        const dot = document.createElement('span');
+        dot.className = 'recommend-dot';
+        dot.setAttribute('aria-hidden', 'true');
 
-      const titleSpan = document.createElement('span');
-      titleSpan.className = 'track-title';
-      titleSpan.textContent = title;
-      if (isSearchMatch) {
-        const searchMarker = document.createElement('span');
-        searchMarker.className = 'track-search-marker';
-        searchMarker.textContent = t('trackSearchMatch');
-        titleSpan.append(searchMarker);
-      }
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'track-number';
+        numberSpan.textContent = number;
 
-      const requestButton = document.createElement(hasTracklist && CUSTOMER_FEATURES.requestTrackList ? 'button' : 'span');
-      requestButton.className = 'track-request-button';
-      if (requestButton instanceof HTMLButtonElement) {
-        requestButton.type = 'button';
-        requestButton.dataset.requestTrack = '';
-        requestButton.dataset.albumId = String(album.id);
-        requestButton.dataset.trackIndex = String(trackIndex);
-        requestButton.addEventListener('click', () => {
-          const added = toggleRequestTrack(album, trackIndex);
-          refreshRequestTrackUi(app);
-          if (added) showRequestAddedToast();
-        });
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'track-title';
+        titleSpan.textContent = title;
+        if (isSearchMatch) {
+          const searchMarker = document.createElement('span');
+          searchMarker.className = 'track-search-marker';
+          searchMarker.textContent = t('trackSearchMatch');
+          titleSpan.append(searchMarker);
+        }
+
+        const requestButton = document.createElement(hasTracklist && CUSTOMER_FEATURES.requestTrackList ? 'button' : 'span');
+        requestButton.className = 'track-request-button';
+        if (requestButton instanceof HTMLButtonElement) {
+          requestButton.type = 'button';
+          requestButton.dataset.requestTrack = '';
+          requestButton.dataset.albumId = String(album.id);
+          requestButton.dataset.trackIndex = String(trackIndex);
+          requestButton.addEventListener('click', () => {
+            const added = toggleRequestTrack(album, trackIndex);
+            refreshRequestTrackUi(app);
+            if (added) showRequestAddedToast();
+          });
+        } else {
+          requestButton.setAttribute('aria-hidden', 'true');
+        }
+
+        // 추천곡 점 렌더링: 시각적 순서가 추천점 → 곡 번호 → 곡명으로 보이게 합니다.
+        li.append(dot, numberSpan, titleSpan, requestButton);
+        return li;
+      }));
+
+      root.querySelector('[data-detail-description]').textContent = getLocalizedDescription(album) || t('descriptionEmpty');
+      root.querySelector('[data-request-note]').textContent = t('requestNote');
+
+      const filteredList = getVisibleAlbums();
+      const navList = filteredList.some(item => item.id === album.id) ? filteredList : albums;
+      const currentIndex = Math.max(0, navList.findIndex(item => item.id === album.id));
+      const previousAlbum = navList[(currentIndex - 1 + navList.length) % navList.length];
+      const nextAlbum = navList[(currentIndex + 1) % navList.length];
+      const prevButton = root.querySelector('[data-prev-album]');
+      const nextButton = root.querySelector('[data-next-album]');
+
+      if (navList.length <= 1) {
+        prevButton.disabled = true;
+        nextButton.disabled = true;
       } else {
-        requestButton.setAttribute('aria-hidden', 'true');
+        prevButton.addEventListener('click', () => openAlbum(previousAlbum.id));
+        nextButton.addEventListener('click', () => openAlbum(nextAlbum.id));
       }
+      return trackSearchQuery;
+    };
 
-      // 추천곡 점 렌더링: 시각적 순서가 추천점 → 곡 번호 → 곡명으로 보이게 합니다.
-      li.append(dot, numberSpan, titleSpan, requestButton);
-      return li;
-    }));
+    const revealFocusedTrack = (root, trackSearchQuery) => {
+      const firstTrackSearchMatch = root.querySelector('.track-row.is-search-match');
+      const focusedRequestTrack = root.querySelector('.track-row.is-request-focus');
+      const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
+      if (trackToReveal) {
+        // 신청곡 메모나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
+        window.setTimeout(() => requestAnimationFrame(() => {
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          trackToReveal.scrollIntoView({
+            behavior: reduceMotion ? 'auto' : 'smooth',
+            block: 'center',
+          });
+        }), options.skipInitialScroll ? 540 : 0);
+      } else if (!options.skipInitialScroll) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
 
-    node.querySelector('[data-detail-description]').textContent = getLocalizedDescription(album) || t('descriptionEmpty');
-    node.querySelector('[data-request-note]').textContent = t('requestNote');
-
-    const filteredList = getVisibleAlbums();
-    const navList = filteredList.some(item => item.id === album.id) ? filteredList : albums;
-    const currentIndex = Math.max(0, navList.findIndex(item => item.id === album.id));
-    const previousAlbum = navList[(currentIndex - 1 + navList.length) % navList.length];
-    const nextAlbum = navList[(currentIndex + 1) % navList.length];
-    const prevButton = node.querySelector('[data-prev-album]');
-    const nextButton = node.querySelector('[data-next-album]');
-
-    if (navList.length <= 1) {
-      prevButton.disabled = true;
-      nextButton.disabled = true;
-    } else {
-      prevButton.addEventListener('click', () => openAlbum(previousAlbum.id));
-      nextButton.addEventListener('click', () => openAlbum(nextAlbum.id));
-    }
-
+    const deferContent = options.deferContent === true;
+    const initialTrackSearchQuery = deferContent ? '' : populateDetailContent(node);
     detailRoot.replaceChildren(node);
     if (persistentLayers) stagePersistentDetailView(Boolean(options.skipInitialScroll));
     refreshRequestTrackUi(app);
 
-    const firstTrackSearchMatch = detailRoot.querySelector('.track-row.is-search-match');
-    const focusedRequestTrack = detailRoot.querySelector('.track-row.is-request-focus');
-    const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
-    if (trackToReveal) {
-      // 신청곡 메모나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
-      window.setTimeout(() => requestAnimationFrame(() => {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        trackToReveal.scrollIntoView({
-          behavior: reduceMotion ? 'auto' : 'smooth',
-          block: 'center',
-        });
-      }), options.skipInitialScroll ? 540 : 0);
-    } else if (!options.skipInitialScroll) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (deferContent) {
+      requestAnimationFrame(() => window.setTimeout(() => {
+        if (detailRoot.querySelector('.detail-page')?.dataset.albumId !== String(album.id)) return;
+        const deferredTrackSearchQuery = populateDetailContent(detailRoot);
+        refreshRequestTrackUi(app);
+        revealFocusedTrack(detailRoot, deferredTrackSearchQuery);
+      }, 0));
+    } else {
+      revealFocusedTrack(detailRoot, initialTrackSearchQuery);
     }
   }
 
