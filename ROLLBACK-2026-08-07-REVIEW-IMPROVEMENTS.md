@@ -18,7 +18,7 @@
 - 6번, 곡 단위 신청곡 메모와 커버가 보이는 신청곡 메모 화면: `requestTrackList`
 - 7번, 누른 위치의 커버가 상세 커버 자리까지 확대되는 전환 효과: `coverTransitions`
 - 8번, 작은 안내 문구와 보조 정보의 명암 강화: `higherContrast`
-- 상세 화면의 작은 왼쪽 로고: `compactDetailHeader`
+- 상세 화면 상단 중앙의 작은 로고: `compactDetailHeader`
 
 예를 들어 신청 후보 기능만 빼려면 다음처럼 바꿉니다.
 
