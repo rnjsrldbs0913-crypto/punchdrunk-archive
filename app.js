@@ -1899,34 +1899,54 @@
       const sharpInitialTransform = `translate3d(${sourceRect.left - destinationRect.left}px, ${sourceRect.top - destinationRect.top}px, 0) scale(${sourceScaleX}, ${sourceScaleY})`;
       const regularFinalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
 
-      // 작은 카드 크기의 레이어를 늘리지 않고 상세 크기의 원본 레이어를 축소해 둔 뒤 펼칩니다.
-      // 이 방식은 확대 도중에도 상세 커버와 같은 픽셀 밀도를 유지합니다.
-      const clone = sharpTransition
-        ? createTransitionClone({
-          rect: destinationRect,
-          imageSource: transitionImageUrl,
-          transform: sharpInitialTransform,
-          borderRadius: `${sourceRadiusValue / sourceScale}px`,
-        })
+      // 상세 커버 자체를 목록 위치에 축소해 둔 뒤 펼칩니다.
+      // 별도 복제본을 상세 커버로 교체하지 않으므로 마지막 프레임의 미세한 위치 변경도 생기지 않습니다.
+      let clone = null;
+      const movingCover = sharpTransition
+        ? destination
         : createTransitionClone({ rect: sourceRect });
       if (sharpTransition) {
-        clone.style.borderWidth = `${sourceBorderWidth / sourceScale}px`;
-        clone.style.borderColor = sourceStyle.borderColor;
+        Object.assign(destination.style, {
+          visibility: '',
+          transform: sharpInitialTransform,
+          transformOrigin: 'top left',
+          borderRadius: `${sourceRadiusValue / sourceScale}px`,
+          borderWidth: `${sourceBorderWidth / sourceScale}px`,
+          borderColor: sourceStyle.borderColor,
+          boxShadow: sourceShadow,
+          willChange: 'transform, border-radius, border-width, box-shadow',
+          zIndex: '1000',
+        });
+      } else {
+        clone = movingCover;
+        document.body.append(clone);
       }
-      document.body.append(clone);
-      clone.getBoundingClientRect();
+      movingCover.getBoundingClientRect();
 
       const upgradeDestinationCover = () => {
         if (USES_SHARED_HIGH_QUALITY_COVERS) return;
         upgradeDetailCoverWithoutFlash(destination, destinationImage, originalSource, coverReady);
       };
       let revealed = false;
+      let coverAnimation = null;
       const revealDetail = () => {
         if (revealed) return;
         revealed = true;
-        clone.remove();
+        clone?.remove();
+        coverAnimation?.cancel();
         backdrop?.remove();
-        destination.style.visibility = '';
+        Object.assign(destination.style, {
+          visibility: '',
+          transform: '',
+          transformOrigin: '',
+          borderRadius: '',
+          borderWidth: '',
+          borderColor: '',
+          boxShadow: '',
+          transition: '',
+          willChange: '',
+          zIndex: '',
+        });
         document.documentElement.classList.remove('is-cover-zoom-running');
         activatePersistentDetailView();
         detailPage?.classList.add('is-cover-zoom-revealing');
@@ -1963,8 +1983,8 @@
           },
         ];
       const motionDuration = 420;
-      if (typeof clone.animate === 'function') {
-        const coverAnimation = clone.animate(coverKeyframes, {
+      if (typeof movingCover.animate === 'function') {
+        coverAnimation = movingCover.animate(coverKeyframes, {
           duration: motionDuration,
           easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
           fill: 'forwards',
@@ -1972,7 +1992,7 @@
         coverAnimation.finished.then(revealDetail).catch(revealDetail);
       } else {
         // 일부 인앱 브라우저에서는 Web Animations API가 없어 같은 움직임을 CSS transition으로 실행합니다.
-        clone.style.transition = [
+        movingCover.style.transition = [
           `transform ${motionDuration}ms cubic-bezier(0.22, 0.72, 0.18, 1)`,
           `border-radius ${motionDuration}ms ease`,
           `border-width ${motionDuration}ms ease`,
@@ -1980,13 +2000,13 @@
           `box-shadow ${motionDuration}ms ease`,
         ].join(', ');
         requestAnimationFrame(() => {
-          clone.style.transform = sharpTransition ? 'translate3d(0, 0, 0) scale(1, 1)' : regularFinalTransform;
-          clone.style.borderRadius = destinationRadius;
-          clone.style.borderWidth = `${destinationBorderWidth}px`;
-          clone.style.borderColor = destinationStyle.borderColor;
-          clone.style.boxShadow = destinationShadow;
+          movingCover.style.transform = sharpTransition ? 'translate3d(0, 0, 0) scale(1, 1)' : regularFinalTransform;
+          movingCover.style.borderRadius = destinationRadius;
+          movingCover.style.borderWidth = `${destinationBorderWidth}px`;
+          movingCover.style.borderColor = destinationStyle.borderColor;
+          movingCover.style.boxShadow = destinationShadow;
         });
-        clone.addEventListener('transitionend', event => {
+        movingCover.addEventListener('transitionend', event => {
           if (event.propertyName === 'transform') revealDetail();
         });
       }

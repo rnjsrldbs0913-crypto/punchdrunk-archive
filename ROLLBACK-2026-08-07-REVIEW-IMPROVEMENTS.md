@@ -102,6 +102,7 @@ continuousPagerGutters: true,
 ## 2026-08-08 상세 화질 유지 확대 전환
 
 - 목록 커버를 작은 화면 조각으로 확대하지 않고, 상세 크기로 렌더링한 원본 커버를 축소 상태에서 펼칩니다: `sharpDetailCoverTransition`
+- 확대용 복제본을 마지막에 상세 커버로 교체하지 않고, 실제 상세 커버 자체가 목록 위치에서 확대되어 그대로 남습니다.
 - 목록·이동 중·상세 커버는 모두 `1px` 테두리와 `6px` 모서리를 사용합니다.
 - 현재 모바일 페이지와 양옆 페이지의 원본을 미리 준비해 페이지를 넘긴 직후 눌러도 같은 화질로 시작합니다.
 - Web Animations API가 없는 인앱 브라우저에서는 같은 동작을 CSS transition으로 실행합니다.
@@ -109,6 +110,10 @@ continuousPagerGutters: true,
 이번 수정만 이전 상태로 되돌리려면 `sharpDetailCoverTransition`을 `false`로 바꾸고 기본 `COVER_RENDER_MODE` 반환값을 `thumbnail`로 바꾸거나, 아래 백업 파일을 사용합니다.
 
 `N:\개인\Punch-drunk Archive Backups\2026-08-08-143659-sharp-detail-transition`
+
+마지막 복제본 인계 제거 직전 버전은 다음 폴더에 있습니다.
+
+`N:\개인\Punch-drunk Archive Backups\2026-08-08-151227-before-direct-destination-cover`
 
 ## 참고
 
