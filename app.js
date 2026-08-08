@@ -1706,6 +1706,60 @@
     return promise;
   }
 
+  function upgradeDetailCoverWithoutFlash(destination, currentImage, originalSource, coverReady) {
+    if (!destination || !currentImage || !originalSource) return;
+
+    const getAbsoluteUrl = value => {
+      try {
+        return new URL(value, document.baseURI).href;
+      } catch (error) {
+        return String(value || '');
+      }
+    };
+    const currentSource = currentImage.currentSrc || currentImage.src || '';
+    if (getAbsoluteUrl(currentSource) === getAbsoluteUrl(originalSource)) return;
+
+    // 목록 썸네일을 먼저 그대로 보여주고, 원본이 완전히 준비된 뒤 위에 겹쳐 교체해 빈 프레임을 막습니다.
+    Promise.resolve(coverReady).then(() => {
+      if (!destination.isConnected || destination.querySelector('img') !== currentImage) return;
+
+      const upgradedImage = new Image();
+      upgradedImage.className = `${currentImage.className || ''} cover-quality-upgrade`.trim();
+      upgradedImage.alt = currentImage.alt || '';
+      upgradedImage.loading = 'eager';
+      upgradedImage.decoding = 'async';
+      upgradedImage.fetchPriority = 'high';
+      upgradedImage.draggable = false;
+      let started = false;
+
+      const revealUpgrade = () => {
+        if (started) return;
+        started = true;
+        const decoded = typeof upgradedImage.decode === 'function'
+          ? upgradedImage.decode().catch(() => undefined)
+          : Promise.resolve();
+        decoded.then(() => {
+          if (!upgradedImage.naturalWidth || !destination.isConnected || destination.querySelector('img') !== currentImage) return;
+          destination.append(upgradedImage);
+
+          const finishUpgrade = () => {
+            if (!upgradedImage.isConnected) return;
+            currentImage.remove();
+            upgradedImage.classList.remove('cover-quality-upgrade', 'is-ready');
+          };
+          upgradedImage.addEventListener('transitionend', finishUpgrade, { once: true });
+          requestAnimationFrame(() => upgradedImage.classList.add('is-ready'));
+          window.setTimeout(finishUpgrade, 240);
+        });
+      };
+
+      upgradedImage.addEventListener('load', revealUpgrade, { once: true });
+      upgradedImage.addEventListener('error', () => upgradedImage.remove(), { once: true });
+      upgradedImage.src = originalSource;
+      if (upgradedImage.complete) revealUpgrade();
+    });
+  }
+
   async function animateDirectCoverIntoDetail(album, transitionSource, commitDetailOpen) {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sourceRect = transitionSource?.getBoundingClientRect();
@@ -1788,14 +1842,7 @@
       const finalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
       const upgradeDestinationCover = () => {
         const originalSource = String(album?.coverImage || '').trim();
-        if (!destinationImage || !originalSource) return;
-        coverReady.then(() => {
-          if (!destination.isConnected || destination.querySelector('img') !== destinationImage) return;
-          destinationImage.src = originalSource;
-          destinationImage.loading = 'eager';
-          destinationImage.decoding = 'async';
-          destinationImage.fetchPriority = 'high';
-        });
+        upgradeDetailCoverWithoutFlash(destination, destinationImage, originalSource, coverReady);
       };
       let revealed = false;
       const revealDetail = () => {

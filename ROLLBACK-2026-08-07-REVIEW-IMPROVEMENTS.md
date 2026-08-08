@@ -84,6 +84,7 @@ continuousPagerGutters: true,
 ## 2026-08-08 상세 화면 연속 전환과 커버 직접 조작
 
 - 목록 커버가 중간에 주춤하지 않고 상세 커버 자리까지 한 번에 이어지는 전환: `instantDetailContinuity`
+- 위 전환에는 원본 커버가 준비될 때까지 썸네일을 유지해 깜빡임을 막는 처리와, 전환 중 메인 목록을 화면에서 감추는 처리도 함께 포함됩니다.
 - 커버 크게 보기의 뒤로가기, 전방향 드래그 닫기, 상세 커버 자리와 연결되는 확대·축소: `interactiveCoverViewer`
 
 두 항목은 `app.js` 맨 위의 `CUSTOMER_FEATURES`에서 각각 `false`로 바꿔 따로 끌 수 있습니다.

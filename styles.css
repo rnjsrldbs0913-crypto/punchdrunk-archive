@@ -3667,8 +3667,12 @@ body.request-list-open {
   top: 0;
   right: 0;
   left: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #08080b;
 }
 
+#app.is-detail-staging .customer-home-view,
 #app.is-detail-active .customer-home-view {
   position: absolute;
   width: 100%;
@@ -3718,6 +3722,19 @@ body.request-list-open {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* 축소 커버를 남겨 둔 채 준비된 원본을 겹쳐 보여주므로 이미지 교체 순간이 번쩍이지 않습니다. */
+.cover-frame > .cover-quality-upgrade {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+  will-change: opacity;
+}
+
+.cover-frame > .cover-quality-upgrade.is-ready {
+  opacity: 1;
 }
 
 .is-cover-zoom-running .detail-page > *:not(.detail-cover-wrap) {
@@ -3934,6 +3951,10 @@ body.is-detail-view .language-switch {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cover-frame > .cover-quality-upgrade {
+    transition-duration: 1ms;
+  }
+
   .request-toast,
   .detail-page.is-cover-zoom-revealing > *,
   .detail-page.is-cover-zoom-revealing .detail-cover-wrap {
