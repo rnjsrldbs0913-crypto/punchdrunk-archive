@@ -91,12 +91,24 @@ continuousPagerGutters: true,
 
 ## 2026-08-08 고화질 커버 비교 모드
 
+- 옵션이 없는 평소 주소: 원본 공용 모드
+- 이전 썸네일 방식 비교: 주소 끝에 `?coverMode=thumbnail`
 - 원본 공용 모드: 주소 끝에 `?coverMode=original`
 - 용량 최적화 고화질 공용 모드: 주소 끝에 `?coverMode=optimized`
-- 옵션이 없는 평소 주소: 기존 썸네일 모드
 - 로컬에서 쉽게 열기: `compare-cover-original.html`, `compare-cover-optimized.html`
 
-두 비교 모드는 목록과 상세에서 같은 이미지 파일을 유지하며, 모바일에서 이전·현재·다음 세 페이지만 메모리에 남깁니다. 비교 기능 전체를 끄려면 `app.js`의 `coverModeComparison`을 `false`로 바꿉니다.
+원본과 최적화 모드는 목록과 상세에서 같은 이미지 파일을 유지하며, 모바일에서 이전·현재·다음 세 페이지만 화면에 남깁니다. 비교 기능 전체를 끄려면 `app.js`의 `coverModeComparison`을 `false`로 바꿉니다.
+
+## 2026-08-08 상세 화질 유지 확대 전환
+
+- 목록 커버를 작은 화면 조각으로 확대하지 않고, 상세 크기로 렌더링한 원본 커버를 축소 상태에서 펼칩니다: `sharpDetailCoverTransition`
+- 목록·이동 중·상세 커버는 모두 `1px` 테두리와 `6px` 모서리를 사용합니다.
+- 현재 모바일 페이지와 양옆 페이지의 원본을 미리 준비해 페이지를 넘긴 직후 눌러도 같은 화질로 시작합니다.
+- Web Animations API가 없는 인앱 브라우저에서는 같은 동작을 CSS transition으로 실행합니다.
+
+이번 수정만 이전 상태로 되돌리려면 `sharpDetailCoverTransition`을 `false`로 바꾸고 기본 `COVER_RENDER_MODE` 반환값을 `thumbnail`로 바꾸거나, 아래 백업 파일을 사용합니다.
+
+`N:\개인\Punch-drunk Archive Backups\2026-08-08-143659-sharp-detail-transition`
 
 ## 참고
 

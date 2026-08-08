@@ -35,14 +35,17 @@
     // 목록과 상세를 한 화면처럼 이어 보이게 하고, 커버 크게 보기에 직접 조작을 더합니다.
     instantDetailContinuity: true,
     interactiveCoverViewer: true,
+    // 상세 크기로 렌더링한 원본 커버를 축소 상태에서 펼쳐 확대 중 화질 저하를 막습니다.
+    sharpDetailCoverTransition: true,
     // URL의 coverMode 옵션으로 원본/최적화 고화질 커버를 안전하게 비교합니다.
     coverModeComparison: true,
   };
   const requestedCoverMode = new URLSearchParams(window.location.search).get('coverMode');
-  const COVER_RENDER_MODE = CUSTOMER_FEATURES.coverModeComparison
-    && (requestedCoverMode === 'original' || requestedCoverMode === 'optimized')
+  const availableCoverModes = new Set(['thumbnail', 'original', 'optimized']);
+  // 기본 화면은 현재 페이지와 양옆 페이지에 원본을 사용합니다. 필요하면 ?coverMode=thumbnail로 즉시 비교할 수 있습니다.
+  const COVER_RENDER_MODE = CUSTOMER_FEATURES.coverModeComparison && availableCoverModes.has(requestedCoverMode)
     ? requestedCoverMode
-    : 'thumbnail';
+    : 'original';
   const USES_SHARED_HIGH_QUALITY_COVERS = COVER_RENDER_MODE === 'original' || COVER_RENDER_MODE === 'optimized';
   document.documentElement.dataset.coverMode = COVER_RENDER_MODE;
   document.documentElement.classList.toggle('feature-customer-shared-cover-source', USES_SHARED_HIGH_QUALITY_COVERS);
@@ -59,6 +62,7 @@
   document.documentElement.classList.toggle('feature-customer-continuous-pager-gutters', CUSTOMER_FEATURES.continuousPagerGutters);
   document.documentElement.classList.toggle('feature-customer-instant-detail-continuity', CUSTOMER_FEATURES.instantDetailContinuity);
   document.documentElement.classList.toggle('feature-customer-interactive-cover-viewer', CUSTOMER_FEATURES.interactiveCoverViewer);
+  document.documentElement.classList.toggle('feature-customer-sharp-detail-transition', CUSTOMER_FEATURES.sharpDetailCoverTransition);
   const WEEKLY_MOTION_TEST = Object.freeze({
     enabled: true,
     albumId: 'album-mrdetafz',
@@ -1807,7 +1811,10 @@
     const instantMotion = CUSTOMER_FEATURES.instantCoverMotion && CUSTOMER_FEATURES.instantDetailContinuity;
     const sourceImage = transitionSource.querySelector('img');
     const sourceImageUrl = sourceImage?.currentSrc || sourceImage?.src || '';
-    const coverReady = preloadTransitionCover(album, sourceImageUrl);
+    const sharpTransition = instantMotion && CUSTOMER_FEATURES.sharpDetailCoverTransition && Boolean(sourceImage);
+    const originalSource = String(album?.coverImage || '').trim();
+    const transitionImageUrl = sharpTransition && originalSource ? originalSource : sourceImageUrl;
+    const coverReady = preloadTransitionCover(album, transitionImageUrl);
     const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
     const backdrop = instantMotion ? document.createElement('div') : null;
     if (backdrop) {
@@ -1815,34 +1822,44 @@
       backdrop.setAttribute('aria-hidden', 'true');
       document.body.append(backdrop);
     }
-    const clone = transitionSource.cloneNode(true);
-    clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
-    clone.className = 'cover-transition-clone';
-    Object.assign(clone.style, {
-      position: 'fixed',
-      left: `${sourceRect.left}px`,
-      top: `${sourceRect.top}px`,
-      width: `${sourceRect.width}px`,
-      height: `${sourceRect.height}px`,
-      margin: '0',
-      borderRadius: sourceBorderRadius,
-      transformOrigin: 'top left',
-      zIndex: '1000',
-      pointerEvents: 'none',
-    });
-    document.body.append(clone);
     document.documentElement.classList.add('is-cover-zoom-running');
 
+    const createTransitionClone = ({ rect, imageSource = sourceImageUrl, transform = 'none', borderRadius = sourceBorderRadius }) => {
+      const clone = transitionSource.cloneNode(true);
+      clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
+      clone.className = 'cover-transition-clone';
+      const cloneImage = clone.querySelector('img');
+      if (cloneImage && imageSource) {
+        cloneImage.src = imageSource;
+        cloneImage.loading = 'eager';
+        cloneImage.decoding = 'sync';
+        cloneImage.fetchPriority = 'high';
+      }
+      Object.assign(clone.style, {
+        position: 'fixed',
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+        margin: '0',
+        borderRadius,
+        transform,
+        transformOrigin: 'top left',
+        zIndex: '1000',
+        pointerEvents: 'none',
+        willChange: 'transform, border-radius, border-width, box-shadow',
+      });
+      return clone;
+    };
+
     if (instantMotion) {
-      // 중간 목적지에서 한 번 멈추지 않고, 누른 자리에서 실제 상세 커버 자리까지 한 번에 이동합니다.
-      clone.getBoundingClientRect();
+      // 상세 화면을 같은 프레임에 준비한 뒤 목록 위치에서 상세 커버 위치까지 한 번에 이동합니다.
       commitDetailOpen(true);
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
       const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
       const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
       const detailPage = detailRoot.querySelector('.detail-page');
       if (!destination) {
-        clone.remove();
         backdrop?.remove();
         document.documentElement.classList.remove('is-cover-zoom-running');
         activatePersistentDetailView();
@@ -1851,8 +1868,8 @@
 
       destination.style.visibility = 'hidden';
       const destinationImage = destination.querySelector('img');
-      if (sourceImageUrl && destinationImage) {
-        destinationImage.src = sourceImageUrl;
+      if (transitionImageUrl && destinationImage) {
+        destinationImage.src = transitionImageUrl;
         destinationImage.loading = 'eager';
         destinationImage.decoding = 'sync';
         destinationImage.fetchPriority = 'high';
@@ -1860,7 +1877,6 @@
 
       const destinationRect = destination.getBoundingClientRect();
       if (!destinationRect.width || !destinationRect.height) {
-        clone.remove();
         backdrop?.remove();
         destination.style.visibility = '';
         document.documentElement.classList.remove('is-cover-zoom-running');
@@ -1868,13 +1884,40 @@
         return;
       }
 
-      const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
-      const sourceShadow = getComputedStyle(transitionSource).boxShadow || 'none';
-      const destinationShadow = getComputedStyle(destination).boxShadow || 'none';
-      const finalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
+      const sourceStyle = getComputedStyle(transitionSource);
+      const destinationStyle = getComputedStyle(destination);
+      const destinationRadius = destinationStyle.borderRadius || '6px';
+      const sourceShadow = sourceStyle.boxShadow || 'none';
+      const destinationShadow = destinationStyle.boxShadow || 'none';
+      const sourceScaleX = sourceRect.width / destinationRect.width;
+      const sourceScaleY = sourceRect.height / destinationRect.height;
+      const sourceScale = Math.max(0.01, Math.min(sourceScaleX, sourceScaleY));
+      const sourceRadiusValue = Number.parseFloat(sourceBorderRadius) || 0;
+      const destinationRadiusValue = Number.parseFloat(destinationRadius) || 0;
+      const sourceBorderWidth = Number.parseFloat(sourceStyle.borderTopWidth) || 0;
+      const destinationBorderWidth = Number.parseFloat(destinationStyle.borderTopWidth) || 0;
+      const sharpInitialTransform = `translate3d(${sourceRect.left - destinationRect.left}px, ${sourceRect.top - destinationRect.top}px, 0) scale(${sourceScaleX}, ${sourceScaleY})`;
+      const regularFinalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
+
+      // 작은 카드 크기의 레이어를 늘리지 않고 상세 크기의 원본 레이어를 축소해 둔 뒤 펼칩니다.
+      // 이 방식은 확대 도중에도 상세 커버와 같은 픽셀 밀도를 유지합니다.
+      const clone = sharpTransition
+        ? createTransitionClone({
+          rect: destinationRect,
+          imageSource: transitionImageUrl,
+          transform: sharpInitialTransform,
+          borderRadius: `${sourceRadiusValue / sourceScale}px`,
+        })
+        : createTransitionClone({ rect: sourceRect });
+      if (sharpTransition) {
+        clone.style.borderWidth = `${sourceBorderWidth / sourceScale}px`;
+        clone.style.borderColor = sourceStyle.borderColor;
+      }
+      document.body.append(clone);
+      clone.getBoundingClientRect();
+
       const upgradeDestinationCover = () => {
         if (USES_SHARED_HIGH_QUALITY_COVERS) return;
-        const originalSource = String(album?.coverImage || '').trim();
         upgradeDetailCoverWithoutFlash(destination, destinationImage, originalSource, coverReady);
       };
       let revealed = false;
@@ -1890,26 +1933,70 @@
         upgradeDestinationCover();
         window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 220);
       };
-      const coverAnimation = clone.animate([
-        {
-          transform: 'translate3d(0, 0, 0) scale(1)',
-          borderRadius: sourceBorderRadius,
-          boxShadow: sourceShadow,
-        },
-        {
-          transform: finalTransform,
-          borderRadius: destinationRadius,
-          boxShadow: destinationShadow,
-        },
-      ], {
-        duration: 420,
-        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
-        fill: 'forwards',
-      });
-      coverAnimation.finished.then(revealDetail).catch(revealDetail);
+      const coverKeyframes = sharpTransition
+        ? [
+          {
+            transform: sharpInitialTransform,
+            borderRadius: `${sourceRadiusValue / sourceScale}px`,
+            borderWidth: `${sourceBorderWidth / sourceScale}px`,
+            borderColor: sourceStyle.borderColor,
+            boxShadow: sourceShadow,
+          },
+          {
+            transform: 'translate3d(0, 0, 0) scale(1, 1)',
+            borderRadius: `${destinationRadiusValue}px`,
+            borderWidth: `${destinationBorderWidth}px`,
+            borderColor: destinationStyle.borderColor,
+            boxShadow: destinationShadow,
+          },
+        ]
+        : [
+          {
+            transform: 'translate3d(0, 0, 0) scale(1)',
+            borderRadius: sourceBorderRadius,
+            boxShadow: sourceShadow,
+          },
+          {
+            transform: regularFinalTransform,
+            borderRadius: destinationRadius,
+            boxShadow: destinationShadow,
+          },
+        ];
+      const motionDuration = 420;
+      if (typeof clone.animate === 'function') {
+        const coverAnimation = clone.animate(coverKeyframes, {
+          duration: motionDuration,
+          easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+          fill: 'forwards',
+        });
+        coverAnimation.finished.then(revealDetail).catch(revealDetail);
+      } else {
+        // 일부 인앱 브라우저에서는 Web Animations API가 없어 같은 움직임을 CSS transition으로 실행합니다.
+        clone.style.transition = [
+          `transform ${motionDuration}ms cubic-bezier(0.22, 0.72, 0.18, 1)`,
+          `border-radius ${motionDuration}ms ease`,
+          `border-width ${motionDuration}ms ease`,
+          `border-color ${motionDuration}ms ease`,
+          `box-shadow ${motionDuration}ms ease`,
+        ].join(', ');
+        requestAnimationFrame(() => {
+          clone.style.transform = sharpTransition ? 'translate3d(0, 0, 0) scale(1, 1)' : regularFinalTransform;
+          clone.style.borderRadius = destinationRadius;
+          clone.style.borderWidth = `${destinationBorderWidth}px`;
+          clone.style.borderColor = destinationStyle.borderColor;
+          clone.style.boxShadow = destinationShadow;
+        });
+        clone.addEventListener('transitionend', event => {
+          if (event.propertyName === 'transform') revealDetail();
+        });
+      }
       window.setTimeout(revealDetail, 540);
       return;
     }
+
+    const clone = createTransitionClone({ rect: sourceRect });
+    document.body.append(clone);
+    clone.getBoundingClientRect();
 
     commitDetailOpen(true);
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -2659,7 +2746,9 @@
       });
     });
     const cover = createCover(album, 'grid-cover', { priority: cardOptions.priorityCover === true });
-    const preloadCardCover = () => preloadTransitionCover(album, cover.querySelector('img')?.currentSrc);
+    // 현재 페이지와 양옆 페이지는 상세용 원본까지 미리 준비해, 넘긴 직후 눌러도 같은 화질로 확대합니다.
+    const preloadCardCover = () => preloadTransitionCover(album, String(album.coverImage || '').trim());
+    if (CUSTOMER_FEATURES.sharpDetailCoverTransition && cardOptions.priorityCover === true) preloadCardCover();
     card.addEventListener('pointerdown', preloadCardCover, { passive: true });
     card.addEventListener('focus', preloadCardCover);
     card.addEventListener('mouseenter', preloadCardCover, { once: true });

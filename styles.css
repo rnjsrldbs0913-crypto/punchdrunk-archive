@@ -1456,13 +1456,14 @@ select:focus-visible,
 }
 
 .detail-cover {
-  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
 }
 
-/* 원본/최적화 비교 모드에서는 목록과 상세가 같은 커버 외곽선을 사용해 인계 순간의 각도 변화를 없앱니다. */
-.feature-customer-shared-cover-source .album-card .cover-frame,
-.feature-customer-shared-cover-source .detail-cover,
-.feature-customer-shared-cover-source .cover-transition-clone {
+/* 목록, 이동 중, 상세 커버의 외곽선을 항상 같게 유지해 마지막 프레임의 모양 변화를 막습니다. */
+.album-card .cover-frame,
+.detail-cover,
+.cover-transition-clone {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
 }
@@ -3719,7 +3720,8 @@ body.request-list-open {
 
 .cover-transition-clone {
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
   background: #111017;
   contain: paint;
 }
@@ -3730,6 +3732,9 @@ body.request-list-open {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  image-rendering: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* 축소 커버를 남겨 둔 채 준비된 원본을 겹쳐 보여주므로 이미지 교체 순간이 번쩍이지 않습니다. */
