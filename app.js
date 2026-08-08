@@ -21,10 +21,34 @@
     coverTransitions: true,
     higherContrast: true,
     compactDetailHeader: true,
+    // 아래 세 항목은 각각 false로 바꾸면 이번 개선만 따로 되돌릴 수 있습니다.
+    detailCoverViewer: true,
+    smoothSwipeTracking: true,
+    seamlessCoverTransitions: true,
+    // 2026-08-07 지속형 화면 전환입니다. 세 항목은 서로 독립적으로 되돌릴 수 있습니다.
+    nativeMobilePager: true,
+    persistentDetailLayers: true,
+    directCoverTransition: true,
+    // 아래 두 항목은 즉시 전환과 페이지 경계 간격만 각각 되돌리는 스위치입니다.
+    instantCoverMotion: true,
+    continuousPagerGutters: true,
+    // 목록과 상세를 한 화면처럼 이어 보이게 하고, 커버 크게 보기에 직접 조작을 더합니다.
+    instantDetailContinuity: true,
+    interactiveCoverViewer: true,
   };
   document.documentElement.classList.toggle('feature-customer-request-track-list', CUSTOMER_FEATURES.requestTrackList);
   document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
   document.documentElement.classList.toggle('feature-customer-higher-contrast', CUSTOMER_FEATURES.higherContrast);
+  document.documentElement.classList.toggle('feature-customer-detail-cover-viewer', CUSTOMER_FEATURES.detailCoverViewer);
+  document.documentElement.classList.toggle('feature-customer-smooth-swipe', CUSTOMER_FEATURES.smoothSwipeTracking);
+  document.documentElement.classList.toggle('feature-customer-seamless-cover-transition', CUSTOMER_FEATURES.seamlessCoverTransitions);
+  document.documentElement.classList.toggle('feature-customer-native-pager', CUSTOMER_FEATURES.nativeMobilePager);
+  document.documentElement.classList.toggle('feature-customer-persistent-detail', CUSTOMER_FEATURES.persistentDetailLayers);
+  document.documentElement.classList.toggle('feature-customer-direct-cover-transition', CUSTOMER_FEATURES.directCoverTransition);
+  document.documentElement.classList.toggle('feature-customer-instant-cover-motion', CUSTOMER_FEATURES.instantCoverMotion);
+  document.documentElement.classList.toggle('feature-customer-continuous-pager-gutters', CUSTOMER_FEATURES.continuousPagerGutters);
+  document.documentElement.classList.toggle('feature-customer-instant-detail-continuity', CUSTOMER_FEATURES.instantDetailContinuity);
+  document.documentElement.classList.toggle('feature-customer-interactive-cover-viewer', CUSTOMER_FEATURES.interactiveCoverViewer);
   const WEEKLY_MOTION_TEST = Object.freeze({
     enabled: true,
     albumId: 'album-mrdetafz',
@@ -64,6 +88,14 @@
   let requestTracks = loadRequestTracks();
   let requestListOverlay = null;
   let requestToastTimer = 0;
+  let detailCoverViewer = null;
+  let detailCoverViewerTrigger = null;
+  let detailCoverViewerHistoryActive = false;
+  let homeViewLayer = null;
+  let detailViewLayer = null;
+  let homeViewReady = false;
+  let homeScrollPosition = 0;
+  let homeAlbumPage = 1;
 
   const STANDARD_GENRES = [
     '재즈',
@@ -544,6 +576,7 @@
     }
     updateLanguageButtons();
     applyStaticTranslations(document);
+    if (CUSTOMER_FEATURES.persistentDetailLayers) homeViewReady = false;
     renderRouteFromLocation();
   }
 
@@ -911,6 +944,451 @@
     return wrap;
   }
 
+  function ensureDetailCoverViewer() {
+    if (detailCoverViewer) return detailCoverViewer;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'detail-cover-viewer';
+    overlay.hidden = true;
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+
+    const stage = document.createElement('div');
+    stage.className = 'detail-cover-viewer-stage';
+    const image = document.createElement('img');
+    image.className = 'detail-cover-viewer-image';
+    image.draggable = false;
+    stage.append(image);
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'detail-cover-viewer-close';
+    closeButton.textContent = '×';
+
+    const view = {
+      overlay,
+      stage,
+      image,
+      closeButton,
+      pointers: new Map(),
+      scale: 1,
+      x: 0,
+      y: 0,
+      dismissX: 0,
+      dismissY: 0,
+      gesture: null,
+      opening: false,
+      closing: false,
+      settling: false,
+      transitionClone: null,
+      transitionToken: 0,
+      pendingCloseOptions: null,
+    };
+
+    const setBackdropStrength = strength => {
+      const clamped = Math.max(0, Math.min(1, strength));
+      overlay.style.setProperty('--viewer-backdrop-opacity', String(0.97 * clamped));
+      closeButton.style.opacity = String(clamped);
+    };
+
+    const getBaseImageSize = () => {
+      const stageRect = stage.getBoundingClientRect();
+      const naturalWidth = image.naturalWidth || stageRect.width || 1;
+      const naturalHeight = image.naturalHeight || stageRect.height || 1;
+      const fit = Math.min(stageRect.width / naturalWidth, stageRect.height / naturalHeight);
+      return {
+        stageWidth: stageRect.width,
+        stageHeight: stageRect.height,
+        width: naturalWidth * fit,
+        height: naturalHeight * fit,
+      };
+    };
+
+    const applyTransform = () => {
+      const size = getBaseImageSize();
+      const maxX = Math.max(0, (size.width * view.scale - size.stageWidth) / 2);
+      const maxY = Math.max(0, (size.height * view.scale - size.stageHeight) / 2);
+      view.x = Math.max(-maxX, Math.min(maxX, view.x));
+      view.y = Math.max(-maxY, Math.min(maxY, view.y));
+      const dismissDistance = Math.hypot(view.dismissX, view.dismissY);
+      const dismissScale = view.scale <= 1.01
+        ? 1 - Math.min(0.045, dismissDistance / 2400)
+        : 1;
+      image.style.transform = `translate3d(${view.x + view.dismissX}px, ${view.y + view.dismissY}px, 0) scale(${view.scale * dismissScale})`;
+      stage.classList.toggle('is-zoomed', view.scale > 1.01);
+      stage.classList.toggle('is-dismissing', dismissDistance > 0.5);
+      if (view.scale <= 1.01 && dismissDistance > 0) {
+        const fadeDistance = Math.max(180, Math.min(window.innerWidth, window.innerHeight) * 0.48);
+        setBackdropStrength(1 - Math.min(0.64, dismissDistance / fadeDistance * 0.64));
+      } else if (!view.opening && !view.closing) {
+        setBackdropStrength(1);
+      }
+    };
+
+    const resetTransform = () => {
+      view.scale = 1;
+      view.x = 0;
+      view.y = 0;
+      view.dismissX = 0;
+      view.dismissY = 0;
+      view.gesture = null;
+      view.pointers.clear();
+      applyTransform();
+    };
+
+    const setScale = nextScale => {
+      view.scale = Math.max(1, Math.min(4, nextScale));
+      view.dismissX = 0;
+      view.dismissY = 0;
+      if (view.scale <= 1.01) {
+        view.x = 0;
+        view.y = 0;
+      }
+      applyTransform();
+    };
+
+    const getTriggerCover = () => {
+      if (!detailCoverViewerTrigger?.isConnected) return null;
+      return detailCoverViewerTrigger.querySelector('.cover-frame') || detailCoverViewerTrigger;
+    };
+
+    const getViewerTargetRect = sourceRect => {
+      const stageRect = stage.getBoundingClientRect();
+      const naturalWidth = image.naturalWidth || sourceRect?.width || 1;
+      const naturalHeight = image.naturalHeight || sourceRect?.height || 1;
+      const fit = Math.min(stageRect.width / naturalWidth, stageRect.height / naturalHeight);
+      const width = Math.max(1, naturalWidth * fit);
+      const height = Math.max(1, naturalHeight * fit);
+      return {
+        left: stageRect.left + (stageRect.width - width) / 2,
+        top: stageRect.top + (stageRect.height - height) / 2,
+        width,
+        height,
+      };
+    };
+
+    const createTransitionClone = (rect, source) => {
+      if (!rect?.width || !rect?.height || !source) return null;
+      const clone = document.createElement('img');
+      clone.className = 'detail-cover-viewer-transition-image';
+      clone.src = source;
+      clone.alt = '';
+      clone.setAttribute('aria-hidden', 'true');
+      Object.assign(clone.style, {
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+      });
+      overlay.append(clone);
+      view.transitionClone = clone;
+      return clone;
+    };
+
+    const animateCloneBetweenRects = (clone, fromRect, toRect, duration) => {
+      if (!clone || !fromRect?.width || !toRect?.width) return Promise.resolve();
+      const transform = `translate3d(${toRect.left - fromRect.left}px, ${toRect.top - fromRect.top}px, 0) scale(${toRect.width / fromRect.width}, ${toRect.height / fromRect.height})`;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        clone.style.transform = transform;
+        return Promise.resolve();
+      }
+      if (typeof clone.animate === 'function') {
+        const animation = clone.animate([
+          { transform: 'translate3d(0, 0, 0) scale(1, 1)', borderRadius: '8px' },
+          { transform, borderRadius: '2px' },
+        ], {
+          duration,
+          easing: 'cubic-bezier(0.2, 0.78, 0.18, 1)',
+          fill: 'forwards',
+        });
+        return Promise.race([
+          animation.finished.catch(() => undefined),
+          new Promise(resolve => window.setTimeout(resolve, duration + 100)),
+        ]);
+      }
+      clone.style.transition = `transform ${duration}ms cubic-bezier(0.2, 0.78, 0.18, 1), border-radius ${duration}ms ease`;
+      clone.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        clone.style.transform = transform;
+        clone.style.borderRadius = '2px';
+      });
+      return new Promise(resolve => window.setTimeout(resolve, duration + 80));
+    };
+
+    const openFromTrigger = async trigger => {
+      const token = ++view.transitionToken;
+      view.opening = true;
+      view.closing = false;
+      delete overlay.dataset.closing;
+      const source = trigger?.querySelector('.cover-frame') || trigger;
+      const sourceRect = source?.getBoundingClientRect();
+      const sourceImage = source?.querySelector('img') || source?.closest?.('img');
+      const sourceUrl = sourceImage?.currentSrc || sourceImage?.src || image.currentSrc || image.src;
+      image.style.opacity = '0';
+      setBackdropStrength(0);
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      if (token !== view.transitionToken || overlay.hidden) return;
+      const targetRect = getViewerTargetRect(sourceRect);
+      const clone = createTransitionClone(sourceRect, sourceUrl);
+      requestAnimationFrame(() => setBackdropStrength(1));
+      await animateCloneBetweenRects(clone, sourceRect, targetRect, 360);
+      if (token !== view.transitionToken || overlay.hidden) return;
+      clone?.remove();
+      if (view.transitionClone === clone) view.transitionClone = null;
+      image.style.opacity = '1';
+      view.opening = false;
+      setBackdropStrength(1);
+    };
+
+    const settleDismissBack = () => {
+      if (view.settling || view.closing) return;
+      view.settling = true;
+      const fromTransform = image.style.transform;
+      setBackdropStrength(1);
+      const finish = () => {
+        view.dismissX = 0;
+        view.dismissY = 0;
+        view.settling = false;
+        applyTransform();
+      };
+      if (typeof image.animate !== 'function' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finish();
+        return;
+      }
+      const animation = image.animate([
+        { transform: fromTransform },
+        { transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})` },
+      ], {
+        duration: 220,
+        easing: 'cubic-bezier(0.2, 0.78, 0.18, 1)',
+      });
+      animation.finished.then(finish).catch(finish);
+    };
+
+    const close = async ({ restoreFocus = true, animate = true } = {}) => {
+      if (overlay.hidden || view.closing) return;
+      const token = ++view.transitionToken;
+      view.closing = true;
+      overlay.dataset.closing = 'true';
+      view.opening = false;
+      view.settling = false;
+      view.pointers.clear();
+      view.gesture = null;
+      const target = getTriggerCover();
+      const targetRect = target?.getBoundingClientRect();
+      const movingElement = view.transitionClone?.isConnected ? view.transitionClone : image;
+      const currentRect = movingElement.getBoundingClientRect();
+      const sourceUrl = image.currentSrc || image.src;
+      view.transitionClone?.remove();
+      view.transitionClone = null;
+      image.style.opacity = '0';
+
+      if (animate && targetRect?.width && currentRect?.width && sourceUrl) {
+        const clone = createTransitionClone(currentRect, sourceUrl);
+        requestAnimationFrame(() => setBackdropStrength(0));
+        await animateCloneBetweenRects(clone, currentRect, targetRect, 320);
+        clone?.remove();
+        if (view.transitionClone === clone) view.transitionClone = null;
+      } else {
+        setBackdropStrength(0);
+        if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          await new Promise(resolve => window.setTimeout(resolve, 160));
+        }
+      }
+      if (token !== view.transitionToken) return;
+      overlay.hidden = true;
+      delete overlay.dataset.closing;
+      document.body.classList.remove('detail-cover-viewer-open');
+      image.style.opacity = '';
+      view.closing = false;
+      resetTransform();
+      detailCoverViewerHistoryActive = false;
+      if (restoreFocus && detailCoverViewerTrigger?.isConnected) {
+        detailCoverViewerTrigger.focus({ preventScroll: true });
+      }
+      detailCoverViewerTrigger = null;
+    };
+
+    closeButton.addEventListener('click', () => requestCloseDetailCoverViewer());
+    overlay.addEventListener('click', event => {
+      if (event.target === overlay) requestCloseDetailCoverViewer();
+    });
+    overlay.addEventListener('keydown', event => {
+      if (event.key === 'Escape') requestCloseDetailCoverViewer();
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        closeButton.focus();
+      }
+    });
+
+    stage.addEventListener('wheel', event => {
+      event.preventDefault();
+      setScale(view.scale * (event.deltaY < 0 ? 1.16 : 0.86));
+    }, { passive: false });
+
+    stage.addEventListener('dblclick', event => {
+      event.preventDefault();
+      setScale(view.scale > 1.01 ? 1 : 2.4);
+    });
+
+    stage.addEventListener('pointerdown', event => {
+      if (event.button > 0 || view.opening || view.closing || view.settling) return;
+      event.preventDefault();
+      try {
+        stage.setPointerCapture(event.pointerId);
+      } catch (error) {
+        // Pointer capture is optional on older in-app browsers.
+      }
+      view.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      const points = [...view.pointers.values()];
+      if (points.length >= 2) {
+        view.dismissX = 0;
+        view.dismissY = 0;
+        setBackdropStrength(1);
+        const [a, b] = points;
+        view.gesture = {
+          type: 'pinch',
+          distance: Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)),
+          centerX: (a.x + b.x) / 2,
+          centerY: (a.y + b.y) / 2,
+          scale: view.scale,
+          x: view.x,
+          y: view.y,
+        };
+      } else if (view.scale > 1.01) {
+        view.gesture = {
+          type: 'pan',
+          startX: event.clientX,
+          startY: event.clientY,
+          x: view.x,
+          y: view.y,
+        };
+      } else {
+        view.gesture = {
+          type: 'dismiss',
+          startX: event.clientX,
+          startY: event.clientY,
+        };
+      }
+    });
+
+    stage.addEventListener('pointermove', event => {
+      if (!view.pointers.has(event.pointerId)) return;
+      event.preventDefault();
+      view.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      const points = [...view.pointers.values()];
+
+      if (points.length >= 2) {
+        const [a, b] = points;
+        if (view.gesture?.type !== 'pinch') {
+          view.gesture = {
+            type: 'pinch',
+            distance: Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)),
+            centerX: (a.x + b.x) / 2,
+            centerY: (a.y + b.y) / 2,
+            scale: view.scale,
+            x: view.x,
+            y: view.y,
+          };
+        }
+        const distance = Math.max(1, Math.hypot(b.x - a.x, b.y - a.y));
+        const centerX = (a.x + b.x) / 2;
+        const centerY = (a.y + b.y) / 2;
+        view.scale = Math.max(1, Math.min(4, view.gesture.scale * distance / view.gesture.distance));
+        view.x = view.gesture.x + centerX - view.gesture.centerX;
+        view.y = view.gesture.y + centerY - view.gesture.centerY;
+        applyTransform();
+        return;
+      }
+
+      if (view.gesture?.type === 'pan' && view.scale > 1.01) {
+        view.x = view.gesture.x + event.clientX - view.gesture.startX;
+        view.y = view.gesture.y + event.clientY - view.gesture.startY;
+        applyTransform();
+        return;
+      }
+
+      if (view.gesture?.type === 'dismiss' && view.scale <= 1.01) {
+        view.dismissX = event.clientX - view.gesture.startX;
+        view.dismissY = event.clientY - view.gesture.startY;
+        applyTransform();
+      }
+    }, { passive: false });
+
+    const finishPointer = (event, cancelled = false) => {
+      const finishedGesture = view.gesture;
+      view.pointers.delete(event.pointerId);
+      const remaining = [...view.pointers.values()][0];
+      if (remaining) {
+        view.gesture = view.scale > 1.01
+          ? { type: 'pan', startX: remaining.x, startY: remaining.y, x: view.x, y: view.y }
+          : { type: 'dismiss', startX: remaining.x - view.dismissX, startY: remaining.y - view.dismissY };
+        return;
+      }
+      view.gesture = null;
+      if (finishedGesture?.type !== 'dismiss') return;
+      const distance = Math.hypot(view.dismissX, view.dismissY);
+      const stageRect = stage.getBoundingClientRect();
+      const threshold = Math.min(140, Math.max(88, Math.min(stageRect.width, stageRect.height) * 0.18));
+      if (!cancelled && distance >= threshold) {
+        requestCloseDetailCoverViewer({ restoreFocus: false });
+      } else {
+        settleDismissBack();
+      }
+    };
+    stage.addEventListener('pointerup', finishPointer);
+    stage.addEventListener('pointercancel', event => finishPointer(event, true));
+    image.addEventListener('load', applyTransform);
+    window.addEventListener('resize', applyTransform);
+
+    overlay.append(stage, closeButton);
+    document.body.append(overlay);
+    detailCoverViewer = { ...view, resetTransform, close, openFromTrigger, setBackdropStrength };
+    return detailCoverViewer;
+  }
+
+  function openDetailCoverViewer(album, trigger) {
+    if (!CUSTOMER_FEATURES.detailCoverViewer || !String(album?.coverImage || '').trim()) return;
+    const viewer = ensureDetailCoverViewer();
+    detailCoverViewerTrigger = trigger || null;
+    viewer.overlay.setAttribute('aria-label', state.language === 'ko' ? '앨범 커버 크게 보기' : 'Expanded album cover');
+    viewer.closeButton.setAttribute('aria-label', state.language === 'ko' ? '커버 크게 보기 닫기' : 'Close expanded cover');
+    const triggerImage = trigger?.querySelector('.cover-frame img') || trigger?.querySelector('img');
+    viewer.image.src = triggerImage?.currentSrc || triggerImage?.src || String(album.coverImage).trim();
+    viewer.image.alt = `${getLocalizedArtist(album) || ''} - ${album.title || ''}`.trim();
+    viewer.overlay.hidden = false;
+    document.body.classList.add('detail-cover-viewer-open');
+    viewer.resetTransform();
+    if (CUSTOMER_FEATURES.interactiveCoverViewer) {
+      const currentState = history.state && typeof history.state === 'object'
+        ? history.state
+        : { view: 'detail', albumId: album.id };
+      if (!currentState.coverViewer) {
+        history.pushState({ ...currentState, view: 'detail', albumId: album.id, coverViewer: true }, '', window.location.href);
+      }
+      detailCoverViewerHistoryActive = true;
+      viewer.openFromTrigger(trigger);
+    } else {
+      viewer.image.style.opacity = '1';
+      viewer.setBackdropStrength(1);
+    }
+    viewer.closeButton.focus({ preventScroll: true });
+  }
+
+  function requestCloseDetailCoverViewer(options = {}) {
+    if (!detailCoverViewer || detailCoverViewer.overlay.hidden || detailCoverViewer.overlay.dataset.closing === 'true') return;
+    if (CUSTOMER_FEATURES.interactiveCoverViewer && detailCoverViewerHistoryActive) {
+      detailCoverViewer.pendingCloseOptions = options;
+      history.back();
+      return;
+    }
+    detailCoverViewer.close(options);
+  }
+
+  function closeDetailCoverViewer(options = {}) {
+    detailCoverViewer?.close(options);
+  }
+
   function escapeHtml(value) {
     return String(value || '')
       .replace(/&/g, '&amp;')
@@ -1030,8 +1508,16 @@
     const totalPages = getAlbumTotalPages();
     const nextPage = Math.min(Math.max(1, page), totalPages);
     if (nextPage === state.page) return false;
-    const direction = nextPage > state.page ? 'next' : 'prev';
+    const previousPage = state.page;
+    const direction = nextPage > previousPage ? 'next' : 'prev';
     state.page = nextPage;
+    const persistentGrid = app.querySelector('[data-album-grid].is-persistent-pager');
+    if (CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager() && persistentGrid?._pdPager) {
+      const behavior = options.behavior || (Math.abs(nextPage - previousPage) === 1 ? 'smooth' : 'auto');
+      persistentGrid._pdPager.goTo(nextPage, behavior);
+      updateAlbumGrid({ ...options, direction, preservePersistentTrack: true });
+      return true;
+    }
     updateAlbumGrid({ ...options, direction });
     return true;
   }
@@ -1176,6 +1662,293 @@
     }
   }
 
+  function waitForTransitionCoverImage(destination, timeout = 1600) {
+    const image = destination?.querySelector('img');
+    if (!image) return Promise.resolve();
+    const loaded = image.complete
+      ? Promise.resolve()
+      : new Promise(resolve => {
+        image.addEventListener('load', resolve, { once: true });
+        image.addEventListener('error', resolve, { once: true });
+      });
+    const ready = loaded.then(() => {
+      if (typeof image.decode !== 'function' || !image.naturalWidth) return undefined;
+      return image.decode().catch(() => undefined);
+    });
+    return Promise.race([
+      ready,
+      new Promise(resolve => window.setTimeout(resolve, timeout)),
+    ]);
+  }
+
+  const transitionCoverPreloads = new Map();
+
+  function preloadTransitionCover(album) {
+    const source = String(album?.coverImage || '').trim();
+    if (!source) return Promise.resolve();
+    if (transitionCoverPreloads.has(source)) return transitionCoverPreloads.get(source);
+
+    const promise = new Promise(resolve => {
+      const image = new Image();
+      const finish = () => {
+        if (typeof image.decode !== 'function' || !image.naturalWidth) {
+          resolve();
+          return;
+        }
+        image.decode().catch(() => undefined).then(resolve);
+      };
+      image.addEventListener('load', finish, { once: true });
+      image.addEventListener('error', resolve, { once: true });
+      image.src = source;
+      if (image.complete) finish();
+    });
+    transitionCoverPreloads.set(source, promise);
+    return promise;
+  }
+
+  async function animateDirectCoverIntoDetail(album, transitionSource, commitDetailOpen) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sourceRect = transitionSource?.getBoundingClientRect();
+    const canAnimate = CUSTOMER_FEATURES.coverTransitions
+      && transitionSource
+      && !reduceMotion
+      && sourceRect
+      && sourceRect.width > 8
+      && sourceRect.height > 8;
+    if (!canAnimate) {
+      commitDetailOpen(false);
+      return;
+    }
+
+    const instantMotion = CUSTOMER_FEATURES.instantCoverMotion && CUSTOMER_FEATURES.instantDetailContinuity;
+    const coverReady = preloadTransitionCover(album);
+    const sourceImage = transitionSource.querySelector('img');
+    const sourceImageUrl = sourceImage?.currentSrc || sourceImage?.src || '';
+    const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
+    const backdrop = instantMotion ? document.createElement('div') : null;
+    if (backdrop) {
+      backdrop.className = 'cover-transition-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.append(backdrop);
+    }
+    const clone = transitionSource.cloneNode(true);
+    clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
+    clone.className = 'cover-transition-clone';
+    Object.assign(clone.style, {
+      position: 'fixed',
+      left: `${sourceRect.left}px`,
+      top: `${sourceRect.top}px`,
+      width: `${sourceRect.width}px`,
+      height: `${sourceRect.height}px`,
+      margin: '0',
+      borderRadius: sourceBorderRadius,
+      transformOrigin: 'top left',
+      zIndex: '1000',
+      pointerEvents: 'none',
+    });
+    document.body.append(clone);
+    document.documentElement.classList.add('is-cover-zoom-running');
+
+    if (instantMotion) {
+      // 중간 목적지에서 한 번 멈추지 않고, 누른 자리에서 실제 상세 커버 자리까지 한 번에 이동합니다.
+      clone.getBoundingClientRect();
+      commitDetailOpen(true);
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
+      const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
+      const detailPage = detailRoot.querySelector('.detail-page');
+      if (!destination) {
+        clone.remove();
+        backdrop?.remove();
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        activatePersistentDetailView();
+        return;
+      }
+
+      destination.style.visibility = 'hidden';
+      const destinationImage = destination.querySelector('img');
+      if (sourceImageUrl && destinationImage) {
+        destinationImage.src = sourceImageUrl;
+        destinationImage.loading = 'eager';
+        destinationImage.decoding = 'sync';
+        destinationImage.fetchPriority = 'high';
+      }
+
+      const destinationRect = destination.getBoundingClientRect();
+      if (!destinationRect.width || !destinationRect.height) {
+        clone.remove();
+        backdrop?.remove();
+        destination.style.visibility = '';
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        activatePersistentDetailView();
+        return;
+      }
+
+      const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
+      const finalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
+      const upgradeDestinationCover = () => {
+        const originalSource = String(album?.coverImage || '').trim();
+        if (!destinationImage || !originalSource) return;
+        coverReady.then(() => {
+          if (!destination.isConnected || destination.querySelector('img') !== destinationImage) return;
+          destinationImage.src = originalSource;
+          destinationImage.loading = 'eager';
+          destinationImage.decoding = 'async';
+          destinationImage.fetchPriority = 'high';
+        });
+      };
+      let revealed = false;
+      const revealDetail = () => {
+        if (revealed) return;
+        revealed = true;
+        clone.remove();
+        backdrop?.remove();
+        destination.style.visibility = '';
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        activatePersistentDetailView();
+        detailPage?.classList.add('is-cover-zoom-revealing');
+        upgradeDestinationCover();
+        window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 220);
+      };
+      const coverAnimation = clone.animate([
+        {
+          transform: 'translate3d(0, 0, 0) scale(1)',
+          borderRadius: sourceBorderRadius,
+          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
+        },
+        {
+          transform: finalTransform,
+          borderRadius: destinationRadius,
+          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
+        },
+      ], {
+        duration: 420,
+        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+        fill: 'forwards',
+      });
+      coverAnimation.finished.then(revealDetail).catch(revealDetail);
+      window.setTimeout(revealDetail, 540);
+      return;
+    }
+
+    commitDetailOpen(true);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
+    const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
+    const detailPage = detailRoot.querySelector('.detail-page');
+    if (!destination) {
+      clone.remove();
+      backdrop?.remove();
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
+      return;
+    }
+
+    destination.style.visibility = 'hidden';
+    const destinationImage = destination.querySelector('img');
+    if (instantMotion && sourceImageUrl && destinationImage) {
+      // 현재 화면에서 이미 디코딩된 썸네일을 그대로 사용해 클릭 다음 프레임부터 이동합니다.
+      destinationImage.src = sourceImageUrl;
+      destinationImage.loading = 'eager';
+      destinationImage.decoding = 'sync';
+      destinationImage.fetchPriority = 'high';
+    } else {
+      await Promise.all([
+        coverReady,
+        waitForTransitionCoverImage(destination, 4000),
+      ]);
+    }
+
+    const destinationRect = destination.getBoundingClientRect();
+    if (!destinationRect.width || !destinationRect.height) {
+      clone.remove();
+      backdrop?.remove();
+      destination.style.visibility = '';
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
+      return;
+    }
+
+    const inverseTransform = `translate3d(${sourceRect.left - destinationRect.left}px, ${sourceRect.top - destinationRect.top}px, 0) scale(${sourceRect.width / destinationRect.width}, ${sourceRect.height / destinationRect.height})`;
+    const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
+    destination.style.visibility = '';
+    destination.style.transformOrigin = 'top left';
+    destination.style.willChange = 'transform, border-radius, box-shadow';
+
+    const upgradeDestinationCover = () => {
+      const originalSource = String(album?.coverImage || '').trim();
+      if (!instantMotion || !destinationImage || !originalSource) return;
+      coverReady.then(() => {
+        if (!destination.isConnected || destination.querySelector('img') !== destinationImage) return;
+        destinationImage.src = originalSource;
+        destinationImage.loading = 'eager';
+        destinationImage.decoding = 'async';
+        destinationImage.fetchPriority = 'high';
+      });
+    };
+
+    let revealed = false;
+    const revealDetail = () => {
+      if (revealed) return;
+      revealed = true;
+      clone.remove();
+      backdrop?.remove();
+      destination.style.visibility = '';
+      destination.style.transform = '';
+      destination.style.transformOrigin = '';
+      destination.style.willChange = '';
+      destination.style.transition = '';
+      document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
+      detailPage?.classList.add('is-cover-zoom-revealing');
+      upgradeDestinationCover();
+      window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
+    };
+
+    const motionDuration = instantMotion ? 440 : 520;
+
+    if (typeof destination.animate === 'function') {
+      const coverAnimation = destination.animate([
+        {
+          transform: inverseTransform,
+          borderRadius: sourceBorderRadius,
+          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
+        },
+        {
+          transform: 'translate3d(0, 0, 0) scale(1, 1)',
+          borderRadius: destinationRadius,
+          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
+        },
+      ], {
+        duration: motionDuration,
+        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
+        fill: 'forwards',
+      });
+      clone.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: instantMotion ? 60 : 90,
+        easing: 'ease-out',
+        fill: 'forwards',
+      });
+      coverAnimation.finished.then(revealDetail).catch(revealDetail);
+      window.setTimeout(revealDetail, motionDuration + 180);
+      return;
+    }
+
+    destination.style.transform = inverseTransform;
+    destination.style.borderRadius = sourceBorderRadius;
+    destination.style.boxShadow = '0 5px 16px rgba(0, 0, 0, 0.28)';
+    destination.getBoundingClientRect();
+    destination.style.transition = `transform ${motionDuration}ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius ${motionDuration}ms ease, box-shadow ${motionDuration}ms ease`;
+    clone.style.transition = `opacity ${instantMotion ? 60 : 90}ms ease-out`;
+    clone.style.opacity = '0';
+    requestAnimationFrame(() => {
+      destination.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+      destination.style.borderRadius = destinationRadius;
+      destination.style.boxShadow = '0 22px 48px rgba(0, 0, 0, 0.42)';
+    });
+    window.setTimeout(revealDetail, motionDuration + 100);
+  }
+
   function animateCoverIntoDetail(transitionSource, commitDetailOpen) {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sourceRect = transitionSource?.getBoundingClientRect();
@@ -1219,6 +1992,7 @@
     if (!destination || !destinationRect?.width || !destinationRect?.height) {
       clone.remove();
       document.documentElement.classList.remove('is-cover-zoom-running');
+      activatePersistentDetailView();
       return;
     }
 
@@ -1228,13 +2002,54 @@
     const scaleX = destinationRect.width / sourceRect.width;
     const scaleY = destinationRect.height / sourceRect.height;
     let cleaned = false;
-    const finish = () => {
+    const finish = async () => {
       if (cleaned) return;
       cleaned = true;
+      const detailPage = app.querySelector('.detail-page');
+
+      if (CUSTOMER_FEATURES.seamlessCoverTransitions) {
+        // 실제 상세 커버가 디코딩될 때까지 움직인 커버를 목적지에 그대로 둡니다.
+        await waitForTransitionCoverImage(destination);
+        destination.style.visibility = '';
+        destination.style.opacity = '0';
+        destination.style.transition = 'none';
+        detailPage?.classList.add('is-cover-zoom-revealing');
+        document.documentElement.classList.remove('is-cover-zoom-running');
+        destination.getBoundingClientRect();
+        destination.style.transition = 'opacity 120ms ease-out';
+        destination.style.opacity = '1';
+
+        if (typeof clone.animate === 'function') {
+          const handoff = clone.animate([
+            { opacity: 1 },
+            { opacity: 0 },
+          ], {
+            duration: 120,
+            easing: 'ease-out',
+            fill: 'forwards',
+          });
+          await Promise.race([
+            handoff.finished.catch(() => undefined),
+            new Promise(resolve => window.setTimeout(resolve, 180)),
+          ]);
+        } else {
+          clone.style.transition = 'opacity 120ms ease-out';
+          clone.style.opacity = '0';
+          await new Promise(resolve => window.setTimeout(resolve, 140));
+        }
+
+        clone.remove();
+        destination.style.opacity = '';
+        destination.style.transition = '';
+        activatePersistentDetailView();
+        window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
+        return;
+      }
+
       clone.remove();
       destination.style.visibility = '';
       document.documentElement.classList.remove('is-cover-zoom-running');
-      const detailPage = app.querySelector('.detail-page');
+      activatePersistentDetailView();
       detailPage?.classList.add('is-cover-zoom-revealing');
       window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
     };
@@ -1276,6 +2091,12 @@
   function openAlbum(albumId, options = {}) {
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
+    if (CUSTOMER_FEATURES.persistentDetailLayers && !document.body.classList.contains('is-detail-view')) {
+      homeScrollPosition = window.scrollY;
+      homeAlbumPage = state.page;
+      if (homeViewLayer) homeViewLayer.dataset.preservedAlbumPage = String(homeAlbumPage);
+      app.querySelector('[data-album-grid].is-persistent-pager')?._pdPager?.suspend();
+    }
     const detailHash = getAlbumHash(album.id);
     const trackSearchQuery = String(options.trackSearchQuery || '').trim();
     const focusTrackIndex = Number(options.focusTrackIndex);
@@ -1294,9 +2115,17 @@
       } else {
         history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
       }
-      renderDetail(album.id, { skipInitialScroll });
+      renderDetail(album.id, {
+        skipInitialScroll,
+        // 전환 중에도 상세 정보가 이미 완성되어 있어 로딩처럼 뒤늦게 채워지지 않습니다.
+        deferContent: false,
+      });
     };
-    animateCoverIntoDetail(options.transitionSource, commitDetailOpen);
+    if (CUSTOMER_FEATURES.persistentDetailLayers && CUSTOMER_FEATURES.directCoverTransition) {
+      animateDirectCoverIntoDetail(album, options.transitionSource, commitDetailOpen);
+    } else {
+      animateCoverIntoDetail(options.transitionSource, commitDetailOpen);
+    }
   }
 
   function openRandomAlbum() {
@@ -1339,7 +2168,64 @@
     summary.textContent = getFilterToggleSummary();
   }
 
-  function renderHome() {
+  function ensurePersistentViewLayers() {
+    if (!CUSTOMER_FEATURES.persistentDetailLayers) return false;
+    if (homeViewLayer?.isConnected && detailViewLayer?.isConnected) return true;
+
+    homeViewLayer = document.createElement('div');
+    homeViewLayer.className = 'customer-view-layer customer-home-view';
+    homeViewLayer.dataset.customerHomeView = '';
+    detailViewLayer = document.createElement('div');
+    detailViewLayer.className = 'customer-view-layer customer-detail-view';
+    detailViewLayer.dataset.customerDetailView = '';
+    detailViewLayer.setAttribute('aria-hidden', 'true');
+    app.classList.add('has-persistent-view-layers');
+    app.replaceChildren(homeViewLayer, detailViewLayer);
+    return true;
+  }
+
+  function stagePersistentDetailView(animated) {
+    if (!ensurePersistentViewLayers()) return;
+    app.classList.toggle('is-detail-staging', animated);
+    app.classList.toggle('is-detail-active', !animated);
+    homeViewLayer.setAttribute('aria-hidden', 'true');
+    detailViewLayer.removeAttribute('aria-hidden');
+  }
+
+  function activatePersistentDetailView() {
+    if (!CUSTOMER_FEATURES.persistentDetailLayers || !detailViewLayer?.isConnected) return;
+    app.classList.remove('is-detail-staging');
+    app.classList.add('is-detail-active');
+    homeViewLayer?.setAttribute('aria-hidden', 'true');
+    detailViewLayer.removeAttribute('aria-hidden');
+  }
+
+  function revealPersistentHomeView(options = {}) {
+    if (!CUSTOMER_FEATURES.persistentDetailLayers || !homeViewReady || !homeViewLayer?.isConnected) return false;
+    closeDetailCoverViewer({ restoreFocus: false });
+    document.body.classList.remove('is-detail-view');
+    cancelSwipeDiscoveryHint();
+    app.classList.remove('is-detail-staging', 'is-detail-active');
+    homeViewLayer.removeAttribute('aria-hidden');
+    detailViewLayer?.setAttribute('aria-hidden', 'true');
+    const preservedPage = Number.parseInt(homeViewLayer.dataset.preservedAlbumPage || '', 10);
+    if (Number.isInteger(preservedPage)) homeAlbumPage = preservedPage;
+    state.page = Math.min(getAlbumTotalPages(), Math.max(1, homeAlbumPage));
+    const persistentGrid = homeViewLayer.querySelector('[data-album-grid].is-persistent-pager');
+    persistentGrid?._pdPager?.resume(state.page);
+    refreshRequestTrackUi(app);
+    if (persistentGrid) updateAlbumGrid({ preservePersistentTrack: true });
+    scheduleSearchToolLabelFit();
+
+    const targetScroll = Number.isFinite(options.scrollY) ? options.scrollY : homeScrollPosition;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      window.scrollTo({ top: Math.max(0, targetScroll), left: 0, behavior: 'auto' });
+    }));
+    return true;
+  }
+
+  function renderHome(options = {}) {
+    closeDetailCoverViewer({ restoreFocus: false });
     document.body.classList.remove('is-detail-view');
     cancelSwipeDiscoveryHint();
     const node = homeTemplate.content.cloneNode(true);
@@ -1364,6 +2250,8 @@
           transitionSource: weeklyButton.querySelector('.cover-frame'),
         });
       });
+      weeklyButton.addEventListener('pointerdown', () => preloadTransitionCover(weekly), { passive: true });
+      weeklyButton.addEventListener('focus', () => preloadTransitionCover(weekly));
     } else {
       weeklyButton.disabled = true;
       weeklyButton.classList.add('is-empty');
@@ -1443,7 +2331,19 @@
     renderGenreFilters(node.querySelector('[data-genre-filters]'));
     updateFilterPanel(node);
     setupAlbumSwipe(node.querySelector('[data-grid-section]'));
-    app.replaceChildren(node);
+    if (ensurePersistentViewLayers()) {
+      homeViewLayer.replaceChildren(node);
+      homeViewReady = true;
+      if (options.keepInactive) {
+        homeViewLayer.setAttribute('aria-hidden', 'true');
+      } else {
+        app.classList.remove('is-detail-staging', 'is-detail-active');
+        homeViewLayer.removeAttribute('aria-hidden');
+        detailViewLayer.setAttribute('aria-hidden', 'true');
+      }
+    } else {
+      app.replaceChildren(node);
+    }
     refreshRequestTrackUi(app);
     updateAlbumGrid();
     scheduleSearchToolLabelFit();
@@ -1658,7 +2558,8 @@
     container.replaceChildren(controls);
   }
 
-  function createAlbumCard(album) {
+  function createAlbumCard(album, options = {}) {
+    const cardOptions = options && typeof options === 'object' && !Array.isArray(options) ? options : {};
     const card = document.createElement('button');
     const recentlyAdded = isRecentlyAdded(album);
     const searchMatchType = getSearchMatchType(album);
@@ -1676,7 +2577,10 @@
         transitionSource: cover,
       });
     });
-    const cover = createCover(album, 'grid-cover');
+    card.addEventListener('pointerdown', () => preloadTransitionCover(album), { passive: true });
+    card.addEventListener('focus', () => preloadTransitionCover(album));
+    card.addEventListener('mouseenter', () => preloadTransitionCover(album), { once: true });
+    const cover = createCover(album, 'grid-cover', { priority: cardOptions.priorityCover === true });
     if (recentlyAdded) {
       const badge = document.createElement('span');
       badge.className = 'album-card-new';
@@ -1710,9 +2614,131 @@
   function renderAlbumGridPage(albums, options = {}) {
     const page = document.createElement('div');
     page.className = `album-grid-page${options.empty ? ' is-empty' : ''}`;
-    if (options.hidden) page.setAttribute('aria-hidden', 'true');
-    page.replaceChildren(...albums.map(createAlbumCard));
+    if (Number.isInteger(options.page)) page.dataset.page = String(options.page);
+    if (options.hidden) {
+      page.setAttribute('aria-hidden', 'true');
+      page.inert = true;
+    }
+    page.replaceChildren(...albums.map(album => createAlbumCard(album, {
+      priorityCover: options.priorityCovers === true,
+    })));
     return page;
+  }
+
+  function setPersistentPagerCurrentPage(grid, pageNumber) {
+    Array.from(grid.children).forEach((page, index) => {
+      const active = index + 1 === pageNumber;
+      page.inert = !active;
+      if (active) page.removeAttribute('aria-hidden');
+      else page.setAttribute('aria-hidden', 'true');
+    });
+  }
+
+  function renderPersistentMobileGrid(grid, filtered, perPage, totalPages) {
+    grid.classList.add('is-persistent-pager');
+    grid.classList.remove('is-swipe-pager', 'is-dragging', 'is-touching');
+    delete grid.dataset.slide;
+
+    const pages = Array.from({ length: totalPages }, (_, index) => renderAlbumGridPage([], {
+      page: index + 1,
+      hidden: index + 1 !== state.page,
+    }));
+    grid.replaceChildren(...pages);
+
+    const hydrate = centerPage => {
+      const firstPage = Math.max(1, centerPage - 2);
+      const lastPage = Math.min(totalPages, centerPage + 2);
+      for (let pageNumber = firstPage; pageNumber <= lastPage; pageNumber += 1) {
+        const page = grid.children[pageNumber - 1];
+        if (!page || page.dataset.hydrated === 'true') continue;
+        const pageAlbums = getPageAlbums(filtered, pageNumber, perPage);
+        const priority = Math.abs(pageNumber - centerPage) <= 1;
+        page.replaceChildren(...pageAlbums.map(album => createAlbumCard(album, { priorityCover: priority })));
+        page.dataset.hydrated = 'true';
+      }
+    };
+
+    let scrollFrame = 0;
+    let settleTimer = 0;
+    let programmaticTarget = null;
+    let suspended = false;
+
+    const getPositionPage = () => {
+      const width = grid.clientWidth || 1;
+      return Math.min(totalPages, Math.max(1, Math.round(grid.scrollLeft / width) + 1));
+    };
+
+    const hydrateVisibleRange = () => {
+      const width = grid.clientWidth || 1;
+      const rawPage = grid.scrollLeft / width + 1;
+      hydrate(Math.min(totalPages, Math.max(1, Math.round(rawPage))));
+      hydrate(Math.min(totalPages, Math.max(1, Math.floor(rawPage))));
+      hydrate(Math.min(totalPages, Math.max(1, Math.ceil(rawPage))));
+    };
+
+    const settle = () => {
+      window.clearTimeout(settleTimer);
+      if (suspended) return;
+      const settledPage = programmaticTarget || getPositionPage();
+      programmaticTarget = null;
+      hydrate(settledPage);
+      setPersistentPagerCurrentPage(grid, settledPage);
+      if (state.page !== settledPage) state.page = settledPage;
+      updateAlbumGrid({ preservePersistentTrack: true });
+    };
+
+    grid._pdPager = {
+      hydrate,
+      goTo(pageNumber, behavior = 'smooth') {
+        const targetPage = Math.min(totalPages, Math.max(1, pageNumber));
+        programmaticTarget = targetPage;
+        hydrate(targetPage);
+        setPersistentPagerCurrentPage(grid, targetPage);
+        grid.scrollTo({ left: (targetPage - 1) * grid.clientWidth, top: 0, behavior });
+        window.clearTimeout(settleTimer);
+        settleTimer = window.setTimeout(settle, behavior === 'smooth' ? 520 : 40);
+      },
+      realign() {
+        hydrate(state.page);
+        grid.scrollTo({ left: (state.page - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
+        setPersistentPagerCurrentPage(grid, state.page);
+      },
+      suspend() {
+        suspended = true;
+        programmaticTarget = null;
+        window.clearTimeout(settleTimer);
+        if (scrollFrame) cancelAnimationFrame(scrollFrame);
+        scrollFrame = 0;
+      },
+      resume(pageNumber) {
+        const targetPage = Math.min(totalPages, Math.max(1, pageNumber));
+        suspended = false;
+        programmaticTarget = null;
+        window.clearTimeout(settleTimer);
+        hydrate(targetPage);
+        grid.scrollTo({ left: (targetPage - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
+        setPersistentPagerCurrentPage(grid, targetPage);
+      },
+    };
+
+    grid.addEventListener('scroll', () => {
+      if (suspended) return;
+      suppressAlbumCardClickUntil = Date.now() + 180;
+      markSwipeDiscoveryHintSeen();
+      cancelSwipeDiscoveryHint();
+      if (!scrollFrame) {
+        scrollFrame = requestAnimationFrame(() => {
+          scrollFrame = 0;
+          hydrateVisibleRange();
+        });
+      }
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settle, 110);
+    }, { passive: true });
+    if ('onscrollend' in window) grid.addEventListener('scrollend', settle, { passive: true });
+
+    hydrate(state.page);
+    requestAnimationFrame(() => grid._pdPager?.realign());
   }
 
   function renderMobileSwipeGrid(grid, filtered, perPage, totalPages) {
@@ -1729,9 +2755,17 @@
     const nextAlbums = state.page < totalPages ? getPageAlbums(filtered, state.page + 1, perPage) : [];
 
     track.append(
-      renderAlbumGridPage(previousAlbums, { hidden: true, empty: state.page <= 1 }),
-      renderAlbumGridPage(currentAlbums),
-      renderAlbumGridPage(nextAlbums, { hidden: true, empty: state.page >= totalPages })
+      renderAlbumGridPage(previousAlbums, {
+        hidden: true,
+        empty: state.page <= 1,
+        priorityCovers: CUSTOMER_FEATURES.smoothSwipeTracking,
+      }),
+      renderAlbumGridPage(currentAlbums, { priorityCovers: CUSTOMER_FEATURES.smoothSwipeTracking }),
+      renderAlbumGridPage(nextAlbums, {
+        hidden: true,
+        empty: state.page >= totalPages,
+        priorityCovers: CUSTOMER_FEATURES.smoothSwipeTracking,
+      })
     );
 
     grid.replaceChildren(track);
@@ -1739,6 +2773,51 @@
 
   function setSwipeTrackOffset(track, offset) {
     track.style.transform = `translate3d(calc(-100% + ${offset}px), 0, 0)`;
+  }
+
+  function recenterSettledSwipeTrack(track, targetPage, direction) {
+    if (!track || !CUSTOMER_FEATURES.smoothSwipeTracking) return false;
+    const filtered = getVisibleAlbums();
+    const perPage = getAlbumsPerPage();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+    if (targetPage < 1 || targetPage > totalPages || track.children.length !== 3) return false;
+
+    track.style.transition = 'none';
+    if (direction === 'next') {
+      track.firstElementChild?.remove();
+      const nextPage = targetPage + 1;
+      track.append(renderAlbumGridPage(
+        nextPage <= totalPages ? getPageAlbums(filtered, nextPage, perPage) : [],
+        {
+          hidden: true,
+          empty: nextPage > totalPages,
+          priorityCovers: true,
+        }
+      ));
+    } else if (direction === 'previous') {
+      track.lastElementChild?.remove();
+      const previousPage = targetPage - 1;
+      track.prepend(renderAlbumGridPage(
+        previousPage >= 1 ? getPageAlbums(filtered, previousPage, perPage) : [],
+        {
+          hidden: true,
+          empty: previousPage < 1,
+          priorityCovers: true,
+        }
+      ));
+    } else {
+      return false;
+    }
+
+    Array.from(track.children).forEach((page, index) => {
+      if (index === 1) page.removeAttribute('aria-hidden');
+      else page.setAttribute('aria-hidden', 'true');
+    });
+    // 노드를 한 칸 회전시키는 것과 기준점을 되돌리는 것을 같은 프레임에 처리해 화면이 번쩍이지 않습니다.
+    track.style.transform = 'translate3d(-100%, 0, 0)';
+    track.getBoundingClientRect();
+    track.style.transition = '';
+    return true;
   }
 
   function settleAlbumSwipe(section, swipe, targetPage, targetTransform) {
@@ -1752,8 +2831,11 @@
       section.classList.remove('is-swiping');
       swipe.grid?.classList.remove('is-dragging', 'is-touching');
       if (targetPage !== state.page) {
+        const previousPage = state.page;
         state.page = targetPage;
-        updateAlbumGrid();
+        const direction = targetPage > previousPage ? 'next' : 'previous';
+        const keptTrack = recenterSettledSwipeTrack(track, targetPage, direction);
+        updateAlbumGrid({ preserveMobileTrack: keptTrack });
       } else if (track) {
         track.style.transition = '';
         track.style.transform = 'translate3d(-100%, 0, 0)';
@@ -1998,10 +3080,20 @@
       end: shownEnd,
     });
 
-    if (isMobileAlbumPager() && filtered.length && totalPages > 1) {
+    if (isMobileAlbumPager() && filtered.length && totalPages > 1 && CUSTOMER_FEATURES.nativeMobilePager && options.preservePersistentTrack && grid.classList.contains('is-persistent-pager')) {
+      grid.classList.remove('is-dragging', 'is-touching');
+      delete grid.dataset.slide;
+      if (options.realignPersistentTrack) requestAnimationFrame(() => grid._pdPager?.realign());
+    } else if (isMobileAlbumPager() && filtered.length && totalPages > 1 && CUSTOMER_FEATURES.nativeMobilePager) {
+      renderPersistentMobileGrid(grid, filtered, perPage, totalPages);
+    } else if (isMobileAlbumPager() && filtered.length && totalPages > 1 && options.preserveMobileTrack) {
+      grid.classList.remove('is-dragging', 'is-touching');
+      delete grid.dataset.slide;
+    } else if (isMobileAlbumPager() && filtered.length && totalPages > 1) {
       renderMobileSwipeGrid(grid, filtered, perPage, totalPages);
     } else {
-      grid.classList.remove('is-swipe-pager', 'is-dragging', 'is-touching');
+      grid.classList.remove('is-persistent-pager', 'is-swipe-pager', 'is-dragging', 'is-touching');
+      delete grid._pdPager;
       grid.replaceChildren(...pagedAlbums.map(createAlbumCard));
       if (options.direction) {
         grid.dataset.slide = options.direction;
@@ -2067,10 +3159,11 @@
   }
 
   function goHome() {
+    const returningFromDetail = document.body.classList.contains('is-detail-view');
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     history.replaceState({ view: 'home' }, '', getBaseUrl());
-    renderHome();
+    if (!revealPersistentHomeView({ scrollY: returningFromDetail ? homeScrollPosition : 0 })) renderHome();
   }
 
   function goPreviousView() {
@@ -2081,7 +3174,7 @@
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     history.pushState({ view: 'home' }, '', getBaseUrl());
-    renderHome();
+    if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
     requestAnimationFrame(() => {
       document.querySelector('.search-section')?.scrollIntoView({ block: 'start' });
     });
@@ -2091,13 +3184,33 @@
     document.body.classList.toggle('is-detail-view', CUSTOMER_FEATURES.compactDetailHeader);
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
+    const persistentLayers = ensurePersistentViewLayers();
+    const detailRoot = persistentLayers ? detailViewLayer : app;
 
     const node = detailTemplate.content.cloneNode(true);
     applyStaticTranslations(node);
     node.querySelectorAll('[data-request-list]').forEach(button => button.addEventListener('click', openRequestTrackList));
     node.querySelector('[data-history-back]').addEventListener('click', goPreviousView);
     node.querySelector('[data-album-list]').addEventListener('click', goAlbumList);
-    node.querySelector('[data-detail-cover]').append(createCover(album, 'detail-cover', { priority: true }));
+    const detailCoverWrap = node.querySelector('[data-detail-cover]');
+    detailCoverWrap.append(createCover(album, 'detail-cover', { priority: true }));
+    if (CUSTOMER_FEATURES.detailCoverViewer && String(album.coverImage || '').trim()) {
+      detailCoverWrap.classList.add('is-expandable');
+      detailCoverWrap.tabIndex = 0;
+      detailCoverWrap.setAttribute('role', 'button');
+      detailCoverWrap.setAttribute('aria-label', state.language === 'ko' ? '앨범 커버 크게 보기' : 'Expand album cover');
+      const expandIcon = document.createElement('span');
+      expandIcon.className = 'detail-cover-expand-icon';
+      expandIcon.textContent = '⛶';
+      expandIcon.setAttribute('aria-hidden', 'true');
+      detailCoverWrap.append(expandIcon);
+      detailCoverWrap.addEventListener('click', () => openDetailCoverViewer(album, detailCoverWrap));
+      detailCoverWrap.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        openDetailCoverViewer(album, detailCoverWrap);
+      });
+    }
     node.querySelector('[data-detail-title]').textContent = album.title || '';
     node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
 
@@ -2108,101 +3221,125 @@
       span.textContent = tag;
       return span;
     }));
+    const detailPageNode = node.querySelector('.detail-page');
+    detailPageNode.dataset.albumId = String(album.id);
 
-    const trackList = node.querySelector('[data-detail-tracklist]');
-    const hasTracklist = Boolean(album.tracklist && album.tracklist.length);
-    const tracks = hasTracklist ? album.tracklist : [t('tracklistEmpty')];
-    const recommendedTracks = album.recommendedTracks || [];
-    const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
-      ? state.detailTrackSearch.query
-      : '';
+    const populateDetailContent = root => {
+      const activeDetailPage = root.querySelector('.detail-page');
+      if (!activeDetailPage || activeDetailPage.dataset.albumId !== String(album.id)) return '';
 
-    trackList.replaceChildren(...tracks.map((track, trackIndex) => {
-      const { number, title } = splitTrackLine(track);
-      const li = document.createElement('li');
-      li.className = 'track-row';
-      if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
-      const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
-      if (isSearchMatch) li.classList.add('is-search-match');
-      const isRequestFocus = state.detailTrackFocus?.albumId === album.id
-        && state.detailTrackFocus.trackIndex === trackIndex;
-      if (isRequestFocus) li.classList.add('is-request-focus');
+      const trackList = root.querySelector('[data-detail-tracklist]');
+      const hasTracklist = Boolean(album.tracklist && album.tracklist.length);
+      const tracks = hasTracklist ? album.tracklist : [t('tracklistEmpty')];
+      const recommendedTracks = album.recommendedTracks || [];
+      const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
+        ? state.detailTrackSearch.query
+        : '';
 
-      const dot = document.createElement('span');
-      dot.className = 'recommend-dot';
-      dot.setAttribute('aria-hidden', 'true');
+      trackList.replaceChildren(...tracks.map((track, trackIndex) => {
+        const { number, title } = splitTrackLine(track);
+        const li = document.createElement('li');
+        li.className = 'track-row';
+        if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
+        const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
+        if (isSearchMatch) li.classList.add('is-search-match');
+        const isRequestFocus = state.detailTrackFocus?.albumId === album.id
+          && state.detailTrackFocus.trackIndex === trackIndex;
+        if (isRequestFocus) li.classList.add('is-request-focus');
 
-      const numberSpan = document.createElement('span');
-      numberSpan.className = 'track-number';
-      numberSpan.textContent = number;
+        const dot = document.createElement('span');
+        dot.className = 'recommend-dot';
+        dot.setAttribute('aria-hidden', 'true');
 
-      const titleSpan = document.createElement('span');
-      titleSpan.className = 'track-title';
-      titleSpan.textContent = title;
-      if (isSearchMatch) {
-        const searchMarker = document.createElement('span');
-        searchMarker.className = 'track-search-marker';
-        searchMarker.textContent = t('trackSearchMatch');
-        titleSpan.append(searchMarker);
-      }
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'track-number';
+        numberSpan.textContent = number;
 
-      const requestButton = document.createElement(hasTracklist && CUSTOMER_FEATURES.requestTrackList ? 'button' : 'span');
-      requestButton.className = 'track-request-button';
-      if (requestButton instanceof HTMLButtonElement) {
-        requestButton.type = 'button';
-        requestButton.dataset.requestTrack = '';
-        requestButton.dataset.albumId = String(album.id);
-        requestButton.dataset.trackIndex = String(trackIndex);
-        requestButton.addEventListener('click', () => {
-          const added = toggleRequestTrack(album, trackIndex);
-          refreshRequestTrackUi(app);
-          if (added) showRequestAddedToast();
-        });
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'track-title';
+        titleSpan.textContent = title;
+        if (isSearchMatch) {
+          const searchMarker = document.createElement('span');
+          searchMarker.className = 'track-search-marker';
+          searchMarker.textContent = t('trackSearchMatch');
+          titleSpan.append(searchMarker);
+        }
+
+        const requestButton = document.createElement(hasTracklist && CUSTOMER_FEATURES.requestTrackList ? 'button' : 'span');
+        requestButton.className = 'track-request-button';
+        if (requestButton instanceof HTMLButtonElement) {
+          requestButton.type = 'button';
+          requestButton.dataset.requestTrack = '';
+          requestButton.dataset.albumId = String(album.id);
+          requestButton.dataset.trackIndex = String(trackIndex);
+          requestButton.addEventListener('click', () => {
+            const added = toggleRequestTrack(album, trackIndex);
+            refreshRequestTrackUi(app);
+            if (added) showRequestAddedToast();
+          });
+        } else {
+          requestButton.setAttribute('aria-hidden', 'true');
+        }
+
+        // 추천곡 점 렌더링: 시각적 순서가 추천점 → 곡 번호 → 곡명으로 보이게 합니다.
+        li.append(dot, numberSpan, titleSpan, requestButton);
+        return li;
+      }));
+
+      root.querySelector('[data-detail-description]').textContent = getLocalizedDescription(album) || t('descriptionEmpty');
+      root.querySelector('[data-request-note]').textContent = t('requestNote');
+
+      const filteredList = getVisibleAlbums();
+      const navList = filteredList.some(item => item.id === album.id) ? filteredList : albums;
+      const currentIndex = Math.max(0, navList.findIndex(item => item.id === album.id));
+      const previousAlbum = navList[(currentIndex - 1 + navList.length) % navList.length];
+      const nextAlbum = navList[(currentIndex + 1) % navList.length];
+      const prevButton = root.querySelector('[data-prev-album]');
+      const nextButton = root.querySelector('[data-next-album]');
+
+      if (navList.length <= 1) {
+        prevButton.disabled = true;
+        nextButton.disabled = true;
       } else {
-        requestButton.setAttribute('aria-hidden', 'true');
+        prevButton.addEventListener('click', () => openAlbum(previousAlbum.id));
+        nextButton.addEventListener('click', () => openAlbum(nextAlbum.id));
       }
+      return trackSearchQuery;
+    };
 
-      // 추천곡 점 렌더링: 시각적 순서가 추천점 → 곡 번호 → 곡명으로 보이게 합니다.
-      li.append(dot, numberSpan, titleSpan, requestButton);
-      return li;
-    }));
+    const revealFocusedTrack = (root, trackSearchQuery) => {
+      const firstTrackSearchMatch = root.querySelector('.track-row.is-search-match');
+      const focusedRequestTrack = root.querySelector('.track-row.is-request-focus');
+      const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
+      if (trackToReveal) {
+        // 신청곡 메모나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
+        window.setTimeout(() => requestAnimationFrame(() => {
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          trackToReveal.scrollIntoView({
+            behavior: reduceMotion ? 'auto' : 'smooth',
+            block: 'center',
+          });
+        }), options.skipInitialScroll ? 540 : 0);
+      } else if (!options.skipInitialScroll) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
 
-    node.querySelector('[data-detail-description]').textContent = getLocalizedDescription(album) || t('descriptionEmpty');
-    node.querySelector('[data-request-note]').textContent = t('requestNote');
-
-    const filteredList = getVisibleAlbums();
-    const navList = filteredList.some(item => item.id === album.id) ? filteredList : albums;
-    const currentIndex = Math.max(0, navList.findIndex(item => item.id === album.id));
-    const previousAlbum = navList[(currentIndex - 1 + navList.length) % navList.length];
-    const nextAlbum = navList[(currentIndex + 1) % navList.length];
-    const prevButton = node.querySelector('[data-prev-album]');
-    const nextButton = node.querySelector('[data-next-album]');
-
-    if (navList.length <= 1) {
-      prevButton.disabled = true;
-      nextButton.disabled = true;
-    } else {
-      prevButton.addEventListener('click', () => openAlbum(previousAlbum.id));
-      nextButton.addEventListener('click', () => openAlbum(nextAlbum.id));
-    }
-
-    app.replaceChildren(node);
+    const deferContent = options.deferContent === true;
+    const initialTrackSearchQuery = deferContent ? '' : populateDetailContent(node);
+    detailRoot.replaceChildren(node);
+    if (persistentLayers) stagePersistentDetailView(Boolean(options.skipInitialScroll));
     refreshRequestTrackUi(app);
 
-    const firstTrackSearchMatch = app.querySelector('.track-row.is-search-match');
-    const focusedRequestTrack = app.querySelector('.track-row.is-request-focus');
-    const trackToReveal = focusedRequestTrack || (trackSearchQuery ? firstTrackSearchMatch : null);
-    if (trackToReveal) {
-      // 신청곡 메모나 곡 검색으로 들어온 경우 해당 곡을 강조하고 화면 중앙에 보여줍니다.
-      window.setTimeout(() => requestAnimationFrame(() => {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        trackToReveal.scrollIntoView({
-          behavior: reduceMotion ? 'auto' : 'smooth',
-          block: 'center',
-        });
-      }), options.skipInitialScroll ? 540 : 0);
-    } else if (!options.skipInitialScroll) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (deferContent) {
+      requestAnimationFrame(() => window.setTimeout(() => {
+        if (detailRoot.querySelector('.detail-page')?.dataset.albumId !== String(album.id)) return;
+        const deferredTrackSearchQuery = populateDetailContent(detailRoot);
+        refreshRequestTrackUi(app);
+        revealFocusedTrack(detailRoot, deferredTrackSearchQuery);
+      }, 0));
+    } else {
+      revealFocusedTrack(detailRoot, initialTrackSearchQuery);
     }
   }
 
@@ -2223,10 +3360,25 @@
   });
 
   let resizeTimer = null;
+  let resizePreservedAlbumPage = 1;
+  let resizeHeldPersistentPager = false;
   window.addEventListener('resize', () => {
+    const persistentGrid = app.querySelector('[data-album-grid].is-persistent-pager');
+    if (CUSTOMER_FEATURES.nativeMobilePager && persistentGrid?._pdPager) {
+      resizePreservedAlbumPage = state.page;
+      resizeHeldPersistentPager = true;
+      persistentGrid._pdPager.suspend();
+    }
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      updateAlbumGrid();
+      if (resizeHeldPersistentPager && CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager()) {
+        state.page = Math.min(getAlbumTotalPages(), Math.max(1, resizePreservedAlbumPage));
+      }
+      updateAlbumGrid({
+        preservePersistentTrack: CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager(),
+      });
+      app.querySelector('[data-album-grid].is-persistent-pager')?._pdPager?.resume(state.page);
+      resizeHeldPersistentPager = false;
       scheduleSearchToolLabelFit();
     }, 120);
   });
@@ -2244,16 +3396,28 @@
       state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
         ? { albumId, trackIndex: focusTrackIndex }
         : null;
+      if (CUSTOMER_FEATURES.persistentDetailLayers && !homeViewReady) renderHome({ keepInactive: true });
       renderDetail(albumId);
       return;
     }
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
-    renderHome();
+    if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
   }
 
-  window.addEventListener('popstate', renderRouteFromLocation);
+  function handlePopState() {
+    // 커버 크게 보기는 상세 페이지 위의 한 단계이므로, 뒤로가기는 먼저 뷰어만 닫습니다.
+    if (CUSTOMER_FEATURES.interactiveCoverViewer && detailCoverViewer && !detailCoverViewer.overlay.hidden) {
+      const closeOptions = detailCoverViewer.pendingCloseOptions || {};
+      detailCoverViewer.pendingCloseOptions = null;
+      closeDetailCoverViewer({ ...closeOptions, animate: true });
+      return;
+    }
+    renderRouteFromLocation();
+  }
+
+  window.addEventListener('popstate', handlePopState);
   updateLanguageButtons();
   applyStaticTranslations(document);
 
@@ -2262,6 +3426,7 @@
     // 상세 주소로 바로 들어온 손님도 뒤로가기를 누르면 사이트 밖이 아니라 목록으로 돌아가게 합니다.
     history.replaceState({ view: 'home' }, '', getBaseUrl());
     history.pushState({ view: 'detail', albumId: initialAlbumId }, '', `${getBaseUrl()}${getAlbumHash(initialAlbumId)}`);
+    if (CUSTOMER_FEATURES.persistentDetailLayers) renderHome({ keepInactive: true });
     renderDetail(initialAlbumId);
   } else {
     if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
