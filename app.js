@@ -35,7 +35,17 @@
     // 목록과 상세를 한 화면처럼 이어 보이게 하고, 커버 크게 보기에 직접 조작을 더합니다.
     instantDetailContinuity: true,
     interactiveCoverViewer: true,
+    // URL의 coverMode 옵션으로 원본/최적화 고화질 커버를 안전하게 비교합니다.
+    coverModeComparison: true,
   };
+  const requestedCoverMode = new URLSearchParams(window.location.search).get('coverMode');
+  const COVER_RENDER_MODE = CUSTOMER_FEATURES.coverModeComparison
+    && (requestedCoverMode === 'original' || requestedCoverMode === 'optimized')
+    ? requestedCoverMode
+    : 'thumbnail';
+  const USES_SHARED_HIGH_QUALITY_COVERS = COVER_RENDER_MODE === 'original' || COVER_RENDER_MODE === 'optimized';
+  document.documentElement.dataset.coverMode = COVER_RENDER_MODE;
+  document.documentElement.classList.toggle('feature-customer-shared-cover-source', USES_SHARED_HIGH_QUALITY_COVERS);
   document.documentElement.classList.toggle('feature-customer-request-track-list', CUSTOMER_FEATURES.requestTrackList);
   document.documentElement.classList.toggle('feature-customer-cover-transitions', CUSTOMER_FEATURES.coverTransitions);
   document.documentElement.classList.toggle('feature-customer-higher-contrast', CUSTOMER_FEATURES.higherContrast);
@@ -885,10 +895,9 @@
     return fallback;
   }
 
-  function getCoverThumbnailPath(path) {
-    if (!CUSTOMER_FEATURES.gridThumbnails) return '';
+  function getCoverVariantPath(path, folder, extension) {
     const normalized = String(path || '').trim().replace(/\\/g, '/');
-    if (!/^covers\/(?!thumbs\/)/i.test(normalized) || /\.(?:gif|svg)$/i.test(normalized)) return '';
+    if (!/^covers\/(?!thumbs\/|display\/)/i.test(normalized) || /\.(?:gif|svg)$/i.test(normalized)) return '';
 
     const relativePath = normalized.slice('covers/'.length);
     const fileName = relativePath.split('/').pop() || 'cover';
@@ -904,7 +913,22 @@
       hash ^= byte;
       hash = Math.imul(hash, 0x01000193);
     }
-    return `covers/thumbs/${baseName}-${(hash >>> 0).toString(16).padStart(8, '0')}.jpg`;
+    return `covers/${folder}/${baseName}-${(hash >>> 0).toString(16).padStart(8, '0')}.${extension}`;
+  }
+
+  function getCoverThumbnailPath(path) {
+    if (!CUSTOMER_FEATURES.gridThumbnails) return '';
+    return getCoverVariantPath(path, 'thumbs', 'jpg');
+  }
+
+  function getOptimizedCoverPath(path) {
+    return getCoverVariantPath(path, 'display', 'webp');
+  }
+
+  function getComparisonCoverSource(album) {
+    const originalSource = String(album?.coverImage || '').trim();
+    if (COVER_RENDER_MODE === 'optimized') return getOptimizedCoverPath(originalSource) || originalSource;
+    return originalSource;
   }
 
   function createCover(album, className = '', options = {}) {
@@ -914,21 +938,27 @@
     if (album.coverImage) {
       const img = document.createElement('img');
       const originalSource = String(album.coverImage).trim();
-      const thumbnailSource = className.split(/\s+/).includes('grid-cover')
-        ? getCoverThumbnailPath(originalSource)
-        : '';
-      let triedOriginal = !thumbnailSource;
+      const classes = className.split(/\s+/);
+      const comparisonTarget = classes.some(name => name === 'grid-cover' || name === 'detail-cover' || name === 'weekly-cover-art');
+      const sources = [originalSource];
+      if (comparisonTarget && COVER_RENDER_MODE === 'optimized') {
+        sources.unshift(getOptimizedCoverPath(originalSource));
+      } else if (classes.includes('grid-cover') && COVER_RENDER_MODE === 'thumbnail') {
+        sources.unshift(getCoverThumbnailPath(originalSource));
+      }
+      const availableSources = [...new Set(sources.filter(Boolean))];
+      let sourceIndex = 0;
       const priority = CUSTOMER_FEATURES.priorityCovers && options.priority === true;
-      img.src = thumbnailSource || originalSource;
+      img.src = availableSources[sourceIndex] || originalSource;
       img.alt = `${getLocalizedArtist(album) || ''} - ${album.title || ''}`.trim();
       // 첫 화면의 금주의 음반과 상세 커버는 목록 커버보다 먼저 불러와 빈 화면을 줄입니다.
       img.loading = priority ? 'eager' : 'lazy';
       img.decoding = 'async';
       if (priority) img.fetchPriority = 'high';
       img.onerror = () => {
-        if (!triedOriginal && originalSource) {
-          triedOriginal = true;
-          img.src = originalSource;
+        sourceIndex += 1;
+        if (availableSources[sourceIndex]) {
+          img.src = availableSources[sourceIndex];
           return;
         }
         // 이미지 파일이 없거나 경로가 틀린 경우에도 화면이 깨지지 않게 임시 커버로 바꿉니다.
@@ -1683,8 +1713,8 @@
 
   const transitionCoverPreloads = new Map();
 
-  function preloadTransitionCover(album) {
-    const source = String(album?.coverImage || '').trim();
+  function preloadTransitionCover(album, preferredSource = '') {
+    const source = String(preferredSource || getComparisonCoverSource(album)).trim();
     if (!source) return Promise.resolve();
     if (transitionCoverPreloads.has(source)) return transitionCoverPreloads.get(source);
 
@@ -1775,9 +1805,9 @@
     }
 
     const instantMotion = CUSTOMER_FEATURES.instantCoverMotion && CUSTOMER_FEATURES.instantDetailContinuity;
-    const coverReady = preloadTransitionCover(album);
     const sourceImage = transitionSource.querySelector('img');
     const sourceImageUrl = sourceImage?.currentSrc || sourceImage?.src || '';
+    const coverReady = preloadTransitionCover(album, sourceImageUrl);
     const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
     const backdrop = instantMotion ? document.createElement('div') : null;
     if (backdrop) {
@@ -1839,8 +1869,11 @@
       }
 
       const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
+      const sourceShadow = getComputedStyle(transitionSource).boxShadow || 'none';
+      const destinationShadow = getComputedStyle(destination).boxShadow || 'none';
       const finalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
       const upgradeDestinationCover = () => {
+        if (USES_SHARED_HIGH_QUALITY_COVERS) return;
         const originalSource = String(album?.coverImage || '').trim();
         upgradeDetailCoverWithoutFlash(destination, destinationImage, originalSource, coverReady);
       };
@@ -1861,12 +1894,12 @@
         {
           transform: 'translate3d(0, 0, 0) scale(1)',
           borderRadius: sourceBorderRadius,
-          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
+          boxShadow: sourceShadow,
         },
         {
           transform: finalTransform,
           borderRadius: destinationRadius,
-          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
+          boxShadow: destinationShadow,
         },
       ], {
         duration: 420,
@@ -2281,7 +2314,8 @@
     const weeklyButton = node.querySelector('[data-weekly-open]');
 
     if (weekly) {
-      node.querySelector('[data-weekly-cover]').append(createCover(weekly, 'weekly-cover-art', { priority: true }));
+      const weeklyCover = createCover(weekly, 'weekly-cover-art', { priority: true });
+      node.querySelector('[data-weekly-cover]').append(weeklyCover);
       node.querySelector('[data-weekly-format]').textContent = [formatLabel(weekly.format), getGenreLabel(classifyGenre(weekly.genre))].filter(Boolean).join(' · ');
       node.querySelector('[data-weekly-title]').textContent = weekly.title || t('chooseWeekly');
       node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
@@ -2297,8 +2331,8 @@
           transitionSource: weeklyButton.querySelector('.cover-frame'),
         });
       });
-      weeklyButton.addEventListener('pointerdown', () => preloadTransitionCover(weekly), { passive: true });
-      weeklyButton.addEventListener('focus', () => preloadTransitionCover(weekly));
+      weeklyButton.addEventListener('pointerdown', () => preloadTransitionCover(weekly, weeklyCover.querySelector('img')?.currentSrc), { passive: true });
+      weeklyButton.addEventListener('focus', () => preloadTransitionCover(weekly, weeklyCover.querySelector('img')?.currentSrc));
     } else {
       weeklyButton.disabled = true;
       weeklyButton.classList.add('is-empty');
@@ -2624,10 +2658,11 @@
         transitionSource: cover,
       });
     });
-    card.addEventListener('pointerdown', () => preloadTransitionCover(album), { passive: true });
-    card.addEventListener('focus', () => preloadTransitionCover(album));
-    card.addEventListener('mouseenter', () => preloadTransitionCover(album), { once: true });
     const cover = createCover(album, 'grid-cover', { priority: cardOptions.priorityCover === true });
+    const preloadCardCover = () => preloadTransitionCover(album, cover.querySelector('img')?.currentSrc);
+    card.addEventListener('pointerdown', preloadCardCover, { passive: true });
+    card.addEventListener('focus', preloadCardCover);
+    card.addEventListener('mouseenter', preloadCardCover, { once: true });
     if (recentlyAdded) {
       const badge = document.createElement('span');
       badge.className = 'album-card-new';
@@ -2692,9 +2727,10 @@
     }));
     grid.replaceChildren(...pages);
 
+    const hydrateRadius = USES_SHARED_HIGH_QUALITY_COVERS ? 1 : 2;
     const hydrate = centerPage => {
-      const firstPage = Math.max(1, centerPage - 2);
-      const lastPage = Math.min(totalPages, centerPage + 2);
+      const firstPage = Math.max(1, centerPage - hydrateRadius);
+      const lastPage = Math.min(totalPages, centerPage + hydrateRadius);
       for (let pageNumber = firstPage; pageNumber <= lastPage; pageNumber += 1) {
         const page = grid.children[pageNumber - 1];
         if (!page || page.dataset.hydrated === 'true') continue;
@@ -2703,6 +2739,15 @@
         page.replaceChildren(...pageAlbums.map(album => createAlbumCard(album, { priorityCover: priority })));
         page.dataset.hydrated = 'true';
       }
+    };
+
+    const releaseDistantPages = centerPage => {
+      if (!USES_SHARED_HIGH_QUALITY_COVERS) return;
+      Array.from(grid.children).forEach((page, index) => {
+        if (Math.abs(index + 1 - centerPage) <= 1 || page.dataset.hydrated !== 'true') return;
+        page.replaceChildren();
+        delete page.dataset.hydrated;
+      });
     };
 
     let scrollFrame = 0;
@@ -2731,6 +2776,7 @@
       hydrate(settledPage);
       setPersistentPagerCurrentPage(grid, settledPage);
       if (state.page !== settledPage) state.page = settledPage;
+      releaseDistantPages(settledPage);
       updateAlbumGrid({ preservePersistentTrack: true });
     };
 
@@ -2747,6 +2793,7 @@
       },
       realign() {
         hydrate(state.page);
+        releaseDistantPages(state.page);
         grid.scrollTo({ left: (state.page - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
         setPersistentPagerCurrentPage(grid, state.page);
       },
@@ -2763,6 +2810,7 @@
         programmaticTarget = null;
         window.clearTimeout(settleTimer);
         hydrate(targetPage);
+        releaseDistantPages(targetPage);
         grid.scrollTo({ left: (targetPage - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
         setPersistentPagerCurrentPage(grid, targetPage);
       },
@@ -2785,6 +2833,7 @@
     if ('onscrollend' in window) grid.addEventListener('scrollend', settle, { passive: true });
 
     hydrate(state.page);
+    releaseDistantPages(state.page);
     requestAnimationFrame(() => grid._pdPager?.realign());
   }
 

@@ -89,6 +89,15 @@ continuousPagerGutters: true,
 
 두 항목은 `app.js` 맨 위의 `CUSTOMER_FEATURES`에서 각각 `false`로 바꿔 따로 끌 수 있습니다.
 
+## 2026-08-08 고화질 커버 비교 모드
+
+- 원본 공용 모드: 주소 끝에 `?coverMode=original`
+- 용량 최적화 고화질 공용 모드: 주소 끝에 `?coverMode=optimized`
+- 옵션이 없는 평소 주소: 기존 썸네일 모드
+- 로컬에서 쉽게 열기: `compare-cover-original.html`, `compare-cover-optimized.html`
+
+두 비교 모드는 목록과 상세에서 같은 이미지 파일을 유지하며, 모바일에서 이전·현재·다음 세 페이지만 메모리에 남깁니다. 비교 기능 전체를 끄려면 `app.js`의 `coverModeComparison`을 `false`로 바꿉니다.
+
 ## 참고
 
 - 신청곡 메모는 손님의 현재 브라우저에만 저장되며 자동으로 신청되지 않습니다. 손님이 신청 용지에 직접 옮겨 적어야 합니다.
