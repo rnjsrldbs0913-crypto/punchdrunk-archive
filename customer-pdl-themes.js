@@ -1,8 +1,5 @@
 (() => {
-  const THEMES = new Set(['darkbase', 'scale']);
-  const params = new URLSearchParams(window.location.search);
-  const theme = params.get('pdl-theme');
-  if (!THEMES.has(theme)) return;
+  const theme = 'darkbase';
 
   const html = document.documentElement;
   const body = document.body;
@@ -19,7 +16,7 @@
   body.prepend(canvas);
 
   const themeColor = document.querySelector('meta[name="theme-color"]');
-  if (themeColor) themeColor.setAttribute('content', theme === 'scale' ? '#101015' : '#0c0911');
+  if (themeColor) themeColor.setAttribute('content', '#0c0911');
 
   function fitCanvas() {
     const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -94,16 +91,6 @@
   }
 
   function getFields() {
-    if (theme === 'scale') {
-      return [
-        { color: '#203d9b', y: 0.13, thickness: 0.3, speed: 0.63, travel: 0.17, slant: 0.26, alpha: 0.88 },
-        { color: '#ef4858', y: 0.37, thickness: 0.08, speed: 1, travel: 0.24, slant: 0.33, alpha: 0.96 },
-        { color: '#ff7ba7', y: 0.58, thickness: 0.2, speed: 0.72, travel: 0.2, slant: 0.19, alpha: 0.88 },
-        { color: '#294cb5', y: 0.79, thickness: 0.1, speed: 0.86, travel: 0.19, slant: 0.3, alpha: 0.88 },
-        { color: '#f2c747', y: 0.48, thickness: 0.026, speed: 1.15, travel: 0.31, slant: 0.38, alpha: 0.72 },
-      ];
-    }
-
     return [
       { color: '#ef4858', y: 0.18, thickness: 0.18, speed: 0.8, travel: 0.12, slant: 0.12, alpha: 0.9 },
       { color: '#203d9b', y: 0.43, thickness: 0.21, speed: 0.65, travel: 0.13, slant: 0.18, alpha: 0.88 },
@@ -115,7 +102,7 @@
     const { width, height, ratio } = fitCanvas();
     const time = now * 0.0002;
     context.clearRect(0, 0, width, height);
-    context.fillStyle = theme === 'scale' ? '#101015' : '#0c0911';
+    context.fillStyle = '#0c0911';
     context.fillRect(0, 0, width, height);
     getFields().forEach((field, index) => drawRibbon(width, height, field, time, index));
   }
