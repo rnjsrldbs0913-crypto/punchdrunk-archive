@@ -53,9 +53,9 @@ body.customer-page.pdl-theme-preview > .app-shell {
 
 .pdl-theme-preview .weekly-card,
 .pdl-theme-preview .weekly-card.has-weekly-motion {
-  border-color: rgba(255, 123, 167, 0.6);
-  background: rgba(15, 13, 19, 0.95);
-  box-shadow: 0 18px 42px rgba(5, 3, 8, 0.45);
+  border: 0;
+  background: rgba(23, 39, 111, 0.96);
+  box-shadow: 0 18px 42px rgba(5, 3, 8, 0.34);
 }
 
 .pdl-theme-preview .weekly-motion-video {
@@ -63,36 +63,77 @@ body.customer-page.pdl-theme-preview > .app-shell {
 }
 
 .pdl-theme-preview .weekly-motion-scrim {
-  background: rgba(15, 13, 19, 0.76);
+  background: rgba(23, 39, 111, 0.78);
+}
+
+.pdl-theme-preview .weekly-card.has-weekly-motion .weekly-cover .cover-frame {
+  border: 0;
+  box-shadow: 0 14px 28px rgba(5, 3, 8, 0.28);
+}
+
+.pdl-theme-preview .weekly-motion-indicator {
+  border-color: rgba(244, 240, 232, 0.74);
+  box-shadow: none;
+}
+
+.pdl-theme-preview .weekly-motion-indicator::after {
+  display: none;
 }
 
 .pdl-theme-preview .request-guide {
-  border-color: rgba(255, 123, 167, 0.58);
-  background: rgba(15, 13, 19, 0.95);
-  box-shadow: inset 5px 0 0 #ef4858;
+  border: 0;
+  color: #111117;
+  background: rgba(255, 123, 167, 0.96);
+  box-shadow: none;
 }
 
 .pdl-theme-preview .request-guide-label {
-  color: #ff9bbb;
+  color: #111117;
 }
 
 .pdl-theme-preview .request-guide-text,
 .pdl-theme-preview .request-guide-text span + span {
-  color: rgba(250, 247, 242, 0.92);
+  color: rgba(17, 17, 23, 0.88);
 }
 
-.pdl-theme-preview .search-section {
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: rgba(15, 13, 19, 0.95);
+html.pdl-theme-preview.feature-customer-request-guide-band .request-guide {
+  border: 0;
+  color: #111117;
+  background: #ff7ba7;
   box-shadow: none;
 }
 
-.pdl-theme-preview .search-input,
+html.pdl-theme-preview.feature-customer-request-guide-band .request-guide-label,
+html.pdl-theme-preview.feature-customer-request-guide-band .request-guide-text,
+html.pdl-theme-preview.feature-customer-request-guide-band .request-guide-text span + span {
+  color: rgba(17, 17, 23, 0.88);
+}
+
+.pdl-theme-preview .search-section {
+  border: 0;
+  background: rgba(23, 39, 111, 0.96);
+  box-shadow: none;
+}
+
 .pdl-theme-preview .filter-panel-toggle,
 .pdl-theme-preview select,
 .pdl-theme-preview .tool-button,
 .pdl-theme-preview .filter-chip {
-  background: rgba(244, 240, 232, 0.075);
+  background: rgba(244, 240, 232, 0.06);
+}
+
+.pdl-theme-preview .search-input {
+  border-color: transparent;
+  background: rgba(244, 240, 232, 0.98);
+  color: #111117;
+}
+
+.pdl-theme-preview .search-input::placeholder {
+  color: rgba(17, 17, 23, 0.54);
+}
+
+.pdl-theme-preview .search-clear-button {
+  color: rgba(17, 17, 23, 0.58);
 }
 
 .pdl-theme-preview .album-card-meta {
@@ -128,12 +169,12 @@ body.customer-page.pdl-theme-preview > .app-shell {
 }
 
 .pdl-theme-preview .detail-cover {
-  box-shadow: 14px 14px 0 rgba(239, 72, 88, 0.85), -8px -8px 0 rgba(35, 68, 168, 0.8), 0 20px 42px rgba(4, 3, 7, 0.4);
+  box-shadow: 0 20px 42px rgba(4, 3, 7, 0.4);
 }
 
 .pdl-theme-scale .weekly-card,
 .pdl-theme-scale .weekly-card.has-weekly-motion {
-  border-color: rgba(244, 240, 232, 0.78);
+  border: 0;
   background: rgba(244, 240, 232, 0.98);
   color: #111117;
 }
@@ -171,7 +212,7 @@ body.customer-page.pdl-theme-preview > .app-shell {
 }
 
 .pdl-theme-scale .weekly-card.has-weekly-motion .weekly-cover .cover-frame {
-  box-shadow: 10px 12px 0 rgba(239, 72, 88, 0.82), -6px -6px 0 rgba(35, 68, 168, 0.74), 0 14px 28px rgba(10, 8, 14, 0.2);
+  box-shadow: 0 14px 28px rgba(10, 8, 14, 0.2);
 }
 
 .pdl-theme-scale .request-guide,
@@ -186,6 +227,29 @@ body.customer-page.pdl-theme-preview > .app-shell {
 .pdl-theme-scale .request-note,
 .pdl-theme-scale .detail-nav button {
   background: rgba(23, 21, 27, 0.97);
+}
+
+.pdl-theme-scale .request-guide-label {
+  color: #ff9bbb;
+}
+
+.pdl-theme-scale .request-guide-text,
+.pdl-theme-scale .request-guide-text span + span {
+  color: rgba(250, 247, 242, 0.92);
+}
+
+html.pdl-theme-scale.feature-customer-request-guide-band .request-guide {
+  color: #f6f1ea;
+  background: rgba(23, 21, 27, 0.97);
+}
+
+html.pdl-theme-scale.feature-customer-request-guide-band .request-guide-label {
+  color: #ff9bbb;
+}
+
+html.pdl-theme-scale.feature-customer-request-guide-band .request-guide-text,
+html.pdl-theme-scale.feature-customer-request-guide-band .request-guide-text span + span {
+  color: rgba(250, 247, 242, 0.92);
 }
 
 .pdl-theme-scale .search-input {
