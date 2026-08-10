@@ -905,6 +905,56 @@ select:focus-visible,
   touch-action: pan-y;
 }
 
+/* 2026-08-10 로딩 실패 안내. app.js가 정상 실행되면 main 내용과 함께 사라집니다. */
+.app-load-fallback,
+.app-load-noscript {
+  margin: 48px auto;
+  padding: 20px;
+  max-width: 440px;
+  border: 1px solid rgba(255, 91, 157, 0.34);
+  border-radius: var(--radius);
+  background: rgba(12, 11, 16, 0.88);
+  text-align: center;
+}
+
+.app-load-fallback {
+  visibility: hidden;
+  opacity: 0;
+  animation: reveal-load-fallback 180ms ease 1200ms forwards;
+}
+
+.app-load-fallback strong,
+.app-load-noscript strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.app-load-fallback p,
+.app-load-noscript p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.app-load-fallback a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  padding: 0 16px;
+  border: 1px solid rgba(75, 116, 255, 0.48);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: rgba(75, 116, 255, 0.14);
+  text-decoration: none;
+}
+
+@keyframes reveal-load-fallback {
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
 .feature-customer-native-pager .grid-section {
   touch-action: pan-x pan-y;
 }
@@ -3972,5 +4022,64 @@ body.is-detail-view .language-switch {
   .detail-page.is-cover-zoom-revealing > *,
   .detail-page.is-cover-zoom-revealing .detail-cover-wrap {
     animation-duration: 1ms;
+  }
+}
+/* 2026-08-10 디자인 8: 신청 안내를 얇은 티켓형 띠로 표시합니다. */
+html.feature-customer-request-guide-band .request-guide {
+  grid-template-columns: minmax(86px, max-content) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 25px;
+  padding: 12px 13px;
+  border: 0;
+  border-top: 1px solid rgba(255, 111, 151, 0.42);
+  border-bottom: 1px solid rgba(105, 144, 255, 0.4);
+  border-radius: 0;
+  background: linear-gradient(90deg, rgba(197, 54, 89, 0.1), rgba(77, 99, 177, 0.08));
+  box-shadow: none;
+}
+
+html.feature-customer-request-guide-band .request-guide-label {
+  color: rgba(255, 161, 190, 0.98);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+html.feature-customer-request-guide-band .request-guide-text {
+  gap: 1px;
+  font-size: 12px;
+  line-height: 1.48;
+}
+
+/* 2026-08-10 디자인 9: 문자형 이동 기호의 획을 부드럽고 또렷하게 맞춥니다. */
+html.feature-customer-typographic-pagination .pagination-nav-button {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* 2026-08-10 디자인 11: 화면 전체에 아주 옅은 필름 입자를 얹습니다. */
+html.feature-customer-film-grain body.customer-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.58'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: screen;
+  opacity: 0.12;
+}
+
+@media (max-width: 520px) {
+  html.feature-customer-request-guide-band .request-guide {
+    grid-template-columns: minmax(78px, max-content) minmax(0, 1fr);
+    gap: 10px;
+    padding: 11px 7px;
+  }
+
+  html.feature-customer-request-guide-band .request-guide-text {
+    font-size: 11px;
+    line-height: 1.5;
   }
 }

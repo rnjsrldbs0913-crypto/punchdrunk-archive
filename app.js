@@ -39,6 +39,11 @@
     sharpDetailCoverTransition: true,
     // URL의 coverMode 옵션으로 원본/최적화 고화질 커버를 안전하게 비교합니다.
     coverModeComparison: true,
+    // 2026-08-10 디자인 개선입니다. 네 항목은 각각 false로 바꾸면 따로 되돌릴 수 있습니다.
+    requestGuideBand: true,
+    typographicPagination: true,
+    browserThemeColor: true,
+    filmGrain: true,
   };
   const requestedCoverMode = new URLSearchParams(window.location.search).get('coverMode');
   const availableCoverModes = new Set(['thumbnail', 'original', 'optimized']);
@@ -63,6 +68,14 @@
   document.documentElement.classList.toggle('feature-customer-instant-detail-continuity', CUSTOMER_FEATURES.instantDetailContinuity);
   document.documentElement.classList.toggle('feature-customer-interactive-cover-viewer', CUSTOMER_FEATURES.interactiveCoverViewer);
   document.documentElement.classList.toggle('feature-customer-sharp-detail-transition', CUSTOMER_FEATURES.sharpDetailCoverTransition);
+  document.documentElement.classList.toggle('feature-customer-request-guide-band', CUSTOMER_FEATURES.requestGuideBand);
+  document.documentElement.classList.toggle('feature-customer-typographic-pagination', CUSTOMER_FEATURES.typographicPagination);
+  document.documentElement.classList.toggle('feature-customer-browser-theme', CUSTOMER_FEATURES.browserThemeColor);
+  document.documentElement.classList.toggle('feature-customer-film-grain', CUSTOMER_FEATURES.filmGrain);
+  // 브라우저 상단 색상도 기능 스위치로 독립적으로 되돌릴 수 있게 합니다.
+  if (!CUSTOMER_FEATURES.browserThemeColor) {
+    document.querySelector('[data-customer-theme-color]')?.remove();
+  }
   const WEEKLY_MOTION_TEST = Object.freeze({
     enabled: true,
     albumId: 'album-mrdetafz',
@@ -2631,13 +2644,17 @@
     const controls = document.createElement('div');
     controls.className = 'pagination-controls';
 
-    const firstButton = makeButton('|<', 1, {
+    const paginationLabels = CUSTOMER_FEATURES.typographicPagination
+      ? { first: '«', previous: '‹', next: '›', last: '»' }
+      : { first: '|<', previous: '<', next: '>', last: '>|' };
+
+    const firstButton = makeButton(paginationLabels.first, 1, {
       className: 'pagination-nav-button is-backward',
       ariaLabel: t('firstAlbumPage'),
       title: t('firstAlbumPage'),
       disabled: state.page === 1,
     });
-    const previousButton = makeButton('<', Math.max(1, state.page - 1), {
+    const previousButton = makeButton(paginationLabels.previous, Math.max(1, state.page - 1), {
       className: 'pagination-nav-button is-backward',
       ariaLabel: t('previousAlbumPage'),
       title: t('previousAlbumPage'),
@@ -2729,13 +2746,13 @@
       pickerSummary.focus();
     });
 
-    const nextButton = makeButton('>', Math.min(totalPages, state.page + 1), {
+    const nextButton = makeButton(paginationLabels.next, Math.min(totalPages, state.page + 1), {
       className: 'pagination-nav-button is-forward',
       ariaLabel: t('nextAlbumPage'),
       title: t('nextAlbumPage'),
       disabled: state.page === totalPages,
     });
-    const lastButton = makeButton('>|', totalPages, {
+    const lastButton = makeButton(paginationLabels.last, totalPages, {
       className: 'pagination-nav-button is-forward',
       ariaLabel: t('lastAlbumPage'),
       title: t('lastAlbumPage'),

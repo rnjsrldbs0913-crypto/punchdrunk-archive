@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#17131d" data-customer-theme-color />
   <title>PUNCH-DRUNK ARCHIVE</title>
   <meta name="description" content="PUNCH-DRUNK MUSIC BAR DAEGU의 음반 아카이브입니다." />
   <meta property="og:title" content="PUNCH-DRUNK ARCHIVE" />
@@ -11,7 +12,7 @@
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/png" href="logo-punchdrunk-circle.png" />
   <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
-  <link rel="stylesheet" href="styles.css?v=20260808145753" />
+  <link rel="stylesheet" href="styles.css?v=20260810151711" />
 </head>
 <body class="customer-page">
   <div class="app-shell">
@@ -29,7 +30,20 @@
       </nav>
     </header>
 
-    <main id="app" aria-live="polite"></main>
+    <main id="app" aria-live="polite">
+      <!-- 2026-08-10 로딩 실패 안내: app.js가 정상 실행되면 이 내용은 즉시 실제 화면으로 교체됩니다. -->
+      <section class="app-load-fallback">
+        <strong>음반 목록을 불러오지 못했습니다.</strong>
+        <p>인터넷 연결을 확인한 뒤 다시 불러와주세요.</p>
+        <a href="index.html">다시 불러오기</a>
+      </section>
+      <noscript>
+        <section class="app-load-noscript">
+          <strong>JavaScript가 꺼져 있어 음반 목록을 열 수 없습니다.</strong>
+          <p>브라우저 설정에서 JavaScript를 허용한 뒤 다시 열어주세요.</p>
+        </section>
+      </noscript>
+    </main>
   </div>
 
   <template id="home-template">
@@ -158,7 +172,7 @@
     </article>
   </template>
 
-  <script src="albums-data.js?v=20260808142142"></script>
-  <script src="app.js?v=20260808152957"></script>
+  <script src="albums-data.js?v=20260810151711"></script>
+  <script src="app.js?v=20260810151711"></script>
 </body>
 </html>
