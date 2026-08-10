@@ -12,39 +12,35 @@
   const NEW_ALBUM_DAYS = 14;
   const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
   const REQUEST_TRACKS_STORAGE_KEY = 'pd-request-tracks-v1';
-  const CUSTOMER_FEATURES = {
-    // false로 바꾸면 원본 커버만 사용하므로 썸네일 기능만 간단히 되돌릴 수 있습니다.
+  const CUSTOMER_CONFIG = window.PD_CUSTOMER_CONFIG || {};
+  const CUSTOMER_FEATURES = CUSTOMER_CONFIG.features || {
     gridThumbnails: true,
-    // 2026-08-07 손님 화면 개선입니다. 항목별로 false로 바꾸면 각각 원래 상태로 돌아갑니다.
     priorityCovers: true,
     requestTrackList: true,
     coverTransitions: true,
     higherContrast: true,
     compactDetailHeader: true,
-    // 아래 세 항목은 각각 false로 바꾸면 이번 개선만 따로 되돌릴 수 있습니다.
     detailCoverViewer: true,
     smoothSwipeTracking: true,
     seamlessCoverTransitions: true,
-    // 2026-08-07 지속형 화면 전환입니다. 세 항목은 서로 독립적으로 되돌릴 수 있습니다.
     nativeMobilePager: true,
     persistentDetailLayers: true,
     directCoverTransition: true,
-    // 아래 두 항목은 즉시 전환과 페이지 경계 간격만 각각 되돌리는 스위치입니다.
     instantCoverMotion: true,
     continuousPagerGutters: true,
-    // 목록과 상세를 한 화면처럼 이어 보이게 하고, 커버 크게 보기에 직접 조작을 더합니다.
     instantDetailContinuity: true,
     interactiveCoverViewer: true,
-    // 상세 크기로 렌더링한 원본 커버를 축소 상태에서 펼쳐 확대 중 화질 저하를 막습니다.
     sharpDetailCoverTransition: true,
-    // URL의 coverMode 옵션으로 원본/최적화 고화질 커버를 안전하게 비교합니다.
     coverModeComparison: true,
-    // 2026-08-10 디자인 개선입니다. 네 항목은 각각 false로 바꾸면 따로 되돌릴 수 있습니다.
     requestGuideBand: true,
     typographicPagination: true,
     browserThemeColor: true,
     filmGrain: true,
+    landscapeTouchPager: true,
   };
+  const MOBILE_PAGER_MEDIA = CUSTOMER_FEATURES.landscapeTouchPager
+    ? CUSTOMER_CONFIG.mobilePagerMedia || '(max-width: 719px), (pointer: coarse) and (max-width: 900px)'
+    : '(max-width: 719px)';
   const requestedCoverMode = new URLSearchParams(window.location.search).get('coverMode');
   const availableCoverModes = new Set(['thumbnail', 'original', 'optimized']);
   // 기본 화면은 현재 페이지와 양옆 페이지에 원본을 사용합니다. 필요하면 ?coverMode=thumbnail로 즉시 비교할 수 있습니다.
@@ -72,11 +68,12 @@
   document.documentElement.classList.toggle('feature-customer-typographic-pagination', CUSTOMER_FEATURES.typographicPagination);
   document.documentElement.classList.toggle('feature-customer-browser-theme', CUSTOMER_FEATURES.browserThemeColor);
   document.documentElement.classList.toggle('feature-customer-film-grain', CUSTOMER_FEATURES.filmGrain);
+  document.documentElement.classList.toggle('feature-customer-landscape-touch-pager', CUSTOMER_FEATURES.landscapeTouchPager);
   // 브라우저 상단 색상도 기능 스위치로 독립적으로 되돌릴 수 있게 합니다.
   if (!CUSTOMER_FEATURES.browserThemeColor) {
     document.querySelector('[data-customer-theme-color]')?.remove();
   }
-  const WEEKLY_MOTION_TEST = Object.freeze({
+  const WEEKLY_MOTION_TEST = Object.freeze(CUSTOMER_CONFIG.weeklyMotionTest || {
     enabled: true,
     albumId: 'album-mrdetafz',
     src: 'media/weekly-motion-test.mp4',
@@ -1516,7 +1513,7 @@
   }
 
   function isMobileAlbumPager() {
-    return window.matchMedia('(max-width: 719px)').matches;
+    return window.matchMedia(MOBILE_PAGER_MEDIA).matches;
   }
 
   function resetAlbumPage() {

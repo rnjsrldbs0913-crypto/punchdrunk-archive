@@ -1,0 +1,257 @@
+html.pdl-theme-preview,
+body.customer-page.pdl-theme-preview {
+  background: #0c0911;
+}
+
+html.pdl-theme-scale,
+body.customer-page.pdl-theme-scale {
+  background: #101015;
+}
+
+html.pdl-theme-preview body.customer-page::before,
+html.feature-customer-film-grain.pdl-theme-preview body.customer-page::before {
+  display: none;
+}
+
+.pdl-page-color-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+body.customer-page.pdl-theme-preview > .app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.pdl-theme-preview .language-switch,
+.pdl-theme-preview .weekly-card,
+.pdl-theme-preview .request-guide,
+.pdl-theme-preview .search-section,
+.pdl-theme-preview .recent-card,
+.pdl-theme-preview .album-card-meta,
+.pdl-theme-preview .pagination-nav-button,
+.pdl-theme-preview .pagination-page-summary,
+.pdl-theme-preview .pagination-page-number,
+.pdl-theme-preview .pagination-page-form button,
+.pdl-theme-preview .back-button,
+.pdl-theme-preview .detail-head,
+.pdl-theme-preview .detail-section,
+.pdl-theme-preview .request-note,
+.pdl-theme-preview .detail-nav button {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.pdl-theme-preview .language-switch {
+  background: rgba(12, 9, 17, 0.94);
+}
+
+.pdl-theme-preview .weekly-card,
+.pdl-theme-preview .weekly-card.has-weekly-motion {
+  border-color: rgba(255, 123, 167, 0.6);
+  background: rgba(15, 13, 19, 0.95);
+  box-shadow: 0 18px 42px rgba(5, 3, 8, 0.45);
+}
+
+.pdl-theme-preview .weekly-motion-video {
+  opacity: 0.12;
+}
+
+.pdl-theme-preview .weekly-motion-scrim {
+  background: rgba(15, 13, 19, 0.76);
+}
+
+.pdl-theme-preview .request-guide {
+  border-color: rgba(255, 123, 167, 0.58);
+  background: rgba(15, 13, 19, 0.95);
+  box-shadow: inset 5px 0 0 #ef4858;
+}
+
+.pdl-theme-preview .request-guide-label {
+  color: #ff9bbb;
+}
+
+.pdl-theme-preview .request-guide-text,
+.pdl-theme-preview .request-guide-text span + span {
+  color: rgba(250, 247, 242, 0.92);
+}
+
+.pdl-theme-preview .search-section {
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(15, 13, 19, 0.95);
+  box-shadow: none;
+}
+
+.pdl-theme-preview .search-input,
+.pdl-theme-preview .filter-panel-toggle,
+.pdl-theme-preview select,
+.pdl-theme-preview .tool-button,
+.pdl-theme-preview .filter-chip {
+  background: rgba(244, 240, 232, 0.075);
+}
+
+.pdl-theme-preview .album-card-meta {
+  margin-top: 5px;
+  padding: 7px 7px 8px;
+  background: rgba(15, 13, 19, 0.92);
+}
+
+.pdl-theme-preview .pagination-nav-button,
+.pdl-theme-preview .pagination-page-summary,
+.pdl-theme-preview .pagination-page-number,
+.pdl-theme-preview .pagination-page-form button,
+.pdl-theme-preview .back-button,
+.pdl-theme-preview .detail-nav button {
+  background: rgba(15, 13, 19, 0.95);
+}
+
+.pdl-theme-preview .detail-head {
+  margin-top: 18px;
+  padding: 17px 18px;
+  background: rgba(15, 13, 19, 0.95);
+}
+
+.pdl-theme-preview .detail-section {
+  margin-top: 12px;
+  padding: 20px;
+  border: 0;
+  background: rgba(15, 13, 19, 0.96);
+}
+
+.pdl-theme-preview .request-note {
+  background: rgba(15, 13, 19, 0.95);
+}
+
+.pdl-theme-preview .detail-cover {
+  box-shadow: 14px 14px 0 rgba(239, 72, 88, 0.85), -8px -8px 0 rgba(35, 68, 168, 0.8), 0 20px 42px rgba(4, 3, 7, 0.4);
+}
+
+.pdl-theme-scale .weekly-card,
+.pdl-theme-scale .weekly-card.has-weekly-motion {
+  border-color: rgba(244, 240, 232, 0.78);
+  background: rgba(244, 240, 232, 0.98);
+  color: #111117;
+}
+
+.pdl-theme-scale .weekly-motion-video,
+.pdl-theme-scale .weekly-motion-scrim,
+.pdl-theme-scale .weekly-motion-indicator {
+  display: none !important;
+}
+
+.pdl-theme-scale .weekly-card.has-weekly-motion .weekly-meta {
+  padding-right: 0;
+  text-shadow: none;
+}
+
+.pdl-theme-scale .weekly-meta p,
+.pdl-theme-scale .weekly-year,
+.pdl-theme-scale .weekly-reason p {
+  color: rgba(17, 17, 23, 0.76);
+}
+
+.pdl-theme-scale .weekly-reason {
+  border-top-color: rgba(17, 17, 23, 0.22);
+}
+
+.pdl-theme-scale .weekly-reason span,
+.pdl-theme-scale .weekly-cta {
+  color: #d83e53;
+}
+
+.pdl-theme-scale .weekly-info .pill {
+  border-color: rgba(216, 62, 83, 0.34);
+  background: rgba(216, 62, 83, 0.08);
+  color: rgba(17, 17, 23, 0.78);
+}
+
+.pdl-theme-scale .weekly-card.has-weekly-motion .weekly-cover .cover-frame {
+  box-shadow: 10px 12px 0 rgba(239, 72, 88, 0.82), -6px -6px 0 rgba(35, 68, 168, 0.74), 0 14px 28px rgba(10, 8, 14, 0.2);
+}
+
+.pdl-theme-scale .request-guide,
+.pdl-theme-scale .search-section,
+.pdl-theme-scale .album-card-meta,
+.pdl-theme-scale .pagination-nav-button,
+.pdl-theme-scale .pagination-page-summary,
+.pdl-theme-scale .pagination-page-number,
+.pdl-theme-scale .pagination-page-form button,
+.pdl-theme-scale .back-button,
+.pdl-theme-scale .detail-head,
+.pdl-theme-scale .request-note,
+.pdl-theme-scale .detail-nav button {
+  background: rgba(23, 21, 27, 0.97);
+}
+
+.pdl-theme-scale .search-input {
+  border-color: rgba(244, 240, 232, 0.64);
+  background: rgba(244, 240, 232, 0.98);
+  color: #111117;
+}
+
+.pdl-theme-scale .search-input::placeholder {
+  color: rgba(17, 17, 23, 0.54);
+}
+
+.pdl-theme-scale .search-clear-button {
+  color: rgba(17, 17, 23, 0.58);
+}
+
+.pdl-theme-scale .detail-page > .detail-section:first-of-type {
+  color: #111117;
+  background: rgba(244, 240, 232, 0.98);
+}
+
+.pdl-theme-scale .detail-page > .detail-section:first-of-type h2,
+.pdl-theme-scale .detail-page > .detail-section:first-of-type .track-title,
+.pdl-theme-scale .detail-page > .detail-section:first-of-type .track-number,
+.pdl-theme-scale .detail-page > .detail-section:first-of-type .tracklist-hint {
+  color: #111117;
+}
+
+.pdl-theme-scale .detail-page > .detail-section:first-of-type .track-row {
+  border-bottom-color: rgba(17, 17, 23, 0.16);
+}
+
+.pdl-theme-scale .detail-page > .detail-section:first-of-type .track-request-button:is(button) {
+  border-color: rgba(17, 17, 23, 0.22);
+  background: rgba(17, 17, 23, 0.06);
+  color: #111117;
+}
+
+@media (max-width: 719px) {
+  .pdl-theme-preview .app-shell {
+    padding-inline: 10px;
+  }
+
+  .pdl-theme-preview .site-header {
+    margin-bottom: 22px;
+  }
+
+  .pdl-theme-preview .weekly-card {
+    box-shadow: 0 14px 32px rgba(5, 3, 8, 0.36);
+  }
+
+  .pdl-theme-preview .album-card-meta {
+    min-height: 54px;
+  }
+
+  .pdl-theme-preview .detail-head {
+    text-align: left;
+  }
+
+  .pdl-theme-preview .detail-tags {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdl-page-color-field {
+    transform: none;
+  }
+}

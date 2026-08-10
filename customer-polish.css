@@ -1,0 +1,24 @@
+/* Customer-only visual details kept separate for easy rollback. */
+html.feature-customer-film-grain body.customer-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.58'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: screen;
+  opacity: 0.12;
+}
+
+html.feature-customer-film-grain body.customer-page > .app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+@media (pointer: coarse) and (orientation: landscape) and (min-width: 720px) and (max-width: 900px) {
+  html.feature-customer-landscape-touch-pager .album-grid.is-persistent-pager .album-grid-page {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px 8px;
+  }
+}

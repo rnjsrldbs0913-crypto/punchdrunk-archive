@@ -1,0 +1,36 @@
+(() => {
+  window.PD_CUSTOMER_CONFIG = Object.freeze({
+    features: Object.freeze({
+      gridThumbnails: true,
+      priorityCovers: true,
+      requestTrackList: true,
+      coverTransitions: true,
+      higherContrast: true,
+      compactDetailHeader: true,
+      detailCoverViewer: true,
+      smoothSwipeTracking: true,
+      seamlessCoverTransitions: true,
+      nativeMobilePager: true,
+      persistentDetailLayers: true,
+      directCoverTransition: true,
+      instantCoverMotion: true,
+      continuousPagerGutters: true,
+      instantDetailContinuity: true,
+      interactiveCoverViewer: true,
+      sharpDetailCoverTransition: true,
+      coverModeComparison: true,
+      requestGuideBand: true,
+      typographicPagination: true,
+      browserThemeColor: true,
+      filmGrain: true,
+      landscapeTouchPager: true,
+    }),
+    mobilePagerMedia: '(max-width: 719px), (pointer: coarse) and (max-width: 900px)',
+    weeklyMotionTest: Object.freeze({
+      enabled: true,
+      albumId: 'album-mrdetafz',
+      src: 'media/weekly-motion-test.mp4',
+      poster: 'media/weekly-motion-test-poster.jpg',
+    }),
+  });
+})();

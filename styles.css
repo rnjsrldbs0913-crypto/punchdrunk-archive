@@ -1991,6 +1991,7 @@ select:focus-visible,
 
 .admin-utility-content > .admin-warning,
 .admin-utility-content > .admin-tool-panel,
+.admin-utility-content > .admin-save-tools,
 .admin-utility-content > .admin-dashboard,
 .admin-utility-content > .admin-mode-bar {
   margin-bottom: 0;
@@ -4056,19 +4057,6 @@ html.feature-customer-typographic-pagination .pagination-nav-button {
   font-size: 20px;
   font-weight: 600;
   line-height: 1;
-}
-
-/* 2026-08-10 디자인 11: 화면 전체에 아주 옅은 필름 입자를 얹습니다. */
-html.feature-customer-film-grain body.customer-page::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.58'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-  mix-blend-mode: screen;
-  opacity: 0.12;
 }
 
 @media (max-width: 520px) {
