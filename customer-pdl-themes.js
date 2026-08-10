@@ -88,10 +88,7 @@
     context.clearRect(0, 0, width, height);
     context.fillStyle = theme === 'scale' ? '#101015' : '#0c0911';
     context.fillRect(0, 0, width, height);
-    context.save();
-    context.filter = `blur(${Math.round((theme === 'scale' ? 18 : 27) * ratio)}px)`;
     getFields().forEach((field, index) => drawRibbon(width, height, field, time, index));
-    context.restore();
   }
 
   function loop(now) {

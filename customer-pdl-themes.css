@@ -21,6 +21,19 @@ html.feature-customer-film-grain.pdl-theme-preview body.customer-page::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  transform: scale(1.16);
+  transform-origin: center;
+  will-change: filter, transform;
+}
+
+.pdl-theme-darkbase .pdl-page-color-field {
+  -webkit-filter: blur(27px);
+  filter: blur(27px);
+}
+
+.pdl-theme-scale .pdl-page-color-field {
+  -webkit-filter: blur(18px);
+  filter: blur(18px);
 }
 
 body.customer-page.pdl-theme-preview > .app-shell {
