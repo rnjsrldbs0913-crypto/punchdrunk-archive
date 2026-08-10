@@ -21,24 +21,55 @@ html.feature-customer-film-grain.pdl-theme-preview body.customer-page::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  transform: scale(1.16);
-  transform-origin: center;
-  will-change: filter, transform;
-}
-
-.pdl-theme-darkbase .pdl-page-color-field {
-  -webkit-filter: blur(27px);
-  filter: blur(27px);
-}
-
-.pdl-theme-scale .pdl-page-color-field {
-  -webkit-filter: blur(18px);
-  filter: blur(18px);
 }
 
 body.customer-page.pdl-theme-preview > .app-shell {
   position: relative;
   z-index: 1;
+}
+
+.pdl-facing-figures {
+  display: none;
+}
+
+body.pdl-theme-preview:not(.is-detail-view) .site-header {
+  align-items: center;
+  min-height: clamp(216px, 30vw, 290px);
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+body.pdl-theme-preview:not(.is-detail-view) .pdl-facing-figures {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  display: block;
+  width: clamp(540px, 108vw, 1280px);
+  max-width: none;
+  height: auto;
+  transform: translate(-50%, -38%);
+  pointer-events: none;
+  user-select: none;
+}
+
+body.pdl-theme-preview:not(.is-detail-view) .language-switch {
+  right: 50%;
+  top: 0;
+  transform: translateX(50%);
+}
+
+.pdl-theme-preview .site-home-button {
+  position: relative;
+  z-index: 2;
+}
+
+.pdl-theme-preview .language-switch {
+  z-index: 3;
+}
+
+body.is-detail-view.pdl-theme-preview .pdl-facing-figures {
+  display: none;
 }
 
 .pdl-theme-preview .language-switch,
