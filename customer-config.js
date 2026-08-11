@@ -24,6 +24,8 @@
       browserThemeColor: true,
       filmGrain: true,
       landscapeTouchPager: true,
+      compactHeaderFigures: true,
+      coverTransitionLayerFix: true,
     }),
     mobilePagerMedia: '(max-width: 719px), (pointer: coarse) and (max-width: 900px)',
     weeklyMotionTest: Object.freeze({
