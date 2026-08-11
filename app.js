@@ -39,6 +39,7 @@
     landscapeTouchPager: true,
     compactHeaderFigures: true,
     coverTransitionLayerFix: true,
+    wideHeaderColorField: true,
   };
   const MOBILE_PAGER_MEDIA = CUSTOMER_FEATURES.landscapeTouchPager
     ? CUSTOMER_CONFIG.mobilePagerMedia || '(max-width: 719px), (pointer: coarse) and (max-width: 900px)'
@@ -73,6 +74,7 @@
   document.documentElement.classList.toggle('feature-customer-landscape-touch-pager', CUSTOMER_FEATURES.landscapeTouchPager);
   document.documentElement.classList.toggle('feature-customer-compact-header-figures', CUSTOMER_FEATURES.compactHeaderFigures);
   document.documentElement.classList.toggle('feature-customer-cover-transition-layer-fix', CUSTOMER_FEATURES.coverTransitionLayerFix);
+  document.documentElement.classList.toggle('feature-customer-wide-header-color-field', CUSTOMER_FEATURES.wideHeaderColorField);
   // 브라우저 상단 색상도 기능 스위치로 독립적으로 되돌릴 수 있게 합니다.
   if (!CUSTOMER_FEATURES.browserThemeColor) {
     document.querySelector('[data-customer-theme-color]')?.remove();

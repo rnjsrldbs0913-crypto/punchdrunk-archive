@@ -73,6 +73,83 @@ html.feature-customer-compact-header-figures body.pdl-theme-preview:not(.is-deta
   transform: translate(-44%, -37%);
 }
 
+/* 2026-08-11 확장 B안: 파랑/빨강을 중앙과 금주의 음반 쪽으로 넓게 연결합니다. */
+html.feature-customer-wide-header-color-field body.customer-page.pdl-theme-preview:not(.is-detail-view) > .app-shell::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -34px;
+  z-index: -1;
+  width: 100%;
+  height: 430px;
+  transform: translateX(-50%);
+  transform-origin: 50% 30%;
+  background:
+    radial-gradient(
+      circle at 50% 27%,
+      rgba(7, 6, 10, 0.99) 0 13%,
+      rgba(8, 7, 12, 0.9) 18%,
+      rgba(8, 7, 12, 0.44) 24%,
+      rgba(8, 7, 12, 0.08) 34%,
+      transparent 42%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(31, 83, 194, 0.96) 0%,
+      rgba(36, 89, 201, 0.9) 27%,
+      rgba(31, 74, 170, 0.78) 42%,
+      rgba(28, 44, 92, 0.38) 49%,
+      rgba(92, 29, 53, 0.38) 51%,
+      rgba(166, 42, 68, 0.78) 58%,
+      rgba(206, 51, 73, 0.9) 73%,
+      rgba(220, 55, 75, 0.96) 100%
+    );
+  background-repeat: no-repeat;
+  background-position: 49% 48%, 48.5% 50%;
+  background-size: 106% 106%, 106% 100%;
+  filter: blur(18px) saturate(1.04);
+  clip-path: inset(0);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 58%,
+    rgba(0, 0, 0, 0.86) 70%,
+    rgba(0, 0, 0, 0.28) 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 58%,
+    rgba(0, 0, 0, 0.86) 70%,
+    rgba(0, 0, 0, 0.28) 88%,
+    transparent 100%
+  );
+  animation: pdl-header-wide-color-drift 17s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+@keyframes pdl-header-wide-color-drift {
+  0% {
+    opacity: 0.94;
+    transform: translateX(-50%);
+    background-position: 49% 47%, 48.5% 50%;
+  }
+
+  52% {
+    opacity: 1;
+    transform: translateX(-50%);
+    background-position: 51% 52%, 51.5% 50%;
+  }
+
+  100% {
+    opacity: 0.96;
+    transform: translateX(-50%);
+    background-position: 50% 49%, 49.5% 50%;
+  }
+}
+
 /* 새 배경의 stacking context 위로 이동 중인 상세 커버를 올려 확대 애니메이션을 다시 보이게 합니다. */
 html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.customer-page > .app-shell {
   z-index: 36;
@@ -290,8 +367,20 @@ html.pdl-theme-preview.feature-customer-request-guide-band .request-guide-text s
   }
 }
 
+@media (min-width: 720px) {
+  html.feature-customer-wide-header-color-field body.customer-page.pdl-theme-preview:not(.is-detail-view) > .app-shell::before {
+    width: min(1260px, 100%);
+    height: 430px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pdl-page-color-field {
     transform: none;
+  }
+
+  html.feature-customer-wide-header-color-field body.customer-page.pdl-theme-preview:not(.is-detail-view) > .app-shell::before {
+    animation: none;
+    transform: translateX(-50%);
   }
 }

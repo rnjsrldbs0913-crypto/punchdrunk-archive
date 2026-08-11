@@ -26,6 +26,8 @@
       landscapeTouchPager: true,
       compactHeaderFigures: true,
       coverTransitionLayerFix: true,
+      // 상단 인물 뒤의 파랑/빨강 확장 배경입니다. false로 바꾸면 이 항목만 즉시 되돌아갑니다.
+      wideHeaderColorField: true,
     }),
     mobilePagerMedia: '(max-width: 719px), (pointer: coarse) and (max-width: 900px)',
     weeklyMotionTest: Object.freeze({
