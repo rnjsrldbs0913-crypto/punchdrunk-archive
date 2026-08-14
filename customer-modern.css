@@ -46,6 +46,11 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
   padding-top: 18px;
 }
 
+/* 전환 배경보다 앱을 한 단계 위에 두어 목록 커버의 확대 동작이 첫 프레임부터 보이게 합니다. */
+html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.customer-page > .app-shell {
+  z-index: 36;
+}
+
 .feature-customer-modern-style button,
 .feature-customer-modern-style input,
 .feature-customer-modern-style select,
