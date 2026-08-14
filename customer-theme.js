@@ -20,9 +20,9 @@
   function getThemeText(theme) {
     const isEnglish = document.documentElement.lang === 'en';
     if (theme === 'day') {
-      return isEnglish ? 'Switch to night mode' : '어두운 화면으로 전환';
+      return isEnglish ? 'Switch to dark mode' : '다크 모드로 변경';
     }
-    return isEnglish ? 'Switch to day mode' : '밝은 화면으로 전환';
+    return isEnglish ? 'Switch to light mode' : '라이트 모드로 변경';
   }
 
   function updateControl(theme) {
@@ -39,7 +39,7 @@
     const nextTheme = features.dayNightTheme === false || theme !== 'day' ? 'night' : 'day';
     root.dataset.customerTheme = nextTheme;
     root.style.colorScheme = nextTheme === 'day' ? 'light' : 'dark';
-    document.querySelector('[data-customer-theme-color]')?.setAttribute('content', nextTheme === 'day' ? '#f1f1ee' : '#07080a');
+    document.querySelector('[data-customer-theme-color]')?.setAttribute('content', nextTheme === 'day' ? '#f3f4f1' : '#07080a');
     updateControl(nextTheme);
     if (!save || features.dayNightTheme === false) return;
     try {
@@ -52,6 +52,8 @@
   applyTheme(readSavedTheme());
 
   document.addEventListener('DOMContentLoaded', () => {
+    updateControl(root.dataset.customerTheme || 'night');
+
     document.querySelector('[data-customer-theme-toggle]')?.addEventListener('click', () => {
       applyTheme(root.dataset.customerTheme === 'day' ? 'night' : 'day', true);
     });
