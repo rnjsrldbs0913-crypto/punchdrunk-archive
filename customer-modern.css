@@ -1,7 +1,16 @@
 /* 2026-08-14 현대적 디자인. html의 기능 클래스를 제거하면 이 파일만 즉시 롤백됩니다. */
+@font-face {
+  font-family: "PDL Jost";
+  src: url("media/fonts/jost-brand-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 html.feature-customer-modern-style {
   --modern-font-body: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --modern-font-display: Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --modern-font-brand: "PDL Jost", "Avenir Next", Futura, "Century Gothic", sans-serif;
   --modern-coral: #ff5b6f;
   --modern-blue: #4d78df;
   --modern-bg: #07080a;
@@ -78,10 +87,11 @@ html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.cust
 }
 
 .feature-customer-modern-style .customer-brand-wordmark strong {
-  font-family: var(--modern-font-display);
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1;
+  font-family: var(--modern-font-brand);
+  font-size: 22px;
+  font-weight: 700;
+  font-feature-settings: "kern" 1;
+  line-height: 0.96;
 }
 
 .feature-customer-modern-style .customer-brand-wordmark span {
@@ -192,6 +202,11 @@ html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.cust
   backdrop-filter: none;
 }
 
+.feature-customer-modern-style[data-customer-theme="day"] .request-guide,
+.feature-customer-modern-style[data-customer-theme="day"] .search-section {
+  box-shadow: 0 12px 30px rgba(28, 31, 39, 0.09);
+}
+
 .feature-customer-modern-style[data-customer-theme="day"] .customer-theme-toggle {
   background: #fffefa;
 }
@@ -270,7 +285,20 @@ html.feature-customer-modern-style[data-customer-theme="day"].feature-customer-r
 }
 
 .feature-customer-modern-style[data-customer-theme="day"] .search-section {
+  position: relative;
+  overflow: hidden;
   background: #fffefa;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-section::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(68, 105, 198, 0.82), rgba(68, 105, 198, 0.12) 38%, rgba(215, 67, 91, 0.12) 62%, rgba(215, 67, 91, 0.82));
+  content: "";
+  pointer-events: none;
 }
 
 .feature-customer-modern-style[data-customer-theme="day"] .search-label,
@@ -345,6 +373,13 @@ html.feature-customer-modern-style[data-customer-theme="day"].feature-customer-r
   border: 1px solid var(--modern-line);
   border-radius: 4px;
   box-shadow: none;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .album-card .cover-frame,
+.feature-customer-modern-style[data-customer-theme="day"] .album-card:hover .cover-frame,
+.feature-customer-modern-style[data-customer-theme="day"] .detail-cover {
+  border-color: rgba(24, 27, 33, 0.25);
+  box-shadow: 0 7px 18px rgba(31, 35, 44, 0.13);
 }
 
 .feature-customer-modern-style .album-card:active .cover-frame {
