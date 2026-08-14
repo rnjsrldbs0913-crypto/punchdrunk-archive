@@ -1,0 +1,64 @@
+/* 2026-08-14 빨강·파랑 배경. colorFieldBackground 설정만 false로 바꾸면 제거됩니다. */
+html.feature-customer-color-field body.customer-page::before,
+html.feature-customer-color-field body.customer-page::after {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: normal;
+}
+
+html.feature-customer-color-field body.customer-page::before {
+  background:
+    radial-gradient(82% 52% at -8% 12%, rgba(49, 102, 222, 0.29), transparent 72%),
+    radial-gradient(80% 52% at 108% 25%, rgba(222, 50, 77, 0.25), transparent 72%),
+    radial-gradient(85% 48% at -12% 76%, rgba(49, 102, 222, 0.10), transparent 75%),
+    radial-gradient(82% 46% at 112% 92%, rgba(222, 50, 77, 0.09), transparent 76%),
+    linear-gradient(180deg, #0b0c10 0%, #07080a 52%, #08080b 100%);
+}
+
+html.feature-customer-color-field body.customer-page::after {
+  background:
+    radial-gradient(84% 54% at -8% 10%, rgba(76, 123, 224, 0.25), transparent 72%),
+    radial-gradient(82% 54% at 108% 24%, rgba(231, 83, 104, 0.23), transparent 72%),
+    radial-gradient(86% 48% at -14% 78%, rgba(76, 123, 224, 0.08), transparent 76%),
+    radial-gradient(82% 46% at 112% 94%, rgba(231, 83, 104, 0.08), transparent 76%),
+    linear-gradient(180deg, #f6f6f3 0%, #efefec 56%, #f4f4f1 100%);
+}
+
+html.feature-customer-color-field[data-customer-theme="night"] body.customer-page::before,
+html.feature-customer-color-field[data-customer-theme="day"] body.customer-page::after {
+  opacity: 1;
+}
+
+html.feature-customer-theme-transition.feature-customer-color-field body.customer-page::before,
+html.feature-customer-theme-transition.feature-customer-color-field body.customer-page::after {
+  transition: opacity 320ms ease;
+}
+
+.feature-customer-color-field body.customer-page > .app-shell {
+  position: relative;
+  z-index: 2;
+}
+
+.feature-customer-color-field #app.is-detail-active .customer-detail-view::before,
+.feature-customer-color-field #app.is-detail-staging .customer-detail-view::before {
+  background: transparent;
+}
+
+.feature-customer-color-field[data-customer-theme="night"] .cover-transition-backdrop {
+  background:
+    radial-gradient(82% 52% at -8% 12%, rgba(49, 102, 222, 0.29), transparent 72%),
+    radial-gradient(80% 52% at 108% 25%, rgba(222, 50, 77, 0.25), transparent 72%),
+    #07080a;
+}
+
+.feature-customer-color-field[data-customer-theme="day"] .cover-transition-backdrop {
+  background:
+    radial-gradient(84% 54% at -8% 10%, rgba(76, 123, 224, 0.25), transparent 72%),
+    radial-gradient(82% 54% at 108% 24%, rgba(231, 83, 104, 0.23), transparent 72%),
+    #f1f1ee;
+}

@@ -12,8 +12,12 @@
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/png" href="logo-punchdrunk-circle.png" />
   <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
-  <link rel="stylesheet" href="styles.css?v=20260814085837" />
-  <link rel="stylesheet" href="customer-polish.css?v=20260814085837" />
+  <script src="customer-config.js?v=20260814121013"></script>
+  <script src="customer-theme.js?v=20260814121013"></script>
+  <link rel="stylesheet" href="styles.css?v=20260814121013" />
+  <link rel="stylesheet" href="customer-polish.css?v=20260814121013" />
+  <link rel="stylesheet" href="customer-modern.css?v=20260814121013" />
+  <link rel="stylesheet" href="customer-color-field.css?v=20260814121013" />
 </head>
 <body class="customer-page">
   <div class="app-shell">
@@ -21,14 +25,23 @@
       <button class="site-home-button" data-home-link type="button" aria-label="처음 화면으로 돌아가기" data-i18n-aria="homeLabel">
         <img class="site-logo" src="logo-punchdrunk-circle.png" alt="PUNCH-DRUNK MUSIC BAR DAEGU KOREA" />
       </button>
-      <nav class="language-switch" aria-label="언어 선택" data-i18n-aria="languageLabel">
-        <button type="button" data-language-option="ko" aria-pressed="true" title="한국어">
-          <span>KR</span>
+      <div class="customer-brand-wordmark" aria-hidden="true">
+        <strong>PUNCH-DRUNK</strong>
+        <span>MUSIC BAR · DAEGU</span>
+      </div>
+      <div class="customer-header-controls">
+        <button class="customer-theme-toggle" type="button" data-customer-theme-toggle aria-label="밝은 화면으로 전환" title="데이/나이트 모드 전환">
+          <span data-customer-theme-icon aria-hidden="true">☀</span>
         </button>
-        <button type="button" data-language-option="en" aria-pressed="false" title="English">
-          <span>EN</span>
-        </button>
-      </nav>
+        <nav class="language-switch" aria-label="언어 선택" data-i18n-aria="languageLabel">
+          <button type="button" data-language-option="ko" aria-pressed="true" title="한국어">
+            <span>KR</span>
+          </button>
+          <button type="button" data-language-option="en" aria-pressed="false" title="English">
+            <span>EN</span>
+          </button>
+        </nav>
+      </div>
     </header>
 
     <main id="app" aria-live="polite">
@@ -173,8 +186,7 @@
     </article>
   </template>
 
-  <script src="albums-data.js?v=20260814085837"></script>
-  <script src="customer-config.js?v=20260814085837"></script>
-  <script src="app.js?v=20260814085837"></script>
+  <script src="albums-data.js?v=20260814121013"></script>
+  <script src="app.js?v=20260814121013"></script>
 </body>
 </html>

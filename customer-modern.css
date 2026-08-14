@@ -1,0 +1,480 @@
+/* 2026-08-14 현대적 디자인. html의 기능 클래스를 제거하면 이 파일만 즉시 롤백됩니다. */
+html.feature-customer-modern-style {
+  --modern-font-body: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --modern-font-display: Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --modern-coral: #ff5b6f;
+  --modern-blue: #4d78df;
+  --modern-bg: #07080a;
+  --modern-panel: rgba(13, 14, 17, 0.88);
+  --modern-panel-solid: #101115;
+  --modern-text: #f5f3ef;
+  --modern-muted: #9d9ca4;
+  --modern-faint: #777780;
+  --modern-line: rgba(232, 235, 241, 0.15);
+  --modern-track-line: rgba(255, 255, 255, 0.08);
+  --bg: var(--modern-bg);
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-strong: rgba(255, 255, 255, 0.075);
+  --text: var(--modern-text);
+  --muted: var(--modern-muted);
+  --faint: var(--modern-faint);
+  --line: var(--modern-line);
+}
+
+html.feature-customer-modern-style[data-customer-theme="day"] {
+  --modern-bg: #f1f1ee;
+  --modern-panel: rgba(250, 250, 247, 0.82);
+  --modern-panel-solid: #f7f7f4;
+  --modern-text: #17181b;
+  --modern-muted: #66676e;
+  --modern-faint: #85868d;
+  --modern-line: rgba(26, 27, 31, 0.17);
+  --modern-track-line: rgba(15, 16, 19, 0.11);
+  --surface: rgba(255, 255, 255, 0.5);
+  --surface-strong: rgba(255, 255, 255, 0.72);
+}
+
+.feature-customer-modern-style body.customer-page {
+  color: var(--modern-text);
+  background: var(--modern-bg);
+  font-family: var(--modern-font-body);
+}
+
+.feature-customer-modern-style body.customer-page > .app-shell {
+  position: relative;
+  z-index: 2;
+  padding-top: 18px;
+}
+
+.feature-customer-modern-style button,
+.feature-customer-modern-style input,
+.feature-customer-modern-style select,
+.feature-customer-modern-style textarea {
+  font-family: var(--modern-font-body);
+}
+
+.feature-customer-modern-style .site-header {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.feature-customer-modern-style .site-logo {
+  width: 78px;
+  box-shadow: none;
+}
+
+.feature-customer-modern-style .customer-brand-wordmark {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  color: var(--modern-text);
+}
+
+.feature-customer-modern-style .customer-brand-wordmark strong {
+  font-family: var(--modern-font-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.feature-customer-modern-style .customer-brand-wordmark span {
+  color: var(--modern-muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.customer-header-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.customer-header-controls .language-switch {
+  position: static;
+}
+
+.customer-theme-toggle {
+  display: none;
+}
+
+.feature-customer-day-night .customer-theme-toggle {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--modern-line);
+  border-radius: 50%;
+  padding: 0;
+  background: var(--modern-panel);
+  color: var(--modern-text);
+  cursor: pointer;
+}
+
+.customer-theme-toggle span {
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.feature-customer-modern-style .language-switch {
+  top: 0;
+  border-color: var(--modern-line);
+  background: var(--modern-panel);
+  backdrop-filter: blur(14px);
+}
+
+.feature-customer-modern-style .language-switch button {
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style .language-switch button[data-active="true"],
+.feature-customer-modern-style .language-switch button:hover {
+  background: var(--modern-coral);
+  color: #fff;
+}
+
+.feature-customer-modern-style .weekly-section .section-heading {
+  position: relative;
+  align-items: center;
+  padding-left: 12px;
+}
+
+.feature-customer-modern-style .weekly-section .section-heading::before {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 3px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--modern-coral);
+  content: "";
+}
+
+.feature-customer-modern-style .weekly-section .section-kicker {
+  color: var(--modern-text);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.feature-customer-modern-style .section-note {
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style .weekly-card,
+.feature-customer-modern-style .request-guide,
+.feature-customer-modern-style .search-section {
+  border: 1px solid var(--modern-line);
+  border-radius: 6px;
+  background: var(--modern-panel);
+  box-shadow: none;
+  backdrop-filter: blur(14px);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .weekly-card,
+.feature-customer-modern-style[data-customer-theme="day"] .request-guide,
+.feature-customer-modern-style[data-customer-theme="day"] .search-section {
+  box-shadow: 0 12px 35px rgba(33, 36, 45, 0.045);
+}
+
+.feature-customer-modern-style .weekly-card::before,
+.feature-customer-modern-style .weekly-card::after {
+  display: none;
+}
+
+.feature-customer-modern-style .weekly-card [data-weekly-title],
+.feature-customer-modern-style .weekly-card [data-weekly-artist],
+.feature-customer-modern-style .weekly-card [data-weekly-year],
+.feature-customer-modern-style .weekly-card [data-weekly-reason] {
+  color: #f7f5f2;
+}
+
+.feature-customer-modern-style .weekly-card [data-weekly-artist],
+.feature-customer-modern-style .weekly-card [data-weekly-year],
+.feature-customer-modern-style .weekly-card [data-weekly-reason] {
+  color: rgba(247, 245, 242, 0.76);
+}
+
+.feature-customer-modern-style [data-weekly-title],
+.feature-customer-modern-style .detail-head h1,
+.feature-customer-modern-style .album-card-meta strong {
+  font-family: var(--modern-font-display);
+}
+
+.feature-customer-modern-style .weekly-more-link,
+.feature-customer-modern-style .weekly-motion-indicator,
+.feature-customer-modern-style .request-guide-label {
+  color: var(--modern-coral);
+}
+
+.feature-customer-modern-style .search-input,
+.feature-customer-modern-style .filter-panel-toggle,
+.feature-customer-modern-style .tool-button,
+.feature-customer-modern-style .filter-chip,
+.feature-customer-modern-style select,
+.feature-customer-modern-style .pagination-nav-button,
+.feature-customer-modern-style .pagination-page-summary,
+.feature-customer-modern-style .pagination-page-number,
+.feature-customer-modern-style .pagination-page-form button,
+.feature-customer-modern-style .back-button,
+.feature-customer-modern-style .detail-nav button,
+.feature-customer-modern-style .detail-request-list-button {
+  border-color: var(--modern-line);
+  background: var(--modern-panel);
+  color: var(--modern-text);
+  box-shadow: none;
+}
+
+.feature-customer-modern-style .filter-chip.is-active,
+.feature-customer-modern-style .filter-chip[aria-pressed="true"] {
+  border-color: var(--modern-coral);
+  background: rgba(255, 91, 111, 0.12);
+  color: var(--modern-text);
+}
+
+.feature-customer-modern-style .album-grid {
+  gap: 21px 9px;
+}
+
+.feature-customer-modern-style .album-card {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.feature-customer-modern-style .album-card .cover-frame,
+.feature-customer-modern-style .album-card:hover .cover-frame,
+.feature-customer-modern-style .detail-cover,
+.feature-customer-modern-style .cover-transition-clone {
+  border: 1px solid var(--modern-line);
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.feature-customer-modern-style .album-card:active .cover-frame {
+  transform: scale(0.98);
+}
+
+.feature-customer-modern-style .album-card-meta {
+  min-height: 0;
+  padding: 8px 1px 0;
+  background: transparent;
+}
+
+.feature-customer-modern-style .album-card-meta strong {
+  color: var(--modern-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.feature-customer-modern-style .album-card-meta em {
+  margin-top: 2px;
+  color: var(--modern-muted);
+  font-size: 10px;
+}
+
+.feature-customer-modern-style .album-card-new {
+  top: 6px;
+  right: 6px;
+  border: 0;
+  border-radius: 3px;
+  padding: 3px 5px;
+  background: var(--modern-coral);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.feature-customer-modern-style .detail-page {
+  max-width: 760px;
+}
+
+.feature-customer-modern-style .detail-cover-wrap {
+  width: min(420px, 88vw);
+  margin-top: 20px;
+}
+
+.feature-customer-modern-style .detail-head {
+  padding-bottom: 4px;
+}
+
+.feature-customer-modern-style .detail-head h1 {
+  margin-top: 16px;
+  color: var(--modern-text);
+  font-size: clamp(30px, 9vw, 44px);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.feature-customer-modern-style .detail-head p,
+.feature-customer-modern-style .track-number,
+.feature-customer-modern-style .tracklist-hint,
+.feature-customer-modern-style .description {
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style .detail-tags {
+  gap: 8px;
+}
+
+.feature-customer-modern-style .detail-tags .pill {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style .detail-tags .pill + .pill::before {
+  margin-right: 8px;
+  color: var(--modern-faint);
+  content: "·";
+}
+
+.feature-customer-modern-style .detail-section {
+  margin-top: 26px;
+  padding: 20px 0 0;
+  border: 0;
+  border-top: 1px solid var(--modern-line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.feature-customer-modern-style .detail-section h2 {
+  color: var(--modern-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.feature-customer-modern-style .track-row {
+  border-bottom-color: var(--modern-track-line);
+}
+
+.feature-customer-modern-style .track-title {
+  color: var(--modern-text);
+}
+
+.feature-customer-modern-style .recommend-dot,
+.feature-customer-modern-style .tiny-dot {
+  background: var(--modern-coral);
+  box-shadow: none;
+}
+
+.feature-customer-modern-style .request-note {
+  border: 0;
+  border-left: 3px solid var(--modern-coral);
+  border-radius: 0;
+  background: transparent;
+  color: var(--modern-muted);
+  text-align: left;
+}
+
+.feature-customer-modern-style #app.is-detail-staging .customer-detail-view,
+.feature-customer-modern-style #app.is-detail-active .customer-detail-view::before,
+.feature-customer-modern-style #app.is-detail-staging .customer-detail-view::before,
+.feature-customer-modern-style .cover-transition-backdrop {
+  background: var(--modern-bg);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .result-summary,
+.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .filter-toggle-summary,
+.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .section-note,
+.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .track-number,
+.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .tracklist-hint,
+.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .detail-head p {
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .track-row.is-search-match,
+.feature-customer-modern-style[data-customer-theme="day"] .track-row.is-request-focus {
+  background: linear-gradient(90deg, rgba(76, 123, 224, 0.13), rgba(231, 83, 104, 0.08));
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .track-row.is-search-match .track-number,
+.feature-customer-modern-style[data-customer-theme="day"] .track-row.is-search-match .track-title {
+  color: var(--modern-text);
+}
+
+.feature-customer-modern-style body.is-detail-view .site-header {
+  min-height: 78px;
+  margin-bottom: 12px;
+}
+
+.feature-customer-modern-style body.is-detail-view .site-logo {
+  width: 38px;
+  height: 38px;
+}
+
+.feature-customer-modern-style body.is-detail-view .customer-brand-wordmark {
+  gap: 1px;
+}
+
+.feature-customer-modern-style body.is-detail-view .customer-brand-wordmark strong {
+  font-size: 13px;
+}
+
+.feature-customer-modern-style body.is-detail-view .customer-brand-wordmark span {
+  font-size: 7px;
+}
+
+.feature-customer-theme-transition body.customer-page,
+.feature-customer-theme-transition .weekly-card,
+.feature-customer-theme-transition .request-guide,
+.feature-customer-theme-transition .search-section,
+.feature-customer-theme-transition .language-switch,
+.feature-customer-theme-transition .customer-theme-toggle,
+.feature-customer-theme-transition .filter-chip,
+.feature-customer-theme-transition .back-button,
+.feature-customer-theme-transition .detail-nav button {
+  transition: color 260ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 260ms ease;
+}
+
+@media (max-width: 719px) {
+  .feature-customer-modern-style body.customer-page > .app-shell {
+    padding-inline: 12px;
+  }
+
+  .feature-customer-modern-style .site-header {
+    margin-bottom: 26px;
+  }
+
+  .feature-customer-modern-style .customer-header-controls {
+    right: 0;
+  }
+
+  .feature-customer-modern-style .customer-theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .feature-customer-modern-style .language-switch button {
+    min-width: 32px;
+    height: 28px;
+    padding-inline: 7px;
+  }
+
+  .feature-customer-modern-style .weekly-card {
+    padding: 10px;
+  }
+
+  .feature-customer-modern-style .weekly-card .weekly-info {
+    padding-inline: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-customer-theme-transition body.customer-page,
+  .feature-customer-theme-transition body.customer-page::before,
+  .feature-customer-theme-transition body.customer-page::after,
+  .feature-customer-theme-transition .weekly-card,
+  .feature-customer-theme-transition .request-guide,
+  .feature-customer-theme-transition .search-section {
+    transition-duration: 1ms;
+  }
+}
