@@ -6,6 +6,7 @@
   root.classList.toggle('feature-customer-modern-style', features.modernVisualStyle !== false);
   root.classList.toggle('feature-customer-color-field', features.colorFieldBackground !== false);
   root.classList.toggle('feature-customer-day-night', features.dayNightTheme !== false);
+  root.classList.toggle('feature-customer-theme-art', features.themeIllustrationToggle !== false);
   root.classList.toggle('feature-customer-theme-transition', features.smoothThemeTransition !== false);
 
   function readSavedTheme() {
@@ -28,9 +29,9 @@
   function updateControl(theme) {
     const button = document.querySelector('[data-customer-theme-toggle]');
     const icon = button?.querySelector('[data-customer-theme-icon]');
-    if (!button || !icon) return;
+    if (!button) return;
     const label = getThemeText(theme);
-    icon.textContent = theme === 'day' ? '☾' : '☀';
+    if (icon) icon.textContent = theme === 'day' ? '☾' : '☀';
     button.setAttribute('aria-label', label);
     button.title = label;
   }
