@@ -1,7 +1,16 @@
 /* 2026-08-14 현대적 디자인. html의 기능 클래스를 제거하면 이 파일만 즉시 롤백됩니다. */
+@font-face {
+  font-family: "PDL Jost";
+  src: url("media/fonts/jost-brand-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 html.feature-customer-modern-style {
   --modern-font-body: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --modern-font-display: Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --modern-font-brand: "PDL Jost", "Avenir Next", Futura, "Century Gothic", sans-serif;
   --modern-coral: #ff5b6f;
   --modern-blue: #4d78df;
   --modern-bg: #07080a;
@@ -22,16 +31,16 @@ html.feature-customer-modern-style {
 }
 
 html.feature-customer-modern-style[data-customer-theme="day"] {
-  --modern-bg: #f1f1ee;
-  --modern-panel: rgba(250, 250, 247, 0.82);
-  --modern-panel-solid: #f7f7f4;
-  --modern-text: #17181b;
-  --modern-muted: #66676e;
-  --modern-faint: #85868d;
-  --modern-line: rgba(26, 27, 31, 0.17);
-  --modern-track-line: rgba(15, 16, 19, 0.11);
-  --surface: rgba(255, 255, 255, 0.5);
-  --surface-strong: rgba(255, 255, 255, 0.72);
+  --modern-bg: #f3f4f1;
+  --modern-panel: rgba(255, 255, 252, 0.96);
+  --modern-panel-solid: #fffefa;
+  --modern-text: #15171a;
+  --modern-muted: #4f535a;
+  --modern-faint: #6c7179;
+  --modern-line: rgba(21, 23, 28, 0.2);
+  --modern-track-line: rgba(15, 17, 21, 0.13);
+  --surface: rgba(255, 255, 252, 0.92);
+  --surface-strong: #fffefa;
 }
 
 .feature-customer-modern-style body.customer-page {
@@ -44,6 +53,11 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
   position: relative;
   z-index: 2;
   padding-top: 18px;
+}
+
+/* 전환 배경보다 앱을 한 단계 위에 두어 목록 커버의 확대 동작이 첫 프레임부터 보이게 합니다. */
+html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.customer-page > .app-shell {
+  z-index: 36;
 }
 
 .feature-customer-modern-style button,
@@ -73,10 +87,11 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
 }
 
 .feature-customer-modern-style .customer-brand-wordmark strong {
-  font-family: var(--modern-font-display);
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1;
+  font-family: var(--modern-font-brand);
+  font-size: 22px;
+  font-weight: 700;
+  font-feature-settings: "kern" 1;
+  line-height: 0.96;
 }
 
 .feature-customer-modern-style .customer-brand-wordmark span {
@@ -178,7 +193,22 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
 .feature-customer-modern-style[data-customer-theme="day"] .weekly-card,
 .feature-customer-modern-style[data-customer-theme="day"] .request-guide,
 .feature-customer-modern-style[data-customer-theme="day"] .search-section {
-  box-shadow: 0 12px 35px rgba(33, 36, 45, 0.045);
+  box-shadow: 0 10px 28px rgba(33, 36, 45, 0.06);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .request-guide,
+.feature-customer-modern-style[data-customer-theme="day"] .search-section,
+.feature-customer-modern-style[data-customer-theme="day"] .language-switch {
+  backdrop-filter: none;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .request-guide,
+.feature-customer-modern-style[data-customer-theme="day"] .search-section {
+  box-shadow: 0 12px 30px rgba(28, 31, 39, 0.09);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .customer-theme-toggle {
+  background: #fffefa;
 }
 
 .feature-customer-modern-style .weekly-card::before,
@@ -236,6 +266,94 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
   color: var(--modern-text);
 }
 
+html.feature-customer-modern-style[data-customer-theme="day"].feature-customer-request-guide-band .request-guide {
+  border-top-color: rgba(210, 61, 86, 0.58);
+  border-bottom-color: rgba(65, 103, 194, 0.5);
+  background: #fffafa;
+}
+
+html.feature-customer-modern-style[data-customer-theme="day"].feature-customer-request-guide-band .request-guide-label {
+  color: #b82e48;
+}
+
+html.feature-customer-modern-style[data-customer-theme="day"].feature-customer-request-guide-band .request-guide-text {
+  color: #25282d;
+}
+
+html.feature-customer-modern-style[data-customer-theme="day"].feature-customer-request-guide-band .request-guide-text span + span {
+  color: #566073;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-section {
+  position: relative;
+  overflow: hidden;
+  background: #fffefa;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-section::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(68, 105, 198, 0.82), rgba(68, 105, 198, 0.12) 38%, rgba(215, 67, 91, 0.12) 62%, rgba(215, 67, 91, 0.82));
+  content: "";
+  pointer-events: none;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-label,
+.feature-customer-modern-style[data-customer-theme="day"] .sort-label span,
+.feature-customer-modern-style[data-customer-theme="day"] .result-summary,
+.feature-customer-modern-style[data-customer-theme="day"] .filter-toggle-summary,
+.feature-customer-modern-style[data-customer-theme="day"] .section-note {
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-input,
+.feature-customer-modern-style[data-customer-theme="day"] .filter-panel-toggle,
+.feature-customer-modern-style[data-customer-theme="day"] .tool-button,
+.feature-customer-modern-style[data-customer-theme="day"] .filter-chip,
+.feature-customer-modern-style[data-customer-theme="day"] select,
+.feature-customer-modern-style[data-customer-theme="day"] .pagination-nav-button,
+.feature-customer-modern-style[data-customer-theme="day"] .pagination-page-summary,
+.feature-customer-modern-style[data-customer-theme="day"] .pagination-page-number,
+.feature-customer-modern-style[data-customer-theme="day"] .pagination-page-form button,
+.feature-customer-modern-style[data-customer-theme="day"] .back-button,
+.feature-customer-modern-style[data-customer-theme="day"] .detail-nav button,
+.feature-customer-modern-style[data-customer-theme="day"] .detail-request-list-button {
+  border-color: rgba(21, 23, 28, 0.2);
+  background: #fffefa;
+  color: #202329;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-input::placeholder {
+  color: #70757d;
+  opacity: 1;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .filter-panel-toggle:hover,
+.feature-customer-modern-style[data-customer-theme="day"] .filter-panel-toggle:focus-visible,
+.feature-customer-modern-style[data-customer-theme="day"] .tool-button:hover,
+.feature-customer-modern-style[data-customer-theme="day"] .back-button:hover,
+.feature-customer-modern-style[data-customer-theme="day"] .detail-nav button:hover,
+.feature-customer-modern-style[data-customer-theme="day"] .detail-request-list-button:hover {
+  border-color: rgba(210, 61, 86, 0.56);
+  background: #fff7f7;
+  color: #15171a;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .tool-button[data-active="true"],
+.feature-customer-modern-style[data-customer-theme="day"] .filter-chip[data-active="true"],
+.feature-customer-modern-style[data-customer-theme="day"] .filter-chip[aria-pressed="true"] {
+  border-color: rgba(210, 61, 86, 0.66);
+  background: #fff0f2;
+  color: #8f2137;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .weekly-card.has-weekly-motion .weekly-cover .cover-frame {
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+}
+
 .feature-customer-modern-style .album-grid {
   gap: 21px 9px;
 }
@@ -255,6 +373,13 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
   border: 1px solid var(--modern-line);
   border-radius: 4px;
   box-shadow: none;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .album-card .cover-frame,
+.feature-customer-modern-style[data-customer-theme="day"] .album-card:hover .cover-frame,
+.feature-customer-modern-style[data-customer-theme="day"] .detail-cover {
+  border-color: rgba(24, 27, 33, 0.25);
+  box-shadow: 0 7px 18px rgba(31, 35, 44, 0.13);
 }
 
 .feature-customer-modern-style .album-card:active .cover-frame {
@@ -382,13 +507,39 @@ html.feature-customer-modern-style[data-customer-theme="day"] {
   background: var(--modern-bg);
 }
 
-.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .result-summary,
-.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .filter-toggle-summary,
-.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .section-note,
-.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .track-number,
-.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .tracklist-hint,
-.feature-customer-modern-style[data-customer-theme="day"] .feature-customer-higher-contrast .detail-head p {
+html.feature-customer-modern-style.feature-customer-higher-contrast[data-customer-theme="day"] .result-summary,
+html.feature-customer-modern-style.feature-customer-higher-contrast[data-customer-theme="day"] .filter-toggle-summary,
+html.feature-customer-modern-style.feature-customer-higher-contrast[data-customer-theme="day"] .section-note,
+html.feature-customer-modern-style.feature-customer-higher-contrast[data-customer-theme="day"] .track-number,
+html.feature-customer-modern-style.feature-customer-higher-contrast[data-customer-theme="day"] .tracklist-hint,
+html.feature-customer-modern-style.feature-customer-higher-contrast[data-customer-theme="day"] .detail-head p {
   color: var(--modern-muted);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .detail-head p,
+.feature-customer-modern-style[data-customer-theme="day"] .track-number,
+.feature-customer-modern-style[data-customer-theme="day"] .tracklist-hint,
+.feature-customer-modern-style[data-customer-theme="day"] .description,
+.feature-customer-modern-style[data-customer-theme="day"] .request-note {
+  color: var(--modern-muted);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .track-request-button:is(button) {
+  border-color: rgba(21, 23, 28, 0.22);
+  background: #fffefa;
+  color: #34383f;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .track-request-button:is(button):hover {
+  border-color: rgba(65, 103, 194, 0.62);
+  background: #f3f6ff;
+  color: #18264b;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .track-request-button:is(button)[aria-pressed="true"] {
+  border-color: rgba(210, 61, 86, 0.72);
+  background: #fff0f2;
+  color: #98213a;
 }
 
 .feature-customer-modern-style[data-customer-theme="day"] .track-row.is-search-match,
