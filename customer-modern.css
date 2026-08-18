@@ -188,6 +188,55 @@ html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.cust
   opacity: 0;
 }
 
+/* 전화박스 버튼 배치: 왼쪽 전화박스, 중앙 로고, 오른쪽 언어 버튼의 균형을 맞춥니다. */
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-header-controls {
+  left: 0;
+  right: 0;
+  display: block;
+  height: 50px;
+  pointer-events: none;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle,
+.feature-customer-modern-style.feature-customer-theme-art.feature-customer-theme-left-layout[data-customer-theme="day"] .customer-theme-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-art {
+  width: 40px;
+  height: 47px;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-art img {
+  transition: opacity 180ms ease, transform 120ms ease;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle:active img {
+  transform: scale(0.96);
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle:focus-visible {
+  outline: 2px solid var(--modern-coral);
+  outline-offset: 2px;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-header-controls .language-switch {
+  position: absolute;
+  top: 9px;
+  right: 0;
+  pointer-events: auto;
+}
+
 .feature-customer-modern-style .language-switch {
   top: 0;
   border-color: var(--modern-line);
@@ -664,6 +713,20 @@ html.feature-customer-modern-style.feature-customer-higher-contrast[data-custome
   .feature-customer-theme-art .customer-theme-art {
     width: 31px;
     height: 37px;
+  }
+
+  .feature-customer-modern-style.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-art {
+    width: 36px;
+    height: 43px;
+  }
+
+  .feature-customer-theme-art.feature-customer-theme-left-layout .customer-header-controls .language-switch {
+    top: 10px;
   }
 
   .feature-customer-modern-style .language-switch button {

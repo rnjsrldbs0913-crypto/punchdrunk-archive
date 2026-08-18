@@ -37,6 +37,8 @@
       dayNightTheme: true,
       // 2026-08-17: 해/달 대신 전화박스 조명이 켜지고 꺼지는 버튼을 사용합니다.
       themeIllustrationToggle: true,
+      // 2026-08-18: 전화박스 버튼의 테두리를 없애고 좌상단에 크게 배치합니다.
+      themeToggleLeftLayout: true,
       // 2026-08-14: 모드를 바꿀 때 색이 부드럽게 이어지는 효과만 따로 켜고 끕니다.
       smoothThemeTransition: true,
     }),

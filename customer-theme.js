@@ -7,6 +7,7 @@
   root.classList.toggle('feature-customer-color-field', features.colorFieldBackground !== false);
   root.classList.toggle('feature-customer-day-night', features.dayNightTheme !== false);
   root.classList.toggle('feature-customer-theme-art', features.themeIllustrationToggle !== false);
+  root.classList.toggle('feature-customer-theme-left-layout', features.themeToggleLeftLayout !== false);
   root.classList.toggle('feature-customer-theme-transition', features.smoothThemeTransition !== false);
 
   function readSavedTheme() {
