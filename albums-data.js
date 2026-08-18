@@ -11935,42 +11935,6 @@ const ALBUMS = [
     "isWeekly": false
   },
   {
-    "id": "album-mrevz7kt",
-    "title": "Chet Baker Sings and Plays (Remastered)",
-    "artist": "쳇 베이커",
-    "artistKo": "쳇 베이커",
-    "artistEn": "Chet Baker",
-    "addedAt": "",
-    "year": "1955",
-    "format": "Vinyl",
-    "genre": "재즈",
-    "coverImage": "covers/album-mrevz7kt.jpg",
-    "recommendedTracks": [
-      "1. Let's Get Lost",
-      "5. Just Friends (Remastered)",
-      "8. You Don't Know What Love Is (Remastered)",
-      "11. Let's Get Lost (Alternate Take) [Remastered]"
-    ],
-    "tracklist": [
-      "1. Let's Get Lost",
-      "2. This Is Always (Remastered)",
-      "3. Long Ago (And Far Away) [Remastered]",
-      "4. Someone To Watch Over Me (Remastered)",
-      "5. Just Friends (Remastered)",
-      "6. I Wish I Knew (Remastered)",
-      "7. Daybreak (Vocal)",
-      "8. You Don't Know What Love Is (Remastered)",
-      "9. Grey December (Remastered)",
-      "10. I Remember You (Remastered)",
-      "11. Let's Get Lost (Alternate Take) [Remastered]"
-    ],
-    "description": "",
-    "descriptionEn": "",
-    "weeklyReason": "",
-    "weeklyReasonEn": "",
-    "isWeekly": false
-  },
-  {
     "id": "album-mreuc62v",
     "title": "Kind of Blue",
     "artist": "마일스 데이비스",
