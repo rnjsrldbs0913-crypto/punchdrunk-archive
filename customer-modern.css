@@ -130,10 +130,62 @@ html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.cust
   cursor: pointer;
 }
 
-.customer-theme-toggle span {
+.customer-theme-toggle .customer-theme-symbol {
   font-family: Arial, sans-serif;
   font-size: 17px;
   line-height: 1;
+}
+
+.customer-theme-art {
+  position: relative;
+  display: none;
+  width: 34px;
+  height: 40px;
+  pointer-events: none;
+}
+
+.customer-theme-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 180ms ease;
+}
+
+.customer-theme-art-off {
+  opacity: 0;
+}
+
+.customer-theme-art-on {
+  opacity: 1;
+}
+
+.feature-customer-theme-art .customer-theme-toggle {
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.feature-customer-modern-style.feature-customer-theme-art[data-customer-theme="day"] .customer-theme-toggle {
+  background: transparent;
+}
+
+.feature-customer-theme-art .customer-theme-symbol {
+  display: none;
+}
+
+.feature-customer-theme-art .customer-theme-art {
+  display: block;
+}
+
+.feature-customer-theme-art[data-customer-theme="day"] .customer-theme-art-off {
+  opacity: 1;
+}
+
+.feature-customer-theme-art[data-customer-theme="day"] .customer-theme-art-on {
+  opacity: 0;
 }
 
 .feature-customer-modern-style .language-switch {
@@ -602,6 +654,16 @@ html.feature-customer-modern-style.feature-customer-higher-contrast[data-custome
   .feature-customer-modern-style .customer-theme-toggle {
     width: 36px;
     height: 36px;
+  }
+
+  .feature-customer-modern-style.feature-customer-theme-art .customer-theme-toggle {
+    width: 42px;
+    height: 42px;
+  }
+
+  .feature-customer-theme-art .customer-theme-art {
+    width: 31px;
+    height: 37px;
   }
 
   .feature-customer-modern-style .language-switch button {
