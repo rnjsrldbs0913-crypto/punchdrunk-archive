@@ -35,8 +35,6 @@
       colorFieldBackground: true,
       // 2026-08-14: 해/달 버튼으로 데이 모드와 나이트 모드를 바꿉니다.
       dayNightTheme: true,
-      // 2026-08-17: 해/달 대신 전화박스 조명이 켜지고 꺼지는 버튼을 사용합니다.
-      themeIllustrationToggle: true,
       // 2026-08-14: 모드를 바꿀 때 색이 부드럽게 이어지는 효과만 따로 켜고 끕니다.
       smoothThemeTransition: true,
     }),
