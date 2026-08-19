@@ -3,6 +3,45 @@
 
 const ALBUMS = [
   {
+    "id": "album-mszgmpn1",
+    "title": "The Ecstatic",
+    "artist": "모스 데프",
+    "artistKo": "모스 데프",
+    "artistEn": "Mos Def",
+    "addedAt": "2026-08-19T02:16:05.197Z",
+    "year": "2009",
+    "format": "Vinyl",
+    "genre": "힙합",
+    "coverImage": "covers/1776b70e7c0e67cedc55814f34e685b5-1.jpg",
+    "recommendedTracks": [
+      "A3. Auditorium",
+      "D3. History"
+    ],
+    "tracklist": [
+      "A1. Supermagic",
+      "A2. Twilite Speedball",
+      "A3. Auditorium",
+      "A4. Wahid",
+      "B1. Priority",
+      "B2. Quiet Dog Bite Hard",
+      "B3. Life In Marvelous Times",
+      "B4. The Embassy",
+      "C1. No Hay Nada Mas",
+      "C2. Pistola",
+      "C3. Pretty Dancer",
+      "C4. Workers Comp",
+      "D1. Revelations",
+      "D2. Roses",
+      "D3. History",
+      "D4. Casa Bey"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
     "id": "album-msy6iw1r",
     "title": "Lost Weekend",
     "artist": "피비 브리저스",
