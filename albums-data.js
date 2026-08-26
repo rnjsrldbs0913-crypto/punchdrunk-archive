@@ -3,6 +3,109 @@
 
 const ALBUMS = [
   {
+    "id": "album-mt9ghuca",
+    "title": "Marca Passo",
+    "artist": "아지무스",
+    "artistKo": "아지무스",
+    "artistEn": "Azymuth",
+    "addedAt": "2026-08-26T02:09:59.770Z",
+    "year": "2025",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "coverImage": "covers/album-mt9ghuca.jpg",
+    "recommendedTracks": [
+      "1. Fantasy '82",
+      "3. Marca Tempo",
+      "5. Last Summer In Rio (feat. Bluey, Incognito & Jean Paul 'Bluey' Maunick of Incognito)"
+    ],
+    "tracklist": [
+      "1. Fantasy '82",
+      "2. Belenzinho",
+      "3. Marca Tempo",
+      "4. O Mergulhador",
+      "5. Last Summer In Rio (feat. Bluey, Incognito & Jean Paul 'Bluey' Maunick of Incognito)",
+      "6. Arabutã",
+      "7. Crianças Valentes",
+      "8. Andaraí",
+      "9. Samba Pro Mamão",
+      "10. Togu",
+      "11. Arabutã (Daniel Maunick Extended Mix)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mt9gcngu",
+    "title": "WALKIN′, Vol. 2",
+    "artist": "피제이",
+    "artistKo": "피제이",
+    "artistEn": "PEEJAY",
+    "addedAt": "2026-08-26T02:05:57.582Z",
+    "year": "2017",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "coverImage": "covers/album-mt9gcngu.jpg",
+    "recommendedTracks": [
+      "A1. AFTER SUMMER DAY X YUN SEOK CHEOL & JEONG YOO JONG",
+      "A3. NA B YA X ZION.T",
+      "A4. WARIGARI X KUSH & TAEYANG",
+      "B4. MOONSTRUCK X QIM ISLE & OH HYUK"
+    ],
+    "tracklist": [
+      "A1. AFTER SUMMER DAY X YUN SEOK CHEOL & JEONG YOO JONG",
+      "A2. STRANGER X CRUSH",
+      "A3. NA B YA X ZION.T",
+      "A4. WARIGARI X KUSH & TAEYANG",
+      "A5. I DRIVE SLOW X BEENZINO",
+      "B1. STAY X KUMAPARK",
+      "B2. SAY NO X MASTA WU",
+      "B3. THINKING ABOUT YOU X B-FREE",
+      "B4. MOONSTRUCK X QIM ISLE & OH HYUK",
+      "B5. OUTRO",
+      "B6. NOBODY STARTS GOOD (DEMO)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mt9g9yny",
+    "title": "WALKIN′, Vol. 1",
+    "artist": "피제이",
+    "artistKo": "피제이",
+    "artistEn": "PEEJAY",
+    "addedAt": "2026-08-26T02:03:52.126Z",
+    "year": "2015",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "coverImage": "covers/album-mt9g9yny.jpg",
+    "recommendedTracks": [
+      "A3. I GET LIFTED X BEENZINO",
+      "B2. OUT OF MY MIND X G2 & KIETH APE",
+      "B3. DAY N NIGHT"
+    ],
+    "tracklist": [
+      "A1. INTRO",
+      "A2. REBORN X CHOICE37",
+      "A3. I GET LIFTED X BEENZINO",
+      "A4. TIME",
+      "B1. 미끄러지듯이 X JINBO",
+      "B2. OUT OF MY MIND X G2 & KIETH APE",
+      "B3. DAY N NIGHT",
+      "B4. BSTN (UNRELEASED TRACK)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
     "id": "album-mszgmpn1",
     "title": "The Ecstatic",
     "artist": "모스 데프",
