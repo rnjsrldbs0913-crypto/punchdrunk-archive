@@ -11,6 +11,19 @@ html.feature-customer-color-field body.customer-page::after {
   mix-blend-mode: normal;
 }
 
+/* 밝은 모드에서만 파스텔 색의 면적과 농도를 높입니다. */
+html.feature-customer-color-field.feature-customer-stronger-day-pastels body.customer-page::after {
+  background:
+    radial-gradient(110% 46% at -27% 4%, rgba(72, 122, 226, 0.38), transparent 69%),
+    radial-gradient(106% 44% at 128% 16%, rgba(232, 77, 104, 0.34), transparent 69%),
+    radial-gradient(86% 36% at -20% 48%, rgba(72, 122, 226, 0.19), transparent 73%),
+    radial-gradient(88% 36% at 120% 63%, rgba(232, 77, 104, 0.18), transparent 73%),
+    radial-gradient(82% 33% at -16% 91%, rgba(72, 122, 226, 0.15), transparent 75%),
+    radial-gradient(80% 33% at 116% 96%, rgba(232, 77, 104, 0.15), transparent 75%),
+    linear-gradient(90deg, rgba(72, 122, 226, 0.07), transparent 31%, transparent 69%, rgba(232, 77, 104, 0.065)),
+    linear-gradient(180deg, #faf9f6 0%, #f2f3f0 56%, #f7f4f2 100%);
+}
+
 html.feature-customer-color-field body.customer-page::before {
   background:
     radial-gradient(88% 38% at -15% 5%, rgba(49, 102, 222, 0.32), transparent 72%),
@@ -68,5 +81,13 @@ html.feature-customer-theme-transition.feature-customer-color-field body.custome
     radial-gradient(90% 38% at -16% 4%, rgba(76, 123, 224, 0.22), transparent 72%),
     radial-gradient(88% 36% at 116% 16%, rgba(231, 83, 104, 0.20), transparent 72%),
     linear-gradient(90deg, rgba(76, 123, 224, 0.055), transparent 30%, transparent 70%, rgba(231, 83, 104, 0.05)),
+    #f3f4f1;
+}
+
+.feature-customer-color-field.feature-customer-stronger-day-pastels[data-customer-theme="day"] .cover-transition-backdrop {
+  background:
+    radial-gradient(110% 46% at -27% 4%, rgba(72, 122, 226, 0.38), transparent 69%),
+    radial-gradient(106% 44% at 128% 16%, rgba(232, 77, 104, 0.34), transparent 69%),
+    linear-gradient(90deg, rgba(72, 122, 226, 0.07), transparent 31%, transparent 69%, rgba(232, 77, 104, 0.065)),
     #f3f4f1;
 }

@@ -75,6 +75,10 @@
   document.documentElement.classList.toggle('feature-customer-compact-header-figures', CUSTOMER_FEATURES.compactHeaderFigures);
   document.documentElement.classList.toggle('feature-customer-cover-transition-layer-fix', CUSTOMER_FEATURES.coverTransitionLayerFix);
   document.documentElement.classList.toggle('feature-customer-wide-header-color-field', CUSTOMER_FEATURES.wideHeaderColorField);
+  document.documentElement.classList.toggle('feature-customer-pretendard-font', CUSTOMER_FEATURES.modernPretendardFont);
+  document.documentElement.classList.toggle('feature-customer-stronger-day-pastels', CUSTOMER_FEATURES.strongerDayPastels);
+  document.documentElement.classList.toggle('feature-customer-weekly-day-color-bridge', CUSTOMER_FEATURES.weeklyDayColorBridge);
+  document.documentElement.classList.toggle('feature-customer-partial-page-fix', CUSTOMER_FEATURES.partialAlbumPageFix);
   // 브라우저 상단 색상도 기능 스위치로 독립적으로 되돌릴 수 있게 합니다.
   if (!CUSTOMER_FEATURES.browserThemeColor) {
     document.querySelector('[data-customer-theme-color]')?.remove();
@@ -1518,6 +1522,15 @@
     return 9;
   }
 
+  // 9장이 꽉 차지 않은 마지막 묶음도 반드시 별도의 한 페이지로 계산합니다.
+  function getAlbumPageCount(totalAlbums, perPage = getAlbumsPerPage()) {
+    const safeTotal = Math.max(0, Number(totalAlbums) || 0);
+    const safePerPage = Math.max(1, Number(perPage) || 1);
+    const fullPages = Math.floor(safeTotal / safePerPage);
+    const partialPage = safeTotal % safePerPage > 0 ? 1 : 0;
+    return Math.max(1, fullPages + partialPage);
+  }
+
   function isMobileAlbumPager() {
     return window.matchMedia(MOBILE_PAGER_MEDIA).matches;
   }
@@ -1551,7 +1564,7 @@
   }
 
   function getAlbumTotalPages() {
-    return Math.max(1, Math.ceil(getVisibleAlbums().length / getAlbumsPerPage()));
+    return getAlbumPageCount(getVisibleAlbums().length, getAlbumsPerPage());
   }
 
   function goToAlbumPage(page, options = {}) {
@@ -3004,7 +3017,7 @@
     if (!track || !CUSTOMER_FEATURES.smoothSwipeTracking) return false;
     const filtered = getVisibleAlbums();
     const perPage = getAlbumsPerPage();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+    const totalPages = getAlbumPageCount(filtered.length, perPage);
     if (targetPage < 1 || targetPage > totalPages || track.children.length !== 3) return false;
 
     track.style.transition = 'none';
@@ -3284,7 +3297,7 @@
     const pagination = app.querySelector('[data-pagination]');
     const filtered = getVisibleAlbums();
     const perPage = getAlbumsPerPage();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+    const totalPages = getAlbumPageCount(filtered.length, perPage);
     if (state.page > totalPages) state.page = totalPages;
     if (state.page < 1) state.page = 1;
     const start = (state.page - 1) * perPage;

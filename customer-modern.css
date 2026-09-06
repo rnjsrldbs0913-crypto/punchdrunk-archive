@@ -7,6 +7,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("media/fonts/pretendard-variable.woff2") format("woff2-variations");
+  font-style: normal;
+  font-weight: 45 920;
+  font-display: swap;
+}
+
 html.feature-customer-modern-style {
   --modern-font-body: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --modern-font-display: Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
@@ -130,10 +138,129 @@ html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.cust
   cursor: pointer;
 }
 
-.customer-theme-toggle span {
+.customer-theme-toggle .customer-theme-symbol {
   font-family: Arial, sans-serif;
   font-size: 17px;
   line-height: 1;
+}
+
+.customer-theme-art {
+  position: relative;
+  display: none;
+  width: 34px;
+  height: 40px;
+  pointer-events: none;
+}
+
+.customer-theme-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 180ms ease;
+}
+
+.customer-theme-art-off {
+  opacity: 0;
+}
+
+.customer-theme-art-on {
+  opacity: 1;
+}
+
+.feature-customer-theme-art .customer-theme-toggle {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.feature-customer-theme-art:not(.feature-customer-theme-left-layout) .customer-header-controls {
+  gap: 3px;
+}
+
+.feature-customer-theme-art:not(.feature-customer-theme-left-layout) .customer-theme-art {
+  width: 40px;
+  height: 47px;
+}
+
+.feature-customer-modern-style.feature-customer-theme-art[data-customer-theme="day"] .customer-theme-toggle {
+  background: transparent;
+}
+
+.feature-customer-theme-art .customer-theme-symbol {
+  display: none;
+}
+
+.feature-customer-theme-art .customer-theme-art {
+  display: block;
+}
+
+.feature-customer-theme-art[data-customer-theme="day"] .customer-theme-art-off {
+  opacity: 1;
+}
+
+.feature-customer-theme-art[data-customer-theme="day"] .customer-theme-art-on {
+  opacity: 0;
+}
+
+/* 이 기능 클래스를 끄면 기존 맑은 고딕 계열 글꼴로 즉시 돌아갑니다. */
+html.feature-customer-modern-style.feature-customer-pretendard-font {
+  --modern-font-body: "Pretendard Variable", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --modern-font-display: "Pretendard Variable", Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+/* 전화박스 버튼 배치: 왼쪽 전화박스, 중앙 로고, 오른쪽 언어 버튼의 균형을 맞춥니다. */
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-header-controls {
+  left: 0;
+  right: 0;
+  display: block;
+  height: 50px;
+  pointer-events: none;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle,
+.feature-customer-modern-style.feature-customer-theme-art.feature-customer-theme-left-layout[data-customer-theme="day"] .customer-theme-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-art {
+  width: 40px;
+  height: 47px;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-art img {
+  transition: opacity 180ms ease, transform 120ms ease;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle:active img {
+  transform: scale(0.96);
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle:focus-visible {
+  outline: 2px solid var(--modern-coral);
+  outline-offset: 2px;
+}
+
+.feature-customer-theme-art.feature-customer-theme-left-layout .customer-header-controls .language-switch {
+  position: absolute;
+  top: 9px;
+  right: 0;
+  pointer-events: auto;
 }
 
 .feature-customer-modern-style .language-switch {
@@ -194,6 +321,23 @@ html.feature-customer-cover-transition-layer-fix.is-cover-zoom-running body.cust
 .feature-customer-modern-style[data-customer-theme="day"] .request-guide,
 .feature-customer-modern-style[data-customer-theme="day"] .search-section {
   box-shadow: 0 10px 28px rgba(33, 36, 45, 0.06);
+}
+
+/* 밝은 배경과 검은 금주의 음반 카드 사이에 파랑/빨강 반사광을 이어줍니다. */
+html.feature-customer-modern-style.feature-customer-weekly-day-color-bridge[data-customer-theme="day"] .weekly-card {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(180deg, rgba(14, 15, 20, 0.995), rgba(20, 17, 23, 0.995)) padding-box,
+    linear-gradient(118deg, rgba(82, 132, 232, 0.82), rgba(255, 255, 255, 0.18) 49%, rgba(231, 82, 108, 0.82)) border-box;
+  box-shadow:
+    -22px 14px 46px rgba(62, 106, 207, 0.2),
+    22px 14px 46px rgba(209, 58, 87, 0.19),
+    0 20px 38px rgba(26, 29, 37, 0.15);
+}
+
+/* flex 슬라이드에서는 일반 음반 그리드의 열 간격이 페이지 사이에 끼지 않게 합니다. */
+html.feature-customer-modern-style.feature-customer-partial-page-fix .album-grid.is-persistent-pager {
+  gap: 0;
 }
 
 .feature-customer-modern-style[data-customer-theme="day"] .request-guide,
@@ -602,6 +746,30 @@ html.feature-customer-modern-style.feature-customer-higher-contrast[data-custome
   .feature-customer-modern-style .customer-theme-toggle {
     width: 36px;
     height: 36px;
+  }
+
+  .feature-customer-modern-style.feature-customer-theme-art .customer-theme-toggle {
+    width: 42px;
+    height: 42px;
+  }
+
+  .feature-customer-theme-art .customer-theme-art {
+    width: 31px;
+    height: 37px;
+  }
+
+  .feature-customer-modern-style.feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-toggle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .feature-customer-theme-art.feature-customer-theme-left-layout .customer-theme-art {
+    width: 36px;
+    height: 43px;
+  }
+
+  .feature-customer-theme-art.feature-customer-theme-left-layout .customer-header-controls .language-switch {
+    top: 10px;
   }
 
   .feature-customer-modern-style .language-switch button {

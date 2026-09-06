@@ -35,8 +35,20 @@
       colorFieldBackground: true,
       // 2026-08-14: 해/달 버튼으로 데이 모드와 나이트 모드를 바꿉니다.
       dayNightTheme: true,
+      // 2026-08-17: 해/달 대신 전화박스 조명이 켜지고 꺼지는 버튼을 사용합니다.
+      themeIllustrationToggle: true,
+      // true면 좌상단, false면 언어 전환 버튼 바로 왼쪽에 배치합니다.
+      themeToggleLeftLayout: false,
       // 2026-08-14: 모드를 바꿀 때 색이 부드럽게 이어지는 효과만 따로 켜고 끕니다.
       smoothThemeTransition: true,
+      // 2026-08-27: 손님 페이지 한글/영문 UI에 로컬 Pretendard Variable을 사용합니다.
+      modernPretendardFont: true,
+      // 2026-08-27: 밝은 모드의 파스텔 파랑/빨강이 충분히 보이도록 색 농도를 높입니다.
+      strongerDayPastels: true,
+      // 2026-08-27: 밝은 모드의 검은 금주의 음반 카드에 파랑/빨강 반사광을 연결합니다.
+      weeklyDayColorBridge: true,
+      // 2026-08-27: 9장이 차지 않은 마지막 묶음도 한 페이지로 정확히 이동합니다.
+      partialAlbumPageFix: true,
     }),
     mobilePagerMedia: '(max-width: 719px), (pointer: coarse) and (max-width: 900px)',
     weeklyMotionTest: Object.freeze({
