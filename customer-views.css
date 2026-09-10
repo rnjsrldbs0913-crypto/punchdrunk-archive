@@ -21,21 +21,28 @@
 
   .album-view-options {
     display: flex;
-    gap: 3px;
-    padding: 3px;
+    gap: 0;
+    padding: 0;
     border: 1px solid var(--line);
-    border-radius: 9px;
-    background: var(--surface);
+    border-radius: 0;
+    background: var(--modern-panel-solid, var(--bg));
   }
 
   .album-view-options button {
-    min-width: 56px;
-    min-height: 44px;
-    padding: 8px 12px;
-    border: 1px solid transparent;
-    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
     background: transparent;
-    color: var(--text);
+    color: var(--muted);
+    box-shadow: none;
     font: inherit;
     font-size: 0.875rem;
     font-weight: 600;
@@ -43,10 +50,32 @@
     touch-action: manipulation;
   }
 
+  .album-view-options button + button {
+    border-left: 1px solid var(--line);
+  }
+
   .album-view-options button[aria-pressed="true"] {
-    border-color: var(--modern-coral, #ff5b6f);
-    background: var(--modern-coral, #ff5b6f);
-    color: #17131d;
+    background: var(--text);
+    color: var(--modern-bg, var(--bg));
+  }
+
+  .album-view-options button:hover:not([aria-pressed="true"]) {
+    color: var(--text);
+  }
+
+  .album-view-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    pointer-events: none;
+  }
+
+  @media (pointer: coarse) {
+    .album-view-options button {
+      min-width: 44px;
+      min-height: 44px;
+    }
   }
 
   .album-view-options button:focus-visible,
