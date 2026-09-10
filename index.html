@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="customer-polish.css?v=20260818143000" />
   <link rel="stylesheet" href="customer-modern.css?v=20260827154000" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
+  <link rel="stylesheet" href="customer-views.css?v=2026091001" />
 </head>
 <body class="customer-page">
   <div class="app-shell">
@@ -140,6 +141,14 @@
           <div class="filter-row genre-row" data-genre-filters></div>
         </div>
       </div>
+      <div class="album-view-switch" role="group" aria-label="보기 방식" data-i18n-aria="albumView">
+        <span class="album-view-label" data-i18n="albumView">보기 방식</span>
+        <div class="album-view-options">
+          <button type="button" data-album-view-option="grid-2" aria-pressed="false" aria-controls="album-results" data-i18n-aria="albumViewTwo">2×2</button>
+          <button type="button" data-album-view-option="grid-3" aria-pressed="true" aria-controls="album-results" data-i18n-aria="albumViewThree">3×3</button>
+          <button type="button" data-album-view-option="list" aria-pressed="false" aria-controls="album-results" data-i18n="albumViewList">목록형</button>
+        </div>
+      </div>
       <div class="result-summary-row">
         <div class="result-summary" data-result-summary></div>
         <div class="result-action-buttons">
@@ -151,7 +160,7 @@
     </section>
 
     <section class="grid-section" data-grid-section aria-label="앨범 목록" data-i18n-aria="albumList">
-      <div class="album-grid" data-album-grid></div>
+      <div class="album-grid" id="album-results" data-album-grid></div>
       <p class="empty-message" data-empty-message hidden data-i18n="emptyAlbums">조건에 맞는 음반이 없습니다.</p>
       <nav class="pagination" data-pagination aria-label="앨범 목록 페이지" data-i18n-aria="albumListPage"></nav>
     </section>
@@ -191,6 +200,6 @@
   </template>
 
   <script src="albums-data.js?v=20260906150000"></script>
-  <script src="app.js?v=20260827120000"></script>
+  <script src="app.js?v=2026091001"></script>
 </body>
 </html>

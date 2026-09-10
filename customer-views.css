@@ -1,0 +1,161 @@
+/* Mobile catalog views. Cover sources and the existing cover transition stay shared. */
+.album-view-switch,
+.album-card-facts {
+  display: none;
+}
+
+@media (max-width: 719px), (pointer: coarse) and (max-width: 900px) {
+  .customer-page .album-view-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-top: 12px;
+  }
+
+  .album-view-label {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .album-view-options {
+    display: flex;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--surface);
+  }
+
+  .album-view-options button {
+    min-width: 56px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .album-view-options button[aria-pressed="true"] {
+    border-color: var(--modern-coral, #ff5b6f);
+    background: var(--modern-coral, #ff5b6f);
+    color: #17131d;
+  }
+
+  .album-view-options button:focus-visible,
+  .album-grid[data-album-view] .album-card:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  /* Also covers one-page search results and the native/fallback swipe pagers. */
+  .customer-page .album-grid[data-album-view="grid-2"],
+  .customer-page .album-grid[data-album-view="grid-2"] .album-grid-page {
+    --album-view-columns: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .customer-page .album-grid[data-album-view="grid-3"],
+  .customer-page .album-grid[data-album-view="grid-3"] .album-grid-page {
+    --album-view-columns: 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .customer-page .album-grid[data-album-view="list"],
+  .customer-page .album-grid[data-album-view="list"] .album-grid-page {
+    --album-view-columns: 1;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  body.customer-page .album-grid[data-album-view].is-persistent-pager .album-grid-page {
+    grid-template-columns: repeat(var(--album-view-columns), minmax(0, 1fr));
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card {
+    display: grid;
+    grid-template-columns: clamp(64px, 19vw, 88px) minmax(0, 1fr);
+    align-items: center;
+    column-gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+    transform: none;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .grid-cover {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 100%;
+    align-self: center;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    padding: 0;
+    grid-column: 2;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card-title {
+    order: -1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    margin: 0;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card-artist {
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.35;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .album-card-facts > span + span::before {
+    content: "·";
+    margin-inline: 6px;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card-match {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 6px;
+  }
+
+  .customer-page .album-grid[data-album-view="list"] .album-card-new {
+    top: 4px;
+    right: 4px;
+  }
+
+  .customer-page .album-grid[data-album-view="grid-2"] .album-card-artist {
+    font-size: 0.875rem;
+  }
+
+  .customer-page .album-grid[data-album-view="grid-2"] .album-card-title {
+    font-size: 0.8125rem;
+  }
+}

@@ -7,6 +7,8 @@
   const siteHeader = document.querySelector('[data-home-link]');
   const languageButtons = document.querySelectorAll('[data-language-option]');
   const LANGUAGE_STORAGE_KEY = 'pd-language';
+  const ALBUM_VIEW_STORAGE_KEY = 'pd-mobile-album-view-v1';
+  const ALBUM_VIEWS = new Set(['grid-2', 'grid-3', 'list']);
   const FORMAT_ALL = '전체';
   const GENRE_ALL = '전체 장르';
   const NEW_ALBUM_DAYS = 14;
@@ -100,7 +102,16 @@
     return 'ko';
   }
 
+  function getInitialAlbumView() {
+    try {
+      const saved = localStorage.getItem(ALBUM_VIEW_STORAGE_KEY);
+      if (ALBUM_VIEWS.has(saved)) return saved;
+    } catch (_) { /* 저장이 제한된 브라우저에서도 기본 보기를 사용합니다. */ }
+    return 'grid-3';
+  }
+
   const state = {
+    albumView: getInitialAlbumView(),
     query: '',
     format: FORMAT_ALL,
     genre: GENRE_ALL,
@@ -217,6 +228,10 @@
       requestListView: '메모 보기',
       albumList: '앨범 목록',
       albumListPage: '앨범 목록 페이지',
+      albumView: '보기 방식',
+      albumViewTwo: '2×2 보기 · 한 페이지에 4장',
+      albumViewThree: '3×3 보기 · 한 페이지에 9장',
+      albumViewList: '목록형',
       emptyAlbums: '조건에 맞는 음반이 없습니다.',
       all: '전체',
       previous: '이전',
@@ -295,6 +310,10 @@
       requestListView: 'View notes',
       albumList: 'Album list',
       albumListPage: 'Album list pages',
+      albumView: 'View',
+      albumViewTwo: '2×2 view · 4 albums per page',
+      albumViewThree: '3×3 view · 9 albums per page',
+      albumViewList: 'List',
       emptyAlbums: 'No albums match these filters.',
       all: 'All',
       previous: 'Previous',
@@ -1516,13 +1535,18 @@
     return sorted;
   }
 
+  function getEffectiveAlbumView() {
+    return isMobileAlbumPager() ? state.albumView : 'default';
+  }
+
   function getAlbumsPerPage() {
+    if (isMobileAlbumPager()) return state.albumView === 'grid-2' ? 4 : 9;
     if (window.matchMedia('(min-width: 1060px)').matches) return 18;
     if (window.matchMedia('(min-width: 720px)').matches) return 15;
     return 9;
   }
 
-  // 9장이 꽉 차지 않은 마지막 묶음도 반드시 별도의 한 페이지로 계산합니다.
+  // 보기 방식별로 남은 음반도 마지막 페이지에서 빠짐없이 표시합니다.
   function getAlbumPageCount(totalAlbums, perPage = getAlbumsPerPage()) {
     const safeTotal = Math.max(0, Number(totalAlbums) || 0);
     const safePerPage = Math.max(1, Number(perPage) || 1);
@@ -1537,6 +1561,21 @@
 
   function resetAlbumPage() {
     state.page = 1;
+  }
+
+  function updateAlbumViewButtons(root = app) {
+    root.querySelectorAll('[data-album-view-option]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.albumViewOption === state.albumView));
+    });
+  }
+
+  function setAlbumView(view) {
+    if (!ALBUM_VIEWS.has(view) || view === state.albumView) return;
+    state.albumView = view;
+    try { localStorage.setItem(ALBUM_VIEW_STORAGE_KEY, view); } catch (_) { /* 현재 화면에서는 계속 사용할 수 있습니다. */ }
+    cancelSwipeDiscoveryHint();
+    updateAlbumViewButtons();
+    updateAlbumGrid();
   }
 
   // 휴대폰 폭과 글꼴이 달라도 도구 버튼 문구가 두 줄이 되지 않도록 실제 버튼 너비에 맞춰 조정합니다.
@@ -2441,6 +2480,7 @@
   }
 
   function renderHome(options = {}) {
+    app.querySelector('[data-album-grid]')?._pdPager?.destroy();
     closeDetailCoverViewer({ restoreFocus: false });
     document.body.classList.remove('is-detail-view');
     cancelSwipeDiscoveryHint();
@@ -2481,6 +2521,10 @@
     }
 
     const searchInput = node.querySelector('#search-input');
+    updateAlbumViewButtons(node);
+    node.querySelectorAll('[data-album-view-option]').forEach(button => {
+      button.addEventListener('click', () => setAlbumView(button.dataset.albumViewOption));
+    });
     const searchClearButton = node.querySelector('[data-search-clear]');
     const updateSearchClearButton = () => {
       searchClearButton.hidden = !searchInput.value;
@@ -2787,6 +2831,7 @@
     const trackSearchQuery = albumHasTrackSearchMatch(album) ? state.query : '';
     card.type = 'button';
     card.className = 'album-card';
+    card.dataset.albumId = album.id;
     card.dataset.recent = String(recentlyAdded);
     card.addEventListener('click', event => {
       if (Date.now() < suppressAlbumCardClickUntil) {
@@ -2816,7 +2861,16 @@
 
     const meta = document.createElement('span');
     meta.className = 'album-card-meta';
-    meta.innerHTML = `<strong>${escapeHtml(getLocalizedArtist(album) || '')}</strong><em>${escapeHtml(album.title || '')}</em>`;
+    meta.innerHTML = `<strong class="album-card-artist">${escapeHtml(getLocalizedArtist(album) || '')}</strong><em class="album-card-title">${escapeHtml(album.title || '')}</em>`;
+    const facts = document.createElement('span');
+    facts.className = 'album-card-facts';
+    [getGenreLabel(classifyGenre(album.genre)), String(album.year || '').trim(), formatLabel(album.format)]
+      .filter(Boolean).forEach(value => {
+        const fact = document.createElement('span');
+        fact.textContent = value;
+        facts.append(fact);
+      });
+    meta.append(facts);
     card.append(meta);
 
     const matchLabel = getSearchMatchLabel(album, searchMatchType);
@@ -2956,9 +3010,18 @@
         grid.scrollTo({ left: (targetPage - 1) * grid.clientWidth, top: 0, behavior: 'auto' });
         setPersistentPagerCurrentPage(grid, targetPage);
       },
+      destroy() {
+        suspended = true;
+        programmaticTarget = null;
+        window.clearTimeout(settleTimer);
+        if (scrollFrame) cancelAnimationFrame(scrollFrame);
+        cancelAnimationFrame(alignFrame);
+        grid.removeEventListener('scroll', onScroll);
+        grid.removeEventListener('scrollend', settle);
+      },
     };
 
-    grid.addEventListener('scroll', () => {
+    const onScroll = () => {
       if (suspended) return;
       suppressAlbumCardClickUntil = Date.now() + 180;
       markSwipeDiscoveryHintSeen();
@@ -2971,12 +3034,13 @@
       }
       window.clearTimeout(settleTimer);
       settleTimer = window.setTimeout(settle, 110);
-    }, { passive: true });
+    };
+    grid.addEventListener('scroll', onScroll, { passive: true });
     if ('onscrollend' in window) grid.addEventListener('scrollend', settle, { passive: true });
 
     hydrate(state.page);
     releaseDistantPages(state.page);
-    requestAnimationFrame(() => grid._pdPager?.realign());
+    const alignFrame = requestAnimationFrame(() => grid._pdPager?.realign());
   }
 
   function renderMobileSwipeGrid(grid, filtered, perPage, totalPages) {
@@ -3297,9 +3361,27 @@
     const pagination = app.querySelector('[data-pagination]');
     const filtered = getVisibleAlbums();
     const perPage = getAlbumsPerPage();
+    const previousPerPage = Number(grid.dataset.perPage);
+    const view = getEffectiveAlbumView();
+    const layoutChanged = grid.dataset.albumView !== view || previousPerPage !== perPage;
+    if (previousPerPage && previousPerPage !== perPage) {
+      // 새 레이아웃에서도 이전 페이지의 첫 음반을 포함하는 페이지로 이동합니다.
+      state.page = Math.floor((state.page - 1) * previousPerPage / perPage) + 1;
+    }
+    if (layoutChanged) options = { ...options, preservePersistentTrack: false, preserveMobileTrack: false };
+    grid.dataset.albumView = view;
+    grid.dataset.perPage = String(perPage);
     const totalPages = getAlbumPageCount(filtered.length, perPage);
     if (state.page > totalPages) state.page = totalPages;
     if (state.page < 1) state.page = 1;
+    if (layoutChanged && document.body.classList.contains('is-detail-view') && homeViewLayer) {
+      homeAlbumPage = state.page;
+      homeViewLayer.dataset.preservedAlbumPage = String(state.page);
+    }
+    if (!options.preservePersistentTrack) {
+      grid._pdPager?.destroy();
+      delete grid._pdPager;
+    }
     const start = (state.page - 1) * perPage;
     const pagedAlbums = getPageAlbums(filtered, state.page, perPage);
     const shownStart = filtered.length ? start + 1 : 0;
@@ -3610,7 +3692,7 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       if (resizeHeldPersistentPager && CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager()) {
-        state.page = Math.min(getAlbumTotalPages(), Math.max(1, resizePreservedAlbumPage));
+        state.page = Math.max(1, resizePreservedAlbumPage);
       }
       updateAlbumGrid({
         preservePersistentTrack: CUSTOMER_FEATURES.nativeMobilePager && isMobileAlbumPager(),
