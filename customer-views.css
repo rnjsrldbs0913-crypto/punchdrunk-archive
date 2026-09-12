@@ -4,6 +4,38 @@
   display: none;
 }
 
+.customer-page .album-grid .album-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.customer-page .album-grid .album-card-title {
+  order: -1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  margin: 0;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.customer-page .album-grid .album-card-artist {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.customer-page [data-random-album]:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 @media (max-width: 719px), (pointer: coarse) and (max-width: 900px) {
   .customer-page .album-view-switch {
     display: flex;
@@ -181,10 +213,18 @@
   }
 
   .customer-page .album-grid[data-album-view="grid-2"] .album-card-artist {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 
   .customer-page .album-grid[data-album-view="grid-2"] .album-card-title {
+    font-size: 0.9375rem;
+  }
+
+  .customer-page .album-grid[data-album-view="grid-3"] .album-card-title {
     font-size: 0.8125rem;
+  }
+
+  .customer-page .album-grid[data-album-view="grid-3"] .album-card-artist {
+    font-size: 0.75rem;
   }
 }

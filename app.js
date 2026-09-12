@@ -132,6 +132,10 @@
   let swipeHintSection = null;
   let requestTracks = loadRequestTracks();
   let requestListOverlay = null;
+  let requestListTrigger = null;
+  let requestListBaseUrl = '';
+  let requestListClosing = false;
+  let afterRequestListClose = null;
   let requestToastTimer = 0;
   let detailCoverViewer = null;
   let detailCoverViewerTrigger = null;
@@ -437,10 +441,26 @@
     });
   }
 
-  function closeRequestTrackList() {
+  function hideRequestTrackList() {
     if (!requestListOverlay) return;
     requestListOverlay.hidden = true;
     document.body.classList.remove('request-list-open');
+    if (requestListTrigger?.isConnected) requestListTrigger.focus({ preventScroll: true });
+    requestListClosing = false;
+  }
+
+  function closeRequestTrackList(afterClose) {
+    if (!requestListOverlay || requestListOverlay.hidden || requestListClosing) return;
+    afterRequestListClose = typeof afterClose === 'function' ? afterClose : null;
+    if (history.state?.requestList) {
+      requestListClosing = true;
+      history.back();
+      return;
+    }
+    hideRequestTrackList();
+    const callback = afterRequestListClose;
+    afterRequestListClose = null;
+    callback?.();
   }
 
   function ensureRequestListOverlay() {
@@ -519,11 +539,9 @@
         text.append(trackTitle, trackNumber, albumMeta);
         openButton.append(cover, text);
         openButton.addEventListener('click', () => {
-          openAlbum(resolved.album.id, {
+          closeRequestTrackList(() => openAlbum(resolved.album.id, {
             focusTrackIndex: resolved.trackIndex,
-            transitionSource: cover,
-          });
-          closeRequestTrackList();
+          }));
         });
 
         const removeButton = document.createElement('button');
@@ -562,8 +580,13 @@
     overlay.setAttribute('aria-label', t('requestListTitle'));
   }
 
-  function openRequestTrackList() {
-    if (!CUSTOMER_FEATURES.requestTrackList) return;
+  function openRequestTrackList(options = {}) {
+    if (!CUSTOMER_FEATURES.requestTrackList || (requestListOverlay && !requestListOverlay.hidden)) return;
+    requestListTrigger = document.activeElement;
+    requestListBaseUrl = window.location.href;
+    if (!options.fromHistory) {
+      history.pushState({ ...history.state, requestList: true }, '', requestListBaseUrl);
+    }
     renderRequestTrackList();
     requestListOverlay.hidden = false;
     document.body.classList.add('request-list-open');
@@ -1471,21 +1494,35 @@
       .replace(/'/g, '&#039;');
   }
 
+  function getSearchTerms(query = state.query) {
+    return String(query || '').trim().split(/\s+/).map(normalize).filter(Boolean);
+  }
+
+  function matchesSearch(value, terms) {
+    const text = normalize(value);
+    return terms.every(term => text.includes(term));
+  }
+
+  function matchesAlbumFilters(album, terms, includeGenre = true) {
+    return (state.format === FORMAT_ALL || album.format === state.format)
+      && (!includeGenre || state.genre === GENRE_ALL || classifyGenre(album.genre) === state.genre)
+      && (!state.recentOnly || isRecentlyAdded(album))
+      && matchesSearch(getSearchableText(album), terms);
+  }
+
   function getGenresForCurrentFormat() {
-    const relevant = albums.filter(album => {
-      const formatOk = state.format === FORMAT_ALL || album.format === state.format;
-      const recentOk = !state.recentOnly || isRecentlyAdded(album);
-      return formatOk && recentOk;
-    });
+    const terms = getSearchTerms();
+    // 장르 개수는 검색·포맷·최근 추가 조건을 반영하며, 다른 장르로도 이동할 수 있게 합니다.
+    const relevant = albums.filter(album => matchesAlbumFilters(album, terms, false));
     const counts = relevant.reduce((map, album) => {
       const genre = classifyGenre(album.genre);
-      if (!genre) return map;
-      map.set(genre, (map.get(genre) || 0) + 1);
+      if (genre) map.set(genre, (map.get(genre) || 0) + 1);
       return map;
     }, new Map());
     return [
       { name: GENRE_ALL, count: relevant.length },
-      ...STANDARD_GENRES.filter(name => counts.has(name)).map(name => ({ name, count: counts.get(name) })),
+      ...STANDARD_GENRES.filter(name => counts.has(name) || name === state.genre)
+        .map(name => ({ name, count: counts.get(name) || 0 })),
     ];
   }
   function getSearchableText(album) {
@@ -1503,16 +1540,8 @@
   }
 
   function getFilteredAlbums() {
-    const q = normalize(state.query);
-    return albums.filter(album => {
-      // 포맷/장르 필터: 장르 필터는 현재 선택된 포맷 안에서만 적용됩니다.
-      const formatOk = state.format === FORMAT_ALL || album.format === state.format;
-      const albumGenre = classifyGenre(album.genre);
-      const genreOk = state.genre === GENRE_ALL || albumGenre === state.genre;
-      const queryOk = !q || normalize(getSearchableText(album)).includes(q);
-      const recentOk = !state.recentOnly || isRecentlyAdded(album);
-      return formatOk && genreOk && queryOk && recentOk;
-    });
+    const terms = getSearchTerms();
+    return albums.filter(album => matchesAlbumFilters(album, terms));
   }
   function parseYear(year) {
     const parsed = parseInt(String(year || '').match(/\d{4}/)?.[0] || '0', 10);
@@ -1708,29 +1737,32 @@
 
     swipeHintTimer = window.setTimeout(playHint, 500);
   }
-  function fieldMatches(value, q) {
-    return normalize(value).includes(q);
+  function fieldMatches(value, query) {
+    return matchesSearch(value, getSearchTerms(query));
   }
 
-  function listMatches(list, q) {
-    return (list || []).some(item => fieldMatches(item, q));
+  function getTrackSearchQuery(album, query = state.query) {
+    const terms = getSearchTerms(query);
+    if (!terms.length) return '';
+    const tracks = [...(album.tracklist || []), ...(album.recommendedTracks || [])];
+    if (tracks.some(track => matchesSearch(track, terms))) return String(query).trim();
+    // 아티스트·앨범명에서 충족한 검색어를 제외하고 실제로 찾은 곡을 강조합니다.
+    const metadata = normalize([album.title, album.artist, album.artistKo, album.artistEn, getLocalizedArtist(album)].join(' '));
+    const trackTerms = terms.filter(term => !metadata.includes(term));
+    return trackTerms.length && tracks.some(track => matchesSearch(track, trackTerms))
+      ? trackTerms.join(' ')
+      : '';
   }
 
   function albumHasTrackSearchMatch(album, query = state.query) {
-    // 앨범명과 곡명이 동시에 검색되어도 트랙 일치 정보를 별도로 유지합니다.
-    // 결과 문구가 '앨범명에서 검색됨'이어도 상세 화면에서는 해당 곡을 강조할 수 있습니다.
-    const q = normalize(query);
-    if (!q) return false;
-    return listMatches(album.tracklist, q) || listMatches(album.recommendedTracks, q);
+    return Boolean(getTrackSearchQuery(album, query));
   }
 
   function getSearchMatchType(album) {
-    const q = normalize(state.query);
-    if (!q) return '';
-    if (fieldMatches(album.title, q)) return 'title';
-    if (fieldMatches(album.artist, q) || fieldMatches(album.artistKo, q) || fieldMatches(album.artistEn, q)) return 'artist';
-    // 추천곡 검색도 손님 화면에서는 트랙리스트 검색으로 통합합니다.
-    if (albumHasTrackSearchMatch(album, q)) return 'tracklist';
+    if (!getSearchTerms().length) return '';
+    if (fieldMatches(album.title, state.query)) return 'title';
+    if (fieldMatches([album.artist, album.artistKo, album.artistEn].join(' '), state.query)) return 'artist';
+    if (albumHasTrackSearchMatch(album)) return 'tracklist';
     return '';
   }
 
@@ -2383,16 +2415,24 @@
     }
   }
 
+  function updateRandomAlbumButtons(root = app) {
+    const empty = getFilteredAlbums().length === 0;
+    root.querySelectorAll('[data-random-album]').forEach(button => {
+      button.disabled = empty;
+    });
+  }
+
   function openRandomAlbum() {
-    if (!albums.length) return;
-    const currentAlbumId = getAlbumIdFromHash();
-    const blockedId = currentAlbumId || state.lastRandomAlbumId;
-    const pool = albums.length > 1
-      ? albums.filter(item => item.id !== blockedId)
-      : albums;
+    // 페이지나 보기 방식과 관계없이 현재 검색과 모든 필터에 맞는 전체 결과에서 고릅니다.
+    const filtered = getFilteredAlbums();
+    if (!filtered.length) return;
+    const blockedId = getAlbumIdFromHash() || state.lastRandomAlbumId;
+    const pool = filtered.length > 1
+      ? filtered.filter(item => item.id !== blockedId)
+      : filtered;
     const album = pool[Math.floor(Math.random() * pool.length)];
     state.lastRandomAlbumId = album.id;
-    openAlbum(album.id);
+    openAlbum(album.id, { trackSearchQuery: getTrackSearchQuery(album) });
   }
 
   function getFilterToggleSummary() {
@@ -2533,6 +2573,7 @@
     updateSearchClearButton();
     searchInput.addEventListener('input', event => {
       state.query = event.target.value;
+      renderGenreFilters(app.querySelector('[data-genre-filters]'));
       resetAlbumPage();
       updateAlbumGrid();
       updateSearchClearButton();
@@ -2540,6 +2581,7 @@
     searchClearButton.addEventListener('click', () => {
       state.query = '';
       searchInput.value = '';
+      renderGenreFilters(app.querySelector('[data-genre-filters]'));
       resetAlbumPage();
       updateAlbumGrid();
       updateSearchClearButton();
@@ -2674,6 +2716,8 @@
       scrollShell.classList.toggle('can-scroll-left', container.scrollLeft > 3);
       scrollShell.classList.toggle('can-scroll-right', maxScroll - container.scrollLeft > 3);
     };
+    if (container._genreScrollHandler) container.removeEventListener('scroll', container._genreScrollHandler);
+    container._genreScrollHandler = updateScrollHints;
     container.addEventListener('scroll', updateScrollHints, { passive: true });
     requestAnimationFrame(updateScrollHints);
   }
@@ -2828,7 +2872,7 @@
     const card = document.createElement('button');
     const recentlyAdded = isRecentlyAdded(album);
     const searchMatchType = getSearchMatchType(album);
-    const trackSearchQuery = albumHasTrackSearchMatch(album) ? state.query : '';
+    const trackSearchQuery = getTrackSearchQuery(album);
     card.type = 'button';
     card.className = 'album-card';
     card.dataset.albumId = album.id;
@@ -3354,6 +3398,7 @@
   }
 
   function updateAlbumGrid(options = {}) {
+    updateRandomAlbumButtons();
     const grid = app.querySelector('[data-album-grid]');
     if (!grid) return;
     const empty = app.querySelector('[data-empty-message]');
@@ -3465,8 +3510,8 @@
 
   function isTrackSearchMatch(track, searchQuery, recommendedTracks) {
     // 트랙 검색 강조: 트랙리스트 직접 검색과 추천곡 데이터 검색을 모두 실제 트랙 행에 연결합니다.
-    const q = normalize(searchQuery);
-    if (!q) return false;
+    const q = String(searchQuery || '').trim();
+    if (!getSearchTerms(q).length) return false;
     if (fieldMatches(track, q)) return true;
 
     const trackTitle = normalize(stripTrackNumber(track));
@@ -3648,6 +3693,7 @@
     const deferContent = options.deferContent === true;
     const initialTrackSearchQuery = deferContent ? '' : populateDetailContent(node);
     detailRoot.replaceChildren(node);
+    updateRandomAlbumButtons();
     if (persistentLayers) stagePersistentDetailView(Boolean(options.skipInitialScroll));
     refreshRequestTrackUi(app);
 
@@ -3727,6 +3773,22 @@
   }
 
   function handlePopState() {
+    // 메모창도 방문 기록 한 단계로 취급해 첫 뒤로가기는 배경 화면을 유지합니다.
+    if (requestListOverlay && !requestListOverlay.hidden) {
+      const stayedOnPage = window.location.href === requestListBaseUrl;
+      hideRequestTrackList();
+      const callback = afterRequestListClose;
+      afterRequestListClose = null;
+      if (stayedOnPage) {
+        callback?.();
+        return;
+      }
+    }
+    if (history.state?.requestList) {
+      renderRouteFromLocation();
+      openRequestTrackList({ fromHistory: true });
+      return;
+    }
     // 커버 크게 보기는 상세 페이지 위의 한 단계이므로, 뒤로가기는 먼저 뷰어만 닫습니다.
     if (CUSTOMER_FEATURES.interactiveCoverViewer && detailCoverViewer && !detailCoverViewer.overlay.hidden) {
       const closeOptions = detailCoverViewer.pendingCloseOptions || {};
