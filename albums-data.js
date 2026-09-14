@@ -3,6 +3,172 @@
 
 const ALBUMS = [
   {
+    "id": "album-mu14xaak",
+    "title": "POWER ANDRE 99",
+    "artist": "실리카겔",
+    "artistKo": "실리카겔",
+    "artistEn": "Silica Gel",
+    "addedAt": "2026-09-14T11:03:37.820Z",
+    "year": "2023",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "coverImage": "covers/album-mu14xaak.jpg",
+    "recommendedTracks": [
+      "B3. NO PAIN",
+      "C1. T",
+      "C2. Tik Tak Tok (feat. So!YoON!)"
+    ],
+    "tracklist": [
+      "A1. On Black",
+      "A2. Eres Tu",
+      "A3. Juxtaposition",
+      "A4. Realize",
+      "A5. Gosan",
+      "B1. Andre99",
+      "B2. Babyface",
+      "B3. NO PAIN",
+      "B4. The Rim",
+      "C1. T",
+      "C2. Tik Tak Tok (feat. So!YoON!)",
+      "C3. Budland",
+      "C4. Ryudejakeiru",
+      "C5. APEX",
+      "D1. Ondine",
+      "D2. Mercurial",
+      "D3. Machineboy空",
+      "D4. PH-1004"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mu14v0w2",
+    "title": "Arrm8",
+    "artist": "반타01 & MPT",
+    "artistKo": "반타01 & MPT",
+    "artistEn": "VANTA01 & MPT",
+    "addedAt": "2026-09-14T11:01:52.323Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "coverImage": "covers/album-mu14v0w2.jpg",
+    "recommendedTracks": [
+      "2. HOWMUCH?",
+      "9. 하얀질주",
+      "10. Korea BJJ"
+    ],
+    "tracklist": [
+      "1. 사이렌",
+      "2. HOWMUCH?",
+      "3. 샤이니",
+      "4. SHIPSEKKI",
+      "5. AMAGETDON",
+      "6. Self Control",
+      "7. eeee",
+      "8. KAIMODE",
+      "9. 하얀질주",
+      "10. Korea BJJ",
+      "11. 태권도",
+      "12. 할머니",
+      "13. TRAUMA"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mu14rf1n",
+    "title": "Magic 8Ball",
+    "artist": "맥 에이레스",
+    "artistKo": "맥 에이레스",
+    "artistEn": "Mac Ayres",
+    "addedAt": "2026-09-14T10:59:04.043Z",
+    "year": "2021",
+    "format": "Vinyl",
+    "genre": "알앤비",
+    "coverImage": "covers/album-mu14rf1n.jpg",
+    "recommendedTracks": [
+      "B1. Never Let Me Go (feat. CARRTOONS)",
+      "B3. Where U Goin' Tonight?"
+    ],
+    "tracklist": [
+      "A1. Sunny & 62",
+      "A2. Sometimes",
+      "A3. Nothing Else",
+      "A4. Brand New",
+      "B1. Never Let Me Go (feat. CARRTOONS)",
+      "B2. Every Time",
+      "B3. Where U Goin' Tonight?",
+      "B4. Almost Home"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mu14npzh",
+    "title": "Re-Make",
+    "artist": "주혜린",
+    "artistKo": "주혜린",
+    "artistEn": "Hyelyn Joo",
+    "addedAt": "2026-09-14T10:56:11.597Z",
+    "year": "2025",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "coverImage": "covers/album-mu14npzh.jpg",
+    "recommendedTracks": [
+      "A5. 미친 건가 (Re-Make)"
+    ],
+    "tracklist": [
+      "A1. 복도식 아파트 (Re-Make)",
+      "A2. 미장원 (Re-Make)",
+      "A3. Busy Boy (Re-Make)",
+      "A4. 미안해 (Re-Make)",
+      "A5. 미친 건가 (Re-Make)",
+      "B1. 무슨 생각해? (Re-Make)",
+      "B2. 아무것도 (Re-Make)",
+      "B3. Voice Mail (Vinyl Only)",
+      "B4. 복도식 아파트 (Instrumental) (Vinyl Only)",
+      "B5. 미장원 (Instrumental) (Vinyl Only)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
+    "id": "album-mu14ld4z",
+    "title": "홍대래퍼",
+    "artist": "허키 시바세키",
+    "artistKo": "허키 시바세키",
+    "artistEn": "Hukky Shibaseki",
+    "addedAt": "2026-09-14T10:54:21.635Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "coverImage": "covers/album-mu14ld4z.jpg",
+    "recommendedTracks": [
+      "1. 홍대래퍼 (feat. Leellamarz)"
+    ],
+    "tracklist": [
+      "1. 홍대래퍼 (feat. Leellamarz)",
+      "2. 홍대래퍼 (Instrumental)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "isWeekly": false
+  },
+  {
     "id": "album-mtpawu0v",
     "title": "Drive Slow",
     "artist": "맥 에이레스",
