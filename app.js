@@ -110,7 +110,9 @@
     return 'grid-3';
   }
 
+  const HOME_SECTIONS = Array.from(homeTemplate.content.querySelectorAll('[data-home-panel]'), panel => panel.dataset.homePanel);
   const state = {
+    homeSection: HOME_SECTIONS[0],
     albumView: getInitialAlbumView(),
     query: '',
     format: FORMAT_ALL,
@@ -145,6 +147,7 @@
   let homeViewReady = false;
   let homeScrollPosition = 0;
   let homeAlbumPage = 1;
+  let finishHomeSectionMotion = null;
 
   const STANDARD_GENRES = [
     '재즈',
@@ -196,6 +199,8 @@
       homeLabel: '처음 화면으로 돌아가기',
       languageLabel: '언어 선택',
       weeklyAlbum: '금주의 음반',
+      catalogTab: '음반 목록',
+      browseSections: '음반 둘러보기',
       weeklyNote: 'PUNCH-DRUNK PICK',
       selectionReason: '이번 주의 선택',
       details: '음반 자세히 보기 →',
@@ -278,6 +283,8 @@
       homeLabel: 'Back to home',
       languageLabel: 'Language',
       weeklyAlbum: 'Album of the Week',
+      catalogTab: 'Record Collection',
+      browseSections: 'Browse records',
       weeklyNote: 'PUNCH-DRUNK PICK',
       selectionReason: "This week's pick",
       details: 'View album →',
@@ -2376,6 +2383,7 @@
   }
 
   function openAlbum(albumId, options = {}) {
+    finishHomeSectionMotion?.();
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();
     if (CUSTOMER_FEATURES.persistentDetailLayers && !document.body.classList.contains('is-detail-view')) {
@@ -2391,7 +2399,7 @@
     state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
       ? { albumId: album.id, trackIndex: focusTrackIndex }
       : null;
-    const detailState = { view: 'detail', albumId: album.id };
+    const detailState = { view: 'detail', albumId: album.id, homeSection: state.homeSection };
     if (trackSearchQuery) detailState.trackSearchQuery = trackSearchQuery;
     if (state.detailTrackFocus) detailState.focusTrackIndex = state.detailTrackFocus.trackIndex;
 
@@ -2463,6 +2471,99 @@
     summary.textContent = getFilterToggleSummary();
   }
 
+  function setHomeSection(section, options = {}) {
+    if (!HOME_SECTIONS.includes(section)) return;
+    finishHomeSectionMotion?.();
+    const root = app.querySelector('[data-home-sections]');
+    state.homeSection = section;
+    if (!root) return;
+    const tabs = Array.from(root.querySelectorAll('[data-home-section]'));
+    const panels = Array.from(root.querySelectorAll('[data-home-panel]'));
+    const stage = root.querySelector('[data-home-section-stage]');
+    const previous = panels.find(panel => panel.classList.contains('is-active'));
+    const next = panels.find(panel => panel.dataset.homePanel === section);
+    if (!next) return;
+    const changed = previous && previous !== next;
+    const nav = root.querySelector('[role="tablist"]');
+
+    // Keep the navigation in view when switching from a long, scrolled collection.
+    if (options.scrollToTabs) {
+      const top = root.getBoundingClientRect().top;
+      if (top < 0) window.scrollTo({ top: window.scrollY + top, behavior: 'instant' });
+    }
+    const previousHeight = stage.getBoundingClientRect().height;
+    tabs.forEach((tab, index) => {
+      const selected = tab.dataset.homeSection === section;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      if (selected) {
+        nav.style.setProperty('--section-index', index);
+        if (options.focus) tab.focus({ preventScroll: true });
+      }
+    });
+    nav.style.setProperty('--section-count', tabs.length);
+    panels.forEach(panel => {
+      const selected = panel === next;
+      panel.classList.toggle('is-active', selected);
+      panel.inert = !selected;
+      if (selected) panel.removeAttribute('aria-hidden');
+      else panel.setAttribute('aria-hidden', 'true');
+    });
+    root.dataset.section = section;
+    if (options.remember !== false && !getAlbumIdFromHash()) {
+      history.replaceState({ ...history.state, view: 'home', homeSection: section }, '', window.location.href);
+    }
+    if (changed) {
+      previous.querySelectorAll('video').forEach(video => video.pause());
+      previous.querySelector('.is-motion-playing')?.classList.remove('is-motion-playing');
+    }
+    cancelSwipeDiscoveryHint();
+    if (section === 'catalog') {
+      app.querySelector('[data-album-grid]')?._pdPager?.resume(state.page);
+      scheduleSearchToolLabelFit();
+      scheduleSwipeDiscoveryHint(app.querySelector('[data-grid-section]'), getAlbumTotalPages());
+    }
+
+    if (!changed || options.animate === false || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !next.animate) return;
+    const direction = panels.indexOf(next) > panels.indexOf(previous) ? 1 : -1;
+    const nextHeight = stage.getBoundingClientRect().height;
+    previous.classList.add('is-leaving');
+    stage.classList.add('is-switching');
+    const timing = { duration: 300, easing: 'cubic-bezier(.22,.68,0,1)', fill: 'both' };
+    const animations = [
+      previous.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: `translateX(${-100 * direction}%)`, opacity: 0 }], timing),
+      next.animate([{ transform: `translateX(${100 * direction}%)`, opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], timing),
+      stage.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], timing),
+    ];
+    const finish = () => {
+      if (finishHomeSectionMotion !== finish) return;
+      finishHomeSectionMotion = null;
+      previous.classList.remove('is-leaving');
+      stage.classList.remove('is-switching');
+      animations.forEach(animation => animation.cancel());
+    };
+    finishHomeSectionMotion = finish;
+    Promise.all(animations.map(animation => animation.finished)).then(finish, finish);
+  }
+
+  function setupHomeSections() {
+    const tabs = Array.from(app.querySelectorAll('[data-home-section]'));
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => setHomeSection(tab.dataset.homeSection, { scrollToTabs: true }));
+      tab.addEventListener('keydown', event => {
+        let target;
+        if (event.key === 'ArrowRight') target = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft') target = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === 'Home') target = 0;
+        else if (event.key === 'End') target = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        setHomeSection(tabs[target].dataset.homeSection, { focus: true, scrollToTabs: true });
+      });
+    });
+    setHomeSection(state.homeSection, { animate: false, remember: false });
+  }
+
   function ensurePersistentViewLayers() {
     if (!CUSTOMER_FEATURES.persistentDetailLayers) return false;
     if (homeViewLayer?.isConnected && detailViewLayer?.isConnected) return true;
@@ -2503,6 +2604,7 @@
     app.classList.remove('is-detail-staging', 'is-detail-active');
     homeViewLayer.removeAttribute('aria-hidden');
     detailViewLayer?.setAttribute('aria-hidden', 'true');
+    setHomeSection(state.homeSection, { animate: false, remember: false });
     const preservedPage = Number.parseInt(homeViewLayer.dataset.preservedAlbumPage || '', 10);
     if (Number.isInteger(preservedPage)) homeAlbumPage = preservedPage;
     state.page = Math.min(getAlbumTotalPages(), Math.max(1, homeAlbumPage));
@@ -2520,6 +2622,7 @@
   }
 
   function renderHome(options = {}) {
+    finishHomeSectionMotion?.();
     app.querySelector('[data-album-grid]')?._pdPager?.destroy();
     closeDetailCoverViewer({ restoreFocus: false });
     document.body.classList.remove('is-detail-view');
@@ -2647,6 +2750,7 @@
     } else {
       app.replaceChildren(node);
     }
+    setupHomeSections();
     refreshRequestTrackUi(app);
     updateAlbumGrid();
     scheduleSearchToolLabelFit();
@@ -3474,7 +3578,7 @@
     empty.hidden = filtered.length !== 0;
     refreshRequestTrackUi(app);
     renderPagination(pagination, filtered.length, totalPages);
-    scheduleSwipeDiscoveryHint(app.querySelector('[data-grid-section]'), totalPages);
+    if (state.homeSection === 'catalog') scheduleSwipeDiscoveryHint(app.querySelector('[data-grid-section]'), totalPages);
     if (options.scrollToGrid) {
       app.querySelector('.grid-section')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
@@ -3524,11 +3628,17 @@
   }
 
   function goHome() {
-    const returningFromDetail = document.body.classList.contains('is-detail-view');
+    const returningFromDetail = Boolean(getAlbumIdFromHash());
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
-    history.replaceState({ view: 'home' }, '', getBaseUrl());
-    if (!revealPersistentHomeView({ scrollY: returningFromDetail ? homeScrollPosition : 0 })) renderHome();
+    state.homeSection = 'weekly';
+    history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
+    if (!returningFromDetail && app.querySelector('[data-home-sections]')) {
+      setHomeSection(state.homeSection);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
+    if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
   }
 
   function goPreviousView() {
@@ -3538,11 +3648,9 @@
   function goAlbumList() {
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
-    history.pushState({ view: 'home' }, '', getBaseUrl());
-    if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
-    requestAnimationFrame(() => {
-      document.querySelector('.search-section')?.scrollIntoView({ block: 'start' });
-    });
+    state.homeSection = 'catalog';
+    history.pushState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
+    if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
   }
 
   function renderDetail(albumId, options = {}) {
@@ -3750,6 +3858,7 @@
   });
 
   function renderRouteFromLocation() {
+    if (HOME_SECTIONS.includes(history.state?.homeSection)) state.homeSection = history.state.homeSection;
     const albumId = getAlbumIdFromHash();
     if (albumId && albums.some(album => album.id === albumId)) {
       const trackSearchQuery = history.state?.albumId === albumId
@@ -3768,7 +3877,7 @@
     }
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
-    if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
+    if (window.location.hash) history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
     if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
   }
 
@@ -3804,15 +3913,17 @@
   applyStaticTranslations(document);
 
   const initialAlbumId = getAlbumIdFromHash();
+  if (HOME_SECTIONS.includes(history.state?.homeSection)) state.homeSection = history.state.homeSection;
   if (initialAlbumId && albums.some(album => album.id === initialAlbumId)) {
     // 상세 주소로 바로 들어온 손님도 뒤로가기를 누르면 사이트 밖이 아니라 목록으로 돌아가게 합니다.
-    history.replaceState({ view: 'home' }, '', getBaseUrl());
-    history.pushState({ view: 'detail', albumId: initialAlbumId }, '', `${getBaseUrl()}${getAlbumHash(initialAlbumId)}`);
+    state.homeSection = 'catalog';
+    history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
+    history.pushState({ view: 'detail', albumId: initialAlbumId, homeSection: state.homeSection }, '', `${getBaseUrl()}${getAlbumHash(initialAlbumId)}`);
     if (CUSTOMER_FEATURES.persistentDetailLayers) renderHome({ keepInactive: true });
     renderDetail(initialAlbumId);
   } else {
-    if (window.location.hash) history.replaceState({ view: 'home' }, '', getBaseUrl());
-    else history.replaceState({ view: 'home' }, '', `${getBaseUrl()}${window.location.hash}`);
+    if (window.location.hash) history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
+    else history.replaceState({ view: 'home', homeSection: state.homeSection }, '', `${getBaseUrl()}${window.location.hash}`);
     renderHome();
   }
 })();

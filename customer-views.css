@@ -1,3 +1,123 @@
+/* Home sections share a single navigation row; only the selected panel sets the page height. */
+.home-section-tabs {
+  --section-count: 2;
+  --section-index: 0;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  display: grid;
+  grid-template-columns: repeat(var(--section-count), minmax(0, 1fr));
+  margin: 0 0 22px;
+  border-bottom: 1px solid var(--line);
+  background: var(--modern-panel-solid, var(--bg));
+  isolation: isolate;
+}
+
+.home-section-tabs::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: calc(100% / var(--section-count));
+  height: 2px;
+  background: linear-gradient(90deg, #688cfa, #d96478);
+  transform: translateX(calc(var(--section-index) * 100%));
+  transition: transform 300ms cubic-bezier(.22, .68, 0, 1);
+  content: '';
+  pointer-events: none;
+}
+
+.customer-page .home-section-tabs [role="tab"] {
+  min-width: 0;
+  min-height: 52px;
+  padding: 12px 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.customer-page .home-section-tabs [role="tab"][aria-selected="true"] {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.home-section-tabs [role="tab"]:focus-visible,
+.home-section-panel:focus-visible {
+  outline: 2px solid #688cfa;
+  outline-offset: -3px;
+}
+
+.home-section-stage {
+  position: relative;
+  display: flow-root;
+  overflow-anchor: none;
+}
+
+.home-section-stage.is-switching {
+  overflow: hidden;
+}
+
+.home-section-panel {
+  display: flow-root;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Preserve the catalog width while hidden so its swipe pager retains its exact page. */
+.home-section-panel:not(.is-active) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.home-section-panel.is-leaving {
+  max-height: none;
+  visibility: inherit;
+}
+
+.home-section-panel > :first-child {
+  margin-top: 0;
+}
+
+.home-section-panel > :last-child {
+  margin-bottom: 0;
+}
+
+.home-sections > .request-guide {
+  margin-top: 22px;
+}
+
+@media (max-width: 719px) {
+  .home-section-tabs {
+    margin-bottom: 16px;
+  }
+
+  .customer-page .home-section-tabs [role="tab"] {
+    font-size: .9375rem;
+  }
+
+  .home-sections > .request-guide {
+    margin-top: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-section-tabs::after,
+  .customer-page .home-section-tabs [role="tab"] {
+    transition: none;
+  }
+}
+
 /* Mobile catalog views. Cover sources and the existing cover transition stay shared. */
 .album-view-switch,
 .album-card-facts {

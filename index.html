@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="customer-polish.css?v=20260818143000" />
   <link rel="stylesheet" href="customer-modern.css?v=20260827154000" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
-  <link rel="stylesheet" href="customer-views.css?v=2026091003" />
+  <link rel="stylesheet" href="customer-views.css?v=2026091401" />
 </head>
 <body class="customer-page">
   <div class="app-shell">
@@ -66,42 +66,120 @@
   </div>
 
   <template id="home-template">
-    <section class="weekly-section" aria-label="금주의 음반" data-i18n-aria="weeklyAlbum">
-      <div class="section-heading">
-        <p class="section-kicker" data-i18n="weeklyAlbum">금주의 음반</p>
-        <p class="section-note" data-i18n="weeklyNote">이번 주 가장 먼저 들어볼 음반</p>
-      </div>
-      <button class="weekly-card" type="button" data-weekly-open>
-        <video
-          class="weekly-motion-video"
-          data-weekly-motion-video
-          muted
-          loop
-          playsinline
-          webkit-playsinline
-          preload="auto"
-          aria-hidden="true"
-          hidden
-        ></video>
-        <span class="weekly-motion-scrim" data-weekly-motion-scrim aria-hidden="true" hidden></span>
-        <div class="weekly-cover" data-weekly-cover></div>
-        <div class="weekly-meta">
-          <div class="weekly-info">
-            <span class="pill" data-weekly-format></span>
-            <h1 data-weekly-title></h1>
-            <p data-weekly-artist></p>
-            <p class="weekly-year" data-weekly-year></p>
-          </div>
-          <div class="weekly-reason">
-            <span data-i18n="selectionReason">선정 이유</span>
-            <p data-weekly-reason></p>
-          </div>
-          <span class="weekly-cta" data-i18n="details">자세히 보기</span>
-        </div>
-        <span class="weekly-motion-indicator" data-weekly-motion-indicator aria-hidden="true" hidden></span>
-      </button>
-    </section>
+    <div class="home-sections" data-home-sections>
+      <nav class="home-section-tabs" role="tablist" aria-label="음반 둘러보기" data-i18n-aria="browseSections">
+        <button id="tab-weekly" type="button" role="tab" data-home-section="weekly" aria-controls="panel-weekly" aria-selected="true" data-i18n="weeklyAlbum">금주의 음반</button>
+        <button id="tab-catalog" type="button" role="tab" data-home-section="catalog" aria-controls="panel-catalog" aria-selected="false" tabindex="-1" data-i18n="catalogTab">음반 목록</button>
+      </nav>
+      <div class="home-section-stage" data-home-section-stage>
+        <div id="panel-weekly" class="home-section-panel is-active" role="tabpanel" aria-labelledby="tab-weekly" data-home-panel="weekly" tabindex="0">
+          <section class="weekly-section" aria-label="금주의 음반" data-i18n-aria="weeklyAlbum">
+            <div class="section-heading">
+              <p class="section-kicker" data-i18n="weeklyAlbum">금주의 음반</p>
+              <p class="section-note" data-i18n="weeklyNote">이번 주 가장 먼저 들어볼 음반</p>
+            </div>
+            <button class="weekly-card" type="button" data-weekly-open>
+              <video
+                class="weekly-motion-video"
+                data-weekly-motion-video
+                muted
+                loop
+                playsinline
+                webkit-playsinline
+                preload="auto"
+                aria-hidden="true"
+                hidden
+              ></video>
+              <span class="weekly-motion-scrim" data-weekly-motion-scrim aria-hidden="true" hidden></span>
+              <div class="weekly-cover" data-weekly-cover></div>
+              <div class="weekly-meta">
+                <div class="weekly-info">
+                  <span class="pill" data-weekly-format></span>
+                  <h1 data-weekly-title></h1>
+                  <p data-weekly-artist></p>
+                  <p class="weekly-year" data-weekly-year></p>
+                </div>
+                <div class="weekly-reason">
+                  <span data-i18n="selectionReason">선정 이유</span>
+                  <p data-weekly-reason></p>
+                </div>
+                <span class="weekly-cta" data-i18n="details">자세히 보기</span>
+              </div>
+              <span class="weekly-motion-indicator" data-weekly-motion-indicator aria-hidden="true" hidden></span>
+            </button>
+          </section>
 
+        </div>
+        <div id="panel-catalog" class="home-section-panel" role="tabpanel" aria-labelledby="tab-catalog" data-home-panel="catalog" aria-hidden="true" inert tabindex="0">
+          <section class="search-section" aria-label="검색과 필터" data-i18n-aria="searchSection">
+            <label class="search-label" for="search-input" data-i18n="albumSearch">검색</label>
+            <div class="search-input-wrap">
+              <input id="search-input" class="search-input" type="search" placeholder="음반명·아티스트·곡 제목" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
+              <button class="search-clear-button" type="button" data-search-clear aria-label="검색어 지우기" data-i18n-aria="clearSearch" hidden></button>
+            </div>
+            <button class="filter-panel-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="album-filter-panel">
+              <span data-i18n="filters">필터</span>
+              <span class="filter-toggle-summary" data-filter-toggle-summary></span>
+              <span class="filter-toggle-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="filter-panel" id="album-filter-panel" data-filter-panel hidden>
+              <div class="search-tools">
+                <label class="sort-label">
+                  <span data-i18n="sort">정렬</span>
+                  <select data-sort-select>
+                    <option value="default" data-i18n="sortDefault">기본순</option>
+                    <option value="newest" data-i18n="sortNewest">최근 발매순</option>
+                    <option value="oldest" data-i18n="sortOldest">오래된순</option>
+                    <option value="artist" data-i18n="sortArtist">아티스트순</option>
+                    <option value="title" data-i18n="sortTitle">앨범명순</option>
+                  </select>
+                </label>
+                <button class="tool-button" type="button" data-new-albums data-i18n="newAlbums" aria-pressed="false">새로 온 음반</button>
+                <button class="tool-button" type="button" data-reset-filters data-i18n="resetFilters">필터 초기화</button>
+              </div>
+              <div class="filter-row format-row" data-format-filters></div>
+              <div class="filter-scroll-shell" data-genre-scroll-shell>
+                <div class="filter-row genre-row" data-genre-filters></div>
+              </div>
+            </div>
+            <div class="album-view-switch" role="group" aria-label="보기 방식" data-i18n-aria="albumView">
+              <span class="album-view-label" data-i18n="albumView">보기 방식</span>
+              <div class="album-view-options">
+                <button type="button" data-album-view-option="grid-2" aria-pressed="false" aria-controls="album-results" aria-label="2×2 보기 · 한 페이지에 4장" data-i18n-aria="albumViewTwo">
+                  <svg class="album-view-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+                  </svg>
+                </button>
+                <button type="button" data-album-view-option="grid-3" aria-pressed="true" aria-controls="album-results" aria-label="3×3 보기 · 한 페이지에 9장" data-i18n-aria="albumViewThree">
+                  <svg class="album-view-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+                  </svg>
+                </button>
+                <button type="button" data-album-view-option="list" aria-pressed="false" aria-controls="album-results" aria-label="목록형" data-i18n-aria="albumViewList">
+                  <svg class="album-view-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="result-summary-row">
+              <div class="result-summary" data-result-summary></div>
+              <div class="result-action-buttons">
+                <button class="tool-button request-list-button" type="button" data-request-list>신청곡 메모 0</button>
+                <!-- 현재 검색과 필터에 맞는 음반 중에서 무작위로 선택합니다. -->
+                <button class="tool-button result-random-button" type="button" data-random-album data-i18n="randomAlbum">오늘 뭐 듣지?</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="grid-section" data-grid-section aria-label="앨범 목록" data-i18n-aria="albumList">
+            <div class="album-grid" id="album-results" data-album-grid></div>
+            <p class="empty-message" data-empty-message hidden data-i18n="emptyAlbums">조건에 맞는 음반이 없습니다.</p>
+            <nav class="pagination" data-pagination aria-label="앨범 목록 페이지" data-i18n-aria="albumListPage"></nav>
+          </section>
+        </div>
+      </div>
     <aside class="request-guide" aria-label="신청 안내" data-i18n-aria="requestGuideTitle">
       <p class="request-guide-label" data-i18n="requestGuideTitle">신청 안내</p>
       <p class="request-guide-text">
@@ -109,74 +187,7 @@
         <span data-i18n="requestGuideLine2">리스트에 없는 곡은 스트리밍으로 재생됩니다.</span>
       </p>
     </aside>
-
-    <section class="search-section" aria-label="검색과 필터" data-i18n-aria="searchSection">
-      <label class="search-label" for="search-input" data-i18n="albumSearch">검색</label>
-      <div class="search-input-wrap">
-        <input id="search-input" class="search-input" type="search" placeholder="음반명·아티스트·곡 제목" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
-        <button class="search-clear-button" type="button" data-search-clear aria-label="검색어 지우기" data-i18n-aria="clearSearch" hidden></button>
-      </div>
-      <button class="filter-panel-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="album-filter-panel">
-        <span data-i18n="filters">필터</span>
-        <span class="filter-toggle-summary" data-filter-toggle-summary></span>
-        <span class="filter-toggle-chevron" aria-hidden="true"></span>
-      </button>
-      <div class="filter-panel" id="album-filter-panel" data-filter-panel hidden>
-        <div class="search-tools">
-          <label class="sort-label">
-            <span data-i18n="sort">정렬</span>
-            <select data-sort-select>
-              <option value="default" data-i18n="sortDefault">기본순</option>
-              <option value="newest" data-i18n="sortNewest">최근 발매순</option>
-              <option value="oldest" data-i18n="sortOldest">오래된순</option>
-              <option value="artist" data-i18n="sortArtist">아티스트순</option>
-              <option value="title" data-i18n="sortTitle">앨범명순</option>
-            </select>
-          </label>
-          <button class="tool-button" type="button" data-new-albums data-i18n="newAlbums" aria-pressed="false">새로 온 음반</button>
-          <button class="tool-button" type="button" data-reset-filters data-i18n="resetFilters">필터 초기화</button>
-        </div>
-        <div class="filter-row format-row" data-format-filters></div>
-        <div class="filter-scroll-shell" data-genre-scroll-shell>
-          <div class="filter-row genre-row" data-genre-filters></div>
-        </div>
-      </div>
-      <div class="album-view-switch" role="group" aria-label="보기 방식" data-i18n-aria="albumView">
-        <span class="album-view-label" data-i18n="albumView">보기 방식</span>
-        <div class="album-view-options">
-          <button type="button" data-album-view-option="grid-2" aria-pressed="false" aria-controls="album-results" aria-label="2×2 보기 · 한 페이지에 4장" data-i18n-aria="albumViewTwo">
-            <svg class="album-view-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
-            </svg>
-          </button>
-          <button type="button" data-album-view-option="grid-3" aria-pressed="true" aria-controls="album-results" aria-label="3×3 보기 · 한 페이지에 9장" data-i18n-aria="albumViewThree">
-            <svg class="album-view-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
-            </svg>
-          </button>
-          <button type="button" data-album-view-option="list" aria-pressed="false" aria-controls="album-results" aria-label="목록형" data-i18n-aria="albumViewList">
-            <svg class="album-view-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="result-summary-row">
-        <div class="result-summary" data-result-summary></div>
-        <div class="result-action-buttons">
-          <button class="tool-button request-list-button" type="button" data-request-list>신청곡 메모 0</button>
-          <!-- 랜덤 음반은 필터와 무관한 탐색 기능이므로 결과 요약 옆에 따로 둡니다. -->
-          <button class="tool-button result-random-button" type="button" data-random-album data-i18n="randomAlbum">오늘 뭐 듣지?</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="grid-section" data-grid-section aria-label="앨범 목록" data-i18n-aria="albumList">
-      <div class="album-grid" id="album-results" data-album-grid></div>
-      <p class="empty-message" data-empty-message hidden data-i18n="emptyAlbums">조건에 맞는 음반이 없습니다.</p>
-      <nav class="pagination" data-pagination aria-label="앨범 목록 페이지" data-i18n-aria="albumListPage"></nav>
-    </section>
+    </div>
   </template>
 
   <template id="detail-template">
@@ -213,6 +224,6 @@
   </template>
 
   <script src="albums-data.js?v=20260906150000"></script>
-  <script src="app.js?v=2026091003"></script>
+  <script src="app.js?v=2026091401"></script>
 </body>
 </html>
