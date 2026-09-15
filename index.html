@@ -10,7 +10,7 @@
   <meta property="og:description" content="PUNCH-DRUNK MUSIC BAR DAEGU의 추천 음반과 보유 음반을 둘러보세요." />
   <meta property="og:image" content="logo-punchdrunk-circle.png" />
   <meta property="og:type" content="website" />
-  <link rel="icon" type="image/png" href="logo-punchdrunk-circle.png" />
+  <link rel="icon" type="image/svg+xml" href="brand-icon.svg?v=2026091401" />
   <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
   <script src="customer-config.js?v=20260827154000"></script>
   <script src="customer-theme.js?v=20260818150000"></script>
@@ -19,17 +19,21 @@
   <link rel="stylesheet" href="customer-modern.css?v=20260827154000" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
   <link rel="stylesheet" href="customer-views.css?v=2026091401" />
+  <link rel="stylesheet" href="customer-brand.css?v=2026091401" />
 </head>
 <body class="customer-page">
   <div class="app-shell">
     <header class="site-header">
       <button class="site-home-button" data-home-link type="button" aria-label="처음 화면으로 돌아가기" data-i18n-aria="homeLabel">
-        <img class="site-logo" src="logo-punchdrunk-circle.png" alt="PUNCH-DRUNK MUSIC BAR DAEGU KOREA" />
+        <svg class="site-logo site-brand-logo" viewBox="252 150 752 974" width="752" height="974" role="img" aria-label="PUNCH-DRUNK MUSIC BAR" focusable="false" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <mask id="punchdrunk-brand-mask" maskUnits="userSpaceOnUse" x="252" y="150" width="752" height="974" style="mask-type: alpha">
+              <image href="media/punchdrunk-brand-original.png" x="0" y="0" width="1254" height="1254" />
+            </mask>
+          </defs>
+          <rect x="252" y="150" width="752" height="974" fill="currentColor" mask="url(#punchdrunk-brand-mask)" />
+        </svg>
       </button>
-      <div class="customer-brand-wordmark" aria-hidden="true">
-        <strong>PUNCH-DRUNK</strong>
-        <span>MUSIC BAR · DAEGU</span>
-      </div>
       <div class="customer-header-controls">
         <button class="customer-theme-toggle" type="button" data-customer-theme-toggle aria-label="라이트 모드로 변경" title="라이트 모드로 변경">
           <span class="customer-theme-symbol" data-customer-theme-icon aria-hidden="true">☀</span>

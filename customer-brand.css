@@ -1,0 +1,105 @@
+/* The supplied transparent artwork remains unchanged; its alpha supplies the logo shape. */
+.customer-page .site-header {
+  gap: 0;
+  padding-top: 0;
+  min-height: 148px;
+  margin-bottom: 24px;
+}
+
+.customer-page .site-home-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  line-height: 0;
+  color: #fff;
+  transition: color 260ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html[data-customer-theme="day"] .customer-page .site-home-button {
+  color: #000;
+}
+
+.customer-page .site-home-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
+
+html .customer-page .site-header .site-brand-logo {
+  display: block;
+  width: auto;
+  height: 140px;
+  flex: none;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+html .customer-page.is-detail-view .site-header {
+  min-height: 92px;
+  margin-bottom: 16px;
+}
+
+html .customer-page.is-detail-view .site-home-button {
+  width: auto;
+  height: auto;
+  padding: 2px 10px;
+}
+
+html .customer-page.is-detail-view .site-header .site-brand-logo {
+  height: 88px;
+}
+
+@media (max-width: 719px) {
+  /* Keep the central mark clear even at 320px, with one control on each side. */
+  .customer-page .site-header .customer-header-controls {
+    left: 0;
+    right: 0;
+    display: block;
+    height: 44px;
+    pointer-events: none;
+  }
+
+  .customer-page .site-header .customer-header-controls .customer-theme-toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: auto;
+  }
+
+  .customer-page .site-header .customer-header-controls .language-switch {
+    position: absolute;
+    top: 4px;
+    right: 0;
+    pointer-events: auto;
+  }
+
+  .customer-page .site-header {
+    min-height: 144px;
+    margin-bottom: 20px;
+  }
+
+  html .customer-page .site-header .site-brand-logo {
+    height: 136px;
+  }
+
+  html .customer-page.is-detail-view .site-header {
+    min-height: 92px;
+  }
+
+  html .customer-page.is-detail-view .site-header .site-brand-logo {
+    height: 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-page .site-home-button {
+    transition: none;
+  }
+}
