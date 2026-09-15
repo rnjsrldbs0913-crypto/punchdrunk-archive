@@ -1502,19 +1502,54 @@
   }
 
   function getSearchTerms(query = state.query) {
-    return String(query || '').trim().split(/\s+/).map(normalize).filter(Boolean);
+    return String(query || '')
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .normalize('NFC')
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
   }
 
   function matchesSearch(value, terms) {
-    const text = normalize(value);
-    return terms.every(term => text.includes(term));
+    if (!terms.length) return true;
+    const words = getSearchTerms(value);
+    return terms.every(term => {
+      // 한글·일본어처럼 단어 안에서 이어 쓰는 언어는 부분 검색을 유지합니다.
+      // 영문과 숫자는 단어 전체가 같아야 하므로 "no"가 "known"에 걸리지 않습니다.
+      const containsCjk = /[\u1100-\u11ff\u3040-\u30ff\u3130-\u318f\u3400-\u9fff\uac00-\ud7a3]/u.test(term);
+      return words.some(word => containsCjk ? word.includes(term) : word === term);
+    });
+  }
+
+  function getAlbumSearchGroups(album) {
+    // 여러 검색어는 음반 정보 한 묶음 또는 한 곡 안에서 함께 맞아야 합니다.
+    // 서로 다른 곡에서 한 단어씩 발견되는 우연한 결과는 제외합니다.
+    const metadata = [
+      album.title,
+      album.artist,
+      album.artistKo,
+      album.artistEn,
+      getLocalizedArtist(album),
+    ].filter(Boolean).join(' ');
+    return [
+      metadata,
+      ...(album.recommendedTracks || []),
+      ...(album.tracklist || []),
+    ];
+  }
+
+  function albumMatchesSearch(album, terms) {
+    return !terms.length || getAlbumSearchGroups(album).some(value => matchesSearch(value, terms));
   }
 
   function matchesAlbumFilters(album, terms, includeGenre = true) {
     return (state.format === FORMAT_ALL || album.format === state.format)
       && (!includeGenre || state.genre === GENRE_ALL || classifyGenre(album.genre) === state.genre)
       && (!state.recentOnly || isRecentlyAdded(album))
-      && matchesSearch(getSearchableText(album), terms);
+      && albumMatchesSearch(album, terms);
   }
 
   function getGenresForCurrentFormat() {
@@ -1532,20 +1567,6 @@
         .map(name => ({ name, count: counts.get(name) || 0 })),
     ];
   }
-  function getSearchableText(album) {
-    // 검색 대상 구성: 음반명, 아티스트, 곡 제목만 포함합니다.
-    // 설명(description), 연도, 포맷, 장르는 일부러 제외하고 각 필터에서만 다룹니다.
-    return [
-      album.title,
-      album.artist,
-      album.artistKo,
-      album.artistEn,
-      getLocalizedArtist(album),
-      ...(album.recommendedTracks || []),
-      ...(album.tracklist || []),
-    ].join(' ');
-  }
-
   function getFilteredAlbums() {
     const terms = getSearchTerms();
     return albums.filter(album => matchesAlbumFilters(album, terms));
@@ -1753,12 +1774,7 @@
     if (!terms.length) return '';
     const tracks = [...(album.tracklist || []), ...(album.recommendedTracks || [])];
     if (tracks.some(track => matchesSearch(track, terms))) return String(query).trim();
-    // 아티스트·앨범명에서 충족한 검색어를 제외하고 실제로 찾은 곡을 강조합니다.
-    const metadata = normalize([album.title, album.artist, album.artistKo, album.artistEn, getLocalizedArtist(album)].join(' '));
-    const trackTerms = terms.filter(term => !metadata.includes(term));
-    return trackTerms.length && tracks.some(track => matchesSearch(track, trackTerms))
-      ? trackTerms.join(' ')
-      : '';
+    return '';
   }
 
   function albumHasTrackSearchMatch(album, query = state.query) {
