@@ -12,6 +12,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "일렉트로닉",
+    "genres": [
+      "일렉트로닉"
+    ],
+    "country": "",
     "coverImage": "covers/album-mu27jq08.jpg",
     "recommendedTracks": [
       "1. Plantasia"
@@ -29,9 +33,10 @@ const ALBUMS = [
       "10. Music to Soothe the Savage Snake Plant"
     ],
     "description": "현대 과학계에서는 받아들여지지 않는 주장인 모양입니다만, 1970년대 미국에서는 여러 과학자들이 '식물도 감정과 지각이 있으며 음악에 대한 호불호도 가지고 있다.'는 주장을 펼치며 해당 내용이 대중들 사이에 유행처럼 번졌습니다. 단순히 '그렇다더라'에서 그친 것이 아니라 이를 진지하게 받아들여 작품활동에 반영한 아티스트들도 제법 있었던, 꽤 영향력 있던 이론이었습니다.\n\n이 내용을 가장 먼저 받아들여 반응한 인물 중 하나가 모트 가슨입니다. 멜 토메나 도리스 데이 같은 당대 스타들의 앨범에 작/편곡으로 많이 참여했던 모튼 가슨은 70년대 무그 신디사이저라는 초창기 신디사이저를 이용해 많은 음악을 만들고 있었습니다. 그러던 와중 위에 말씀드린 '식물 선호음악 가설'을 접한 뒤 식물이 좋아할만한 음악을 만들겠다며 발매한 음반이 바로 이 앨범입니다.\n\n아, 발매라는 말이 적절한지 모르겠습니다. 이 앨범은 자기 지인이 운영하던 캘리포니아의 한 식물가게에서만 배포됐거든요. 판매가 아니라 배포라고 말씀드리는 이유는 음반을 돈 받고 팔지 않았기 때문입니다. 대신 가게에서 식물을 사는 사람들에게 음반을 끼워주는 방식이었습니다. 도대체 얼마나 식물을 위한건지 감도 안옵니다.\n\n당연히 이 앨범을 접한 사람은 많지 않았습니다만, 시간이 흐르고 인터넷이 활성화되며 음악을 좋아하는 사람들 사이에서 이 앨범이 입소문을 타며 인기가 높아졌습니다. 음악 애호가들의 컬트 클래식같은 앨범이 된겁니다. 결국 높아진 인기에 2019년 이 앨범은 공식 재발매됩니다. 앨범 발매 당시의 정신을 잊지 않고 모든 LP에는 씨앗이 들어간 카드 하나씩이 동봉되었습니다. 실제로 물을 주면 자란다더군요.\n\n제가 이 글을 쓰고 있는 시점은 이 앨범의 재발매반을 주문하고 배송을 기다리는 중인 2026년의 9월입니다. 똥손이라 기대는 거의 안하고 있습니다만, 아직 한참 멀게 느껴지는 펀치드렁크의 오픈 시점에는 자그마한 화분 하나가 이 앨범에 귀를 기울이고 있었으면 좋겠습니다.",
-    "descriptionEn": "",
+    "descriptionEn": "It seems this claim is not accepted by the scientific community today, but in 1970s America, a number of scientists argued that “plants have emotions and perception, as well as likes and dislikes when it comes to music.” The idea spread among the public like a fad. And it went beyond mere hearsay: quite a few artists took it seriously enough to reflect it in their work. It was a surprisingly influential theory.\n\nMort Garson was one of the first to respond to it. Having contributed compositions and arrangements to albums by stars of the day such as Mel Tormé and Doris Day, Garson was making a great deal of music in the 1970s with the Moog, then still an early synthesizer. After encountering the theory about plants having musical preferences, he set out to make music that plants might enjoy. The result was this album, [Mother Earth's Plantasia].\n\nThough I’m not sure “released” is quite the right word. The album was distributed exclusively through a plant shop in California run by an acquaintance of his. I say “distributed” because it was never sold: instead, anyone who bought a plant from the shop received a copy. It is hard to imagine how an album could be any more devoted to plants.\n\nNaturally, not many people encountered the album at the time. But as the years passed and the internet took off, word spread among music lovers and its following grew. It became something of a cult classic. That growing popularity eventually led to an official reissue in 2019. In keeping with the spirit of the original release, every LP came with a card containing seeds. Apparently, they really do grow if you water them.\n\nAs I write this, it is September 2026, and I am waiting for my copy of the reissue to arrive. I have a hopeless track record with plants, so my expectations are low. Still, by the time Punch-drunk finally opens—a day that still feels a long way off—I hope there will be a little potted plant listening to this album.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -44,6 +49,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mu27hb75.jpg",
     "recommendedTracks": [
       "2. Diamonds + And Pearls",
@@ -74,9 +83,10 @@ const ALBUMS = [
       "18. Warriors"
     ],
     "description": "타노스로 대표되는 마블 시네마틱 유니버스의 '인피니티 사가'가 끝난 후, 새로운 히어로들을 소개하는 영화들이 쏟아져 나오던 시기가 있었습니다. 그 중 하나인 아시아인 히어로인 샹치를 소개하는, [샹치와 텐 링즈의 전설]의 사운드트랙입니다.\n주인공이 아시아인이니만큼 사운드트랙도 아시아의 아티스트들을 기용해서 채웠습니다. 당시 세계적으로 이미 이름을 알리던 앤더슨 팩, 리치 브라이언 등의 이름이 먼저 눈에 띄고, 한국인들에게 익숙한 DPR라이브, DPR이안, 비비, 자이언티 등의 이름도 보입니다.\n\n영화에서 가장 제 기억에 남던 것은 두가지입니다. 나이가 들어도 전혀 변하지 않는 양조위의 눈빛과, 엔딩크레딧에 울려퍼지던 앤더슨 팩의 [Fire In The Sky]. 가게에 양조위를 데려올 수는 없는 노릇이니, 앤더슨 팩의 목소리라도 즐겨보시죠.",
-    "descriptionEn": "",
+    "descriptionEn": "After the Marvel Cinematic Universe’s “Infinity Saga,” defined by Thanos, came to an end, there was a period when films introducing new heroes poured out. This is the soundtrack to one of them, [Shang-Chi and the Legend of the Ten Rings], which introduces the Asian hero Shang-Chi.\n\nWith an Asian lead, the soundtrack was likewise filled with artists from across Asia. Anderson .Paak and Rich Brian, already known worldwide at the time, are the first names to catch the eye, alongside DPR LIVE, DPR IAN, BIBI, and Zion.T, all familiar to Korean listeners.\n\nTwo things from the film stayed with me most: Tony Leung’s gaze, completely unchanged by age, and Anderson .Paak’s [Fire In The Sky] ringing out over the end credits. I can’t very well bring Tony Leung into the bar, so let’s at least enjoy Anderson .Paak’s voice.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -89,6 +99,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/ab67616d0000b27330a6c9a5e5992b76a02db960-1.jpg",
     "recommendedTracks": [
       "1. How Many X? (feat. Ogi)",
@@ -109,6 +123,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -121,6 +136,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/ab67616d0000b273016203ebe0693797cecd9c37-1.jpg",
     "recommendedTracks": [
       "1. Every Painting Has a Price (feat. BJ The Chicago Kid and Eryn Allen Kane)",
@@ -150,6 +169,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -162,6 +182,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-12.jpg",
     "recommendedTracks": [
       "A1. BUSY / SIRENS",
@@ -184,6 +208,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -196,6 +221,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-11.jpg",
     "recommendedTracks": [
       "A4. Church / Liquor Store (feat. Noname)",
@@ -221,6 +250,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -233,6 +263,10 @@ const ALBUMS = [
     "year": "2014",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/comfort-zone.jpg",
     "recommendedTracks": [
       "A2. Burnout (feat. Eryn Allen Kane)",
@@ -258,6 +292,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -270,7 +305,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록", "일렉트로닉"],
+    "genres": [
+      "록",
+      "일렉트로닉"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mu14xaak.jpg",
     "recommendedTracks": [
@@ -302,6 +340,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -314,7 +353,9 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mu14v0w2.jpg",
     "recommendedTracks": [
@@ -341,6 +382,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -353,6 +395,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mu14rf1n.jpg",
     "recommendedTracks": [
       "B1. Never Let Me Go (feat. CARRTOONS)",
@@ -372,6 +418,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -384,7 +431,9 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "기타",
-    "genres": ["기타"],
+    "genres": [
+      "기타"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mu14npzh.jpg",
     "recommendedTracks": [
@@ -406,6 +455,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -418,7 +468,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합", "일렉트로닉"],
+    "genres": [
+      "힙합",
+      "일렉트로닉"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mu14ld4z.jpg",
     "recommendedTracks": [
@@ -432,6 +485,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -444,6 +498,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mtpawu0v.jpg",
     "recommendedTracks": [
       "B3. Easy"
@@ -463,6 +521,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -475,6 +534,10 @@ const ALBUMS = [
     "year": "1990",
     "format": "CD",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mtikc851.jpg",
     "recommendedTracks": [
       "1. Harlem Blues",
@@ -494,6 +557,7 @@ const ALBUMS = [
     "descriptionEn": "This is [Mo' Better Blues], the soundtrack to Spike Lee’s 1990 film of the same name. The film is good, but the soundtrack has been especially well loved.\n\nI’ll let a scene from the film speak for the album.\n\n“We’re gonna do something... Let me ask y’all something.\nHow many of y’all out there know about the blues?\nI know I do, so... Well, anyway, we’re going to do a tune called Mo’ Better Blues.”",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -506,6 +570,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mtijnujt.jpg",
     "recommendedTracks": [
       "A1. Alive! - Skindo Le Le",
@@ -526,6 +594,7 @@ const ALBUMS = [
     "descriptionEn": "Released by the British label Soul Jazz Records, this compilation has an amusing title right from the start: [LONDON JAZZ CLASSICS]. Take it apart, though, and not one of those three words is actually true. Not a single track was made in London, none of them could be called jazz in the traditional sense, and none is famous enough to qualify as a “classic.”\n\nSo why the title?\n\nReleased in three volumes, Vol. 1, 2, and 3, the series carefully selected tracks that DJs were playing heavily in jazz dance clubs across Britain—especially London—in the ’90s, when the albums first came out. In other words, you might call them “classics of London’s jazz dance clubs.”\n\nThis album brings together the best tracks from all three volumes, reissued as a single album in 2026. If you want a feel for what young Londoners danced to in clubs in the ’90s, write down one of its tracks on a request slip.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -538,6 +607,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mt9ghuca.jpg",
     "recommendedTracks": [
       "1. Fantasy '82",
@@ -561,6 +634,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -573,7 +647,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합", "소울/펑크"],
+    "genres": [
+      "힙합",
+      "소울/펑크"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mt9gcngu.jpg",
     "recommendedTracks": [
@@ -599,6 +676,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -611,7 +689,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합", "소울/펑크"],
+    "genres": [
+      "힙합",
+      "소울/펑크"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mt9g9yny.jpg",
     "recommendedTracks": [
@@ -633,6 +714,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -645,6 +727,10 @@ const ALBUMS = [
     "year": "2009",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/1776b70e7c0e67cedc55814f34e685b5-1.jpg",
     "recommendedTracks": [
       "A3. Auditorium",
@@ -672,6 +758,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -684,6 +771,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy6iw1r.jpg",
     "recommendedTracks": [
       "2. Lost Boys",
@@ -712,6 +803,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -724,6 +816,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy6iei4.jpg",
     "recommendedTracks": [
       "1. Come Back to Me",
@@ -747,6 +843,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -759,6 +856,10 @@ const ALBUMS = [
     "year": "1995",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy6goe3.jpg",
     "recommendedTracks": [
       "A1. Put It On",
@@ -783,6 +884,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -795,6 +897,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy518yx.jpg",
     "recommendedTracks": [
       "05. Junk Drunk Love",
@@ -822,6 +928,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -834,6 +941,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy50nu2.jpg",
     "recommendedTracks": [
       "1. Contigo Mi Vida",
@@ -852,6 +963,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -864,6 +976,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "일렉트로닉",
+    "genres": [
+      "일렉트로닉"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy500s6.jpg",
     "recommendedTracks": [
       "2. Onenon (feat. Tom Misch)",
@@ -885,6 +1001,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -897,6 +1014,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy4zesd.jpg",
     "recommendedTracks": [
       "1. The Time Bender",
@@ -920,6 +1041,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -932,6 +1054,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-msy4xk0p.jpg",
     "recommendedTracks": [
       "2. Butterfly (feat. Cory Henry & Marcus Miller)",
@@ -955,6 +1081,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -967,6 +1094,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-msfglcb8.jpg",
     "recommendedTracks": [
       "1. Breezin'"
@@ -983,6 +1114,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -995,7 +1127,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "CD",
     "genre": "팝",
-    "genres": ["팝", "록"],
+    "genres": [
+      "팝",
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-msfgg78q.jpg",
     "recommendedTracks": [
@@ -1020,6 +1155,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1032,7 +1168,10 @@ const ALBUMS = [
     "year": "2008",
     "format": "CD",
     "genre": "팝",
-    "genres": ["팝", "록"],
+    "genres": [
+      "팝",
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-msfgg6k1.jpg",
     "recommendedTracks": [
@@ -1057,6 +1196,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1069,6 +1209,10 @@ const ALBUMS = [
     "year": "1999",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mscp5pqe.jpg",
     "recommendedTracks": [
       "1. Wait Up",
@@ -1094,6 +1238,7 @@ const ALBUMS = [
     "descriptionEn": "In 1998, after [The Love Movement], ATCQ announced their breakup.\nQ-Tip, the group’s most popular member, released his solo debut the very next year, in 1999.\n\nOn this album, Q-Tip suddenly puts on a fur coat and starts dropping boastful, sometimes sexual rhymes over bass-heavy club tracks.\nMany people were taken aback by this first solo album from the key member of a group known for jazzy, philosophical, cerebral music.\nThat is why, for all its quality, the album drew criticism from fans and critics as a “commercial sellout.”\n\nBut look a little closer, and from Q-Tip’s point of view, this album hardly seems like a betrayal.\n\nFirst, in terms of subject matter, Bonita Applebum—said to be the first song Q-Tip ever wrote, at fifteen—and many other ATCQ songs that followed have playful, sexual lyrics.\nTheir debut album in particular can feel like an album made by teenage boys, with more playful songs than serious ones.\nIt is largely ATCQ’s serious image that has made it harder to see those songs as representative of the group.\n\nThe same goes for the sound. Think back to [The Low End Theory], from ATCQ’s most beloved period: it was designed with car stereo systems in mind, and the low end is emphasized almost to excess.\nThe “club sound” on [Amplified] can really be traced back to that period.\n\nSo from Q-Tip’s perspective, he may have felt a little hard done by: he was doing what he had always done, both in sound and in his rapping, only with sleeker, stronger music—and got slammed for it.\n\nI really love this album. Open your mind and give it a listen as “easy listening,” not a “commercial sellout.”",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1106,6 +1251,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/11164-1.jpg",
     "recommendedTracks": [
       "A1. Hang Gliding",
@@ -1131,6 +1280,7 @@ const ALBUMS = [
     "descriptionEn": "Truth be told, the owner isn’t much of a fan of big-band or orchestral jazz.\nWith an ensemble this large, it is hard for each instrument’s character to come through, and solo space inevitably shrinks or disappears altogether. The individual players have less room for creativity, and when everyone plays together, it is also harder to focus on each instrument. Since what I enjoy most about jazz is the creative soloing of individual instruments, I usually prefer trio or quartet settings and don’t care for having more than one melodic instrument. Given my taste, you will have a hard time finding big-band or orchestral jazz albums in this archive.\n\nBut personal taste is powerless in the face of overwhelming craftsmanship.\nWhen something is made this well, what I happen to like or dislike no longer matters much.\n\nThe Maria Schneider Orchestra is an 18-piece jazz orchestra made up of some of the world’s finest jazz musicians. They usually tour and work together for only one to three weeks a year. In an interview during their visit to Korea, Schneider said, “They are the best musicians in the world, so getting them all together is like aligning the planets of the solar system.” Even with so little time together each year, they have been playing as a group for more than three decades, so there is absolutely no reason to doubt the performances.\n\nMaria Schneider has taken a stand against the unreasonable revenue structures of streaming services and online record retailers. She keeps her music off streaming platforms entirely and sells her records exclusively through ArtistShare. As a result, apart from the handful of live videos on YouTube, there are few chances to hear her music. But I am convinced that if you do get the chance, you are very likely to become a fan.\n\n[Decades] is a 3-LP box set spanning nearly thirty years of Maria Schneider’s career. It is a chance to hear in one collection songs that would otherwise require spending a considerable sum on numerous CDs. Only 908 copies of this box set were sold worldwide. And when the Maria Schneider Orchestra came to Korea, the owner paid a handsome price for one and had it signed. So if you request a song from this album, you will get to see him light up at the chance to pull out—and show off—the most precious record in his collection.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1143,6 +1293,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms46qzw8.jpg",
     "recommendedTracks": [
       "1. Maré mansa",
@@ -1169,6 +1323,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1181,7 +1336,9 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms463rup.jpg",
     "recommendedTracks": [
@@ -1215,6 +1372,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1227,6 +1385,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms45r9xt.jpg",
     "recommendedTracks": [
       "A3. Will Anybody Ever Love Me?",
@@ -1249,6 +1411,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1261,6 +1424,10 @@ const ALBUMS = [
     "year": "2003",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/a0858790590-10.jpg",
     "recommendedTracks": [
       "A2. Trouble Man",
@@ -1297,6 +1464,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1309,6 +1477,10 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-10.jpg",
     "recommendedTracks": [
       "A4. Hollow Bones",
@@ -1336,6 +1508,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1348,6 +1521,10 @@ const ALBUMS = [
     "year": "1999",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/test-4882274d-thumbnail-4096.webp",
     "recommendedTracks": [
       "B3. Da Rockwilder"
@@ -1374,6 +1551,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1386,6 +1564,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms458uck.jpg",
     "recommendedTracks": [
       "A1. Soccer96 & Kieron Boothe - Visions"
@@ -1403,6 +1585,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1415,6 +1598,10 @@ const ALBUMS = [
     "year": "2005",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-9.jpg",
     "recommendedTracks": [
       "C3. The Exclusive",
@@ -1452,6 +1639,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1464,6 +1652,10 @@ const ALBUMS = [
     "year": "1973",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/359646f7-a4d9-47f8-be8b-39329e2026c3.jpg",
     "recommendedTracks": [
       "A1. Mable",
@@ -1483,6 +1675,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1495,7 +1688,9 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/8b5e2269fde9fbdec22f7f96427b37f1.jpg",
     "recommendedTracks": [
@@ -1515,6 +1710,7 @@ const ALBUMS = [
     "descriptionEn": "Masta Wu was remarkable from the moment he appeared. Around 2000, after being discovered in the United States by Lee Hyun Do, he began turning up on features under the name Jinwon, delivering a polished style of rap unlike anything heard in Korea at the time.\n\nHe later joined YG and released a few albums, but I always felt the production was full of beats that struggled to bring out the best in his refined delivery. From then through the early 2010s, he worked mainly at YG as a rap instructor and lyricist.\n\nBy 2014, after enough time had passed for Masta Wu to fade from memory, he returned as one of YG’s producer-judges on Show Me the Money 4, spawning plenty of memes along the way. He also released a single with BOBBY and Dok2 and performed at MAMA, marking the start of his return to working as a rapper.\n\nMasta Wu left YG and went independent in 2016, and much of his subsequent work was made with BANA, where E SENS was signed at the time. This EP, released in 2020, is the prime example. It features then-BANA artists E SENS, FRNK, and 250, as well as Remy Banks.\n\nThe polished beats bring Masta Wu’s laid-back delivery fully to life, pulling hip-hop listeners in completely from the moment the first track begins. As a bar owner who never thought the Southern hip-hop sound of his earlier work suited him, I was thrilled to feel that, with this EP released twenty years into his career, I was finally meeting Masta Wu properly for the first time.\n\nMasta Wu officially joined BANA in 2021, the year after this EP came out. He has kept a low profile since releasing a single in 2023, but still turns up on features now and then, sounding as sharp as ever.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1527,6 +1723,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/images-7.jpg",
     "recommendedTracks": [
       "A1. Peach Fuzz"
@@ -1539,6 +1739,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1551,6 +1752,10 @@ const ALBUMS = [
     "year": "1975",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/xl-1-1.jpg",
     "recommendedTracks": [
       "B6. Sugar"
@@ -1572,6 +1777,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1584,6 +1790,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-6.jpg",
     "recommendedTracks": [
       "A5. Run, Run, Run (Pt 2)",
@@ -1607,6 +1817,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1619,6 +1830,10 @@ const ALBUMS = [
     "year": "1984",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/xl-1.jpg",
     "recommendedTracks": [
       "A2. Jody",
@@ -1643,6 +1858,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1655,6 +1871,10 @@ const ALBUMS = [
     "year": "1983",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/images-5-1.jpg",
     "recommendedTracks": [
       "A3. The One That You Love"
@@ -1674,6 +1894,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1686,6 +1907,10 @@ const ALBUMS = [
     "year": "1995",
     "format": "Vinyl",
     "genre": "기타",
+    "genres": [
+      "기타"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms41666c.jpg",
     "recommendedTracks": [
       "2. Sold (The Grundy County Auction Incident)"
@@ -1706,6 +1931,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1718,6 +1944,10 @@ const ALBUMS = [
     "year": "1971",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/c092939261-1.jpg",
     "recommendedTracks": [
       "A1        Imagine",
@@ -1752,6 +1982,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1764,6 +1995,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/l-1582097.jpg",
     "recommendedTracks": [
       "A3. Potholderz feat. Count Bass D",
@@ -1791,6 +2026,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1803,6 +2039,10 @@ const ALBUMS = [
     "year": "1978/ 1980",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/5207b91aa0b105b4304fa07a72a8de73-1.jpg",
     "recommendedTracks": [
       "A1. What You Won't Do For Love",
@@ -1816,6 +2056,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1828,6 +2069,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/mike-2lowres-0712b318-thumbnail-1024-large-05de1e68-thumbnail-4096.webp",
     "recommendedTracks": [
       "A1. Nuthin I Can Do Is Wrng",
@@ -1854,6 +2099,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1866,6 +2112,10 @@ const ALBUMS = [
     "year": "1978",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/images-4-1.jpg",
     "recommendedTracks": [
       "A2. Mellow Blues",
@@ -1885,6 +2135,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1897,6 +2148,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "일렉트로닉",
+    "genres": [
+      "일렉트로닉"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms3zxofu.jpg",
     "recommendedTracks": [
       "1. Day & Night",
@@ -1913,6 +2168,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1925,6 +2181,10 @@ const ALBUMS = [
     "year": "1983",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/images-3-1.jpg",
     "recommendedTracks": [
       "A1. Dolphin Dance",
@@ -1944,6 +2204,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1956,6 +2217,10 @@ const ALBUMS = [
     "year": "1956",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/images-2-1.jpg",
     "recommendedTracks": [
       "A2. Smoke Gets In Your Eyes",
@@ -1974,6 +2239,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -1986,6 +2252,10 @@ const ALBUMS = [
     "year": "1987",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/ab67616d00001e0294a63c71289a7007a01089a7-1.jpg",
     "recommendedTracks": [
       "A2. Afra Jum",
@@ -2004,6 +2274,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2016,6 +2287,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/images-1-2.jpg",
     "recommendedTracks": [
       "A2. Run",
@@ -2035,6 +2310,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2047,6 +2323,10 @@ const ALBUMS = [
     "year": "1955",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/10956782-1.jpg",
     "recommendedTracks": [
       "A1. Misty",
@@ -2069,6 +2349,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2081,6 +2362,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/a0266175895-10.jpg",
     "recommendedTracks": [
       "A2. West Side Jet",
@@ -2103,6 +2388,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2115,6 +2401,10 @@ const ALBUMS = [
     "year": "1955",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/ivsotap3tvnr2le2vhi2swsijaxjlynq0st31qpajwo.jpg",
     "recommendedTracks": [
       "A1. Whistle While You Work",
@@ -2139,6 +2429,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2151,7 +2442,9 @@ const ALBUMS = [
     "year": "2014",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms3yuppn.jpg",
     "recommendedTracks": [
@@ -2175,6 +2468,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2187,7 +2481,9 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/images-5.jpg",
     "recommendedTracks": [
@@ -2214,6 +2510,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2226,7 +2523,9 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/cover-1785201200199.jpg",
     "recommendedTracks": [
@@ -2270,6 +2569,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2282,6 +2582,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2tx5ru.jpg",
     "recommendedTracks": [
       "1. One Battle After Another",
@@ -2312,6 +2616,7 @@ const ALBUMS = [
     "descriptionEn": "If you are a film lover, you have probably already guessed that this bar takes its name from a Paul Thomas Anderson film. And as of 2026, when I am writing this, Anderson’s biggest box-office success is [One Battle After Another].\n\nMade on a scale and budget clearly unlike anything he had worked with before, the film was a success, quite literally sweeping that year’s Academy Awards. At the box office, its theatrical gross alone was enough to more or less break even, firmly introducing the wider public to the name Paul Thomas Anderson—one that, for decades, had mostly circulated among film lovers.\n\nThe score was once again entrusted to Radiohead’s Jonny Greenwood, who has worked with Anderson since [There Will Be Blood]. For twenty years, PTA and Greenwood had used a sharp blade to scrape at their characters’ inner lives. This time they turn it outward, taking a detailed measure of America’s contemporary social climate in a mood that is comic but chilling.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2324,6 +2629,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "CD",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2tqsri.jpg",
     "recommendedTracks": [
       "2. Love Me or Leave Me",
@@ -2345,6 +2654,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2357,6 +2667,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2tczc4.jpg",
     "recommendedTracks": [
       "2. Pay Day (feat. Yechan Jo, Youngwoo Lee, Hwansu Kang & Dayeon Seok)",
@@ -2377,6 +2691,7 @@ const ALBUMS = [
     "descriptionEn": "One of the great pleasures of the Jarasum Jazz Festival is catching the small shows that spring up around downtown Gapyeong in the evening, after the main-stage performances are over.\n\nIn 2025, I wandered into a small theater downtown to see the Steve Lehman Trio without thinking much of it, and came away completely smitten with the drummer, Dayeon Seok. She played with truly absurd style... As luck would have it, I was sitting right in front of the drums, and I remember watching the whole set in a daze.\n\nLooking her up afterward, I discovered that she was a member of yonglee & the DOLTANG—the group I had found so impressive at Jarasum in 2024, known for short as DOLTANG. She and yonglee are also married.\n\nFrom then on, whether she was playing a session or a DOLTANG show, I went to every Dayeon Seok performance I could. She plays all sorts of music in all sorts of settings, and plays all of it remarkably well. If anything, I was even more surprised hearing her at shows with plenty of mellow material, like Maria Kim's.\n\nI have spent far too much time talking about Dayeon Seok, but the truth is, this album is a knockout. In 2026, it won the international Debut Album of the Year category at the German Jazz Prize. It was unprecedented for a jazz group formed and active in Korea to win a main award at the federally funded German Jazz Prize. I honestly cannot tell you this is an easy album to take in. But if you make up your mind to give it your ears, it is an exceptional record that may reward you with a surprisingly enjoyable experience.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2389,6 +2704,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2tb4bb.jpg",
     "recommendedTracks": [
       "01. bad beach boys",
@@ -2414,6 +2733,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2426,6 +2746,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "CD",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2t92t1.jpg",
     "recommendedTracks": [
       "01. O DARLING",
@@ -2449,6 +2773,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2461,6 +2786,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "CD",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2t573c.jpg",
     "recommendedTracks": [
       "01. 눈이펑펑",
@@ -2485,6 +2814,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2497,6 +2827,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "CD",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2t4uv5.jpg",
     "recommendedTracks": [
       "1. Vertigo",
@@ -2517,6 +2851,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2529,6 +2864,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "CD",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2t38rr.jpg",
     "recommendedTracks": [
       "1. The Light",
@@ -2551,6 +2890,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2563,6 +2903,10 @@ const ALBUMS = [
     "year": "2003",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2sv58b.jpg",
     "recommendedTracks": [],
     "tracklist": [
@@ -2573,6 +2917,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2585,7 +2930,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "알앤비",
-    "genres": ["알앤비", "팝"],
+    "genres": [
+      "알앤비",
+      "팝"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms2sun81.jpg",
     "recommendedTracks": [
@@ -2609,6 +2957,7 @@ const ALBUMS = [
     "descriptionEn": "I was born in 1994, so BIGBANG’s active years ran right through my school days. In other words, I belong to a generation that lived through the “BIGBANG era,” yet I was never much of a fan of their music. That changed when [MADE] came out—I went crazy for BIGBANG from then on—but their earlier work had never made much of an impression on me.\n\nTAEYANG’s solo albums, however, were different.\n\nI had always thought of most BIGBANG albums, including the members’ unit and solo releases, as “playlist albums,” with no clear reason for the songs to be bound together as a single record. With TAEYANG’s albums, though, you could always sense the ambition to make something definite. I found his second album, [RISE], especially outstanding, and for a long time it was my favorite album by BIGBANG or any of its members.\n\nThen this album came along and changed that.\n\nThe sleek, knockout sound is unlike anything he has done before, yet even amid all this lavish production, TAEYANG’s voice remains unmistakably at the center of the album. Much of it reinterprets 2000s R&B, but this is no lazy, simplistic re-creation of the music from that era. It is a clear upgrade.\n\nAs I write this, this is my favorite BIGBANG-related album.\n\nAnd I am already hoping he will make me change my mind again before long with another new record.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2621,6 +2970,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2st3pb.jpg",
     "recommendedTracks": [],
     "tracklist": [
@@ -2639,6 +2992,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2651,6 +3005,10 @@ const ALBUMS = [
     "year": "1971",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ssfb1.jpg",
     "recommendedTracks": [
       "1. Black Dog",
@@ -2672,6 +3030,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2684,6 +3043,10 @@ const ALBUMS = [
     "year": "1964",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2sq0pm.jpg",
     "recommendedTracks": [
       "A2. Straight, No Chaser",
@@ -2701,6 +3064,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2713,6 +3077,10 @@ const ALBUMS = [
     "year": "1957",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2spjkr.jpg",
     "recommendedTracks": [
       "1. Brilliant Corners (feat. Sonny Rollins & Ernie Henry)"
@@ -2729,6 +3097,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2741,6 +3110,10 @@ const ALBUMS = [
     "year": "1957",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2soroe.jpg",
     "recommendedTracks": [
       "1. I'm an Old Cowhand",
@@ -2759,6 +3132,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2771,6 +3145,10 @@ const ALBUMS = [
     "year": "1968",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2snwnn.jpg",
     "recommendedTracks": [
       "1. Back In the U.S.S.R.",
@@ -2818,6 +3196,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2830,6 +3209,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2sj2gy.jpg",
     "recommendedTracks": [
       "A4. Footprints",
@@ -2861,6 +3244,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2873,6 +3257,10 @@ const ALBUMS = [
     "year": "1993",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2shaa0.jpg",
     "recommendedTracks": [
       "A3. Award Tour",
@@ -2899,6 +3287,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2911,6 +3300,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2sg1b8.jpg",
     "recommendedTracks": [
       "A2 We The People....",
@@ -2939,6 +3332,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2951,6 +3345,10 @@ const ALBUMS = [
     "year": "2005",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2sdt9o.jpg",
     "recommendedTracks": [
       "3. Touch the Sky (feat. Lupe Fiasco)",
@@ -2982,6 +3380,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -2994,7 +3393,11 @@ const ALBUMS = [
     "year": "1984",
     "format": "Vinyl",
     "genre": "팝",
-    "genres": ["팝", "록", "소울/펑크"],
+    "genres": [
+      "팝",
+      "록",
+      "소울/펑크"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms2scq8v.jpg",
     "recommendedTracks": [
@@ -3018,6 +3421,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3030,7 +3434,9 @@ const ALBUMS = [
     "year": "1993",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록"],
+    "genres": [
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/r-9959875-1489251659-3887-1.jpg",
     "recommendedTracks": [
@@ -3051,6 +3457,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3063,6 +3470,10 @@ const ALBUMS = [
     "year": "2006",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2s9e02.jpg",
     "recommendedTracks": [
       "1. Save Room",
@@ -3091,6 +3502,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3103,6 +3515,10 @@ const ALBUMS = [
     "year": "1981",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/r-3160291-1372779009-4990-1.jpg",
     "recommendedTracks": [
       "B1\t\tMy Funny Valentine"
@@ -3117,6 +3533,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3129,6 +3546,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2s6g0s.jpg",
     "recommendedTracks": [
       "2. Two Fingers",
@@ -3157,6 +3578,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3169,6 +3591,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-4.jpg",
     "recommendedTracks": [
       "A3. Let Me Ride",
@@ -3196,6 +3622,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3208,6 +3635,10 @@ const ALBUMS = [
     "year": "1967",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ryrzn.jpg",
     "recommendedTracks": [
       "1. Locomotive",
@@ -3228,6 +3659,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3240,6 +3672,10 @@ const ALBUMS = [
     "year": "1995",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/theroot-doyouwa-coverar-3000dpi300rgb1000169424.jpg",
     "recommendedTracks": [
       "2. Proceed",
@@ -3269,6 +3705,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3281,6 +3718,10 @@ const ALBUMS = [
     "year": "1963",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/images-3.jpg",
     "recommendedTracks": [
       "A1. You And The Night And The Music",
@@ -3298,6 +3739,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3310,6 +3752,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rr569.jpg",
     "recommendedTracks": [
       "2. Lost In Paris (feat. GoldLink)",
@@ -3338,6 +3784,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3350,6 +3797,10 @@ const ALBUMS = [
     "year": "1999",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-2.jpg",
     "recommendedTracks": [
       "A2. Doomsday",
@@ -3382,6 +3833,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3394,6 +3846,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rnbyr.jpg",
     "recommendedTracks": [
       "1. Keep On",
@@ -3414,6 +3870,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3426,6 +3883,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rloqj.jpg",
     "recommendedTracks": [
       "4. Tears in Heaven",
@@ -3452,6 +3913,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3464,6 +3926,10 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rkwut.jpg",
     "recommendedTracks": [
       "1. Riding with the King",
@@ -3487,6 +3953,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3499,6 +3966,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rk88p.jpg",
     "recommendedTracks": [
       "3. King Kunta",
@@ -3527,6 +3998,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3539,6 +4011,10 @@ const ALBUMS = [
     "year": "2010",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rjd5z.jpg",
     "recommendedTracks": [
       "3. Power",
@@ -3567,6 +4043,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3579,6 +4056,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rhu4z.jpg",
     "recommendedTracks": [
       "1. Feel the Love (feat. Pusha T)",
@@ -3597,6 +4078,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3609,6 +4091,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rf59n.jpg",
     "recommendedTracks": [
       "2 Accordion",
@@ -3643,6 +4129,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3655,6 +4142,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rcxab.jpg",
     "recommendedTracks": [],
     "tracklist": [
@@ -3675,6 +4166,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3687,6 +4179,10 @@ const ALBUMS = [
     "year": "1968",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2rc3w5.jpg",
     "recommendedTracks": [
       "5. I Loves You Porgy (Live At The Montreux Jazz Festival, 1968)",
@@ -3709,6 +4205,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3721,6 +4218,10 @@ const ALBUMS = [
     "year": "1996",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-1-1.jpg",
     "recommendedTracks": [
       "A2 The Message",
@@ -3748,6 +4249,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3760,6 +4262,10 @@ const ALBUMS = [
     "year": "1974",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2r6l48.jpg",
     "recommendedTracks": [
       "A1. Invitation",
@@ -3779,6 +4285,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3791,6 +4298,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2r65g3.jpg",
     "recommendedTracks": [
       "1. Speechless",
@@ -3812,6 +4323,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3824,6 +4336,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2r4o1v.jpg",
     "recommendedTracks": [
       "A2. Hurricane",
@@ -3871,6 +4387,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3883,6 +4400,10 @@ const ALBUMS = [
     "year": "2006",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2r3nsv.jpg",
     "recommendedTracks": [
       "2. Workinonit",
@@ -3926,6 +4447,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3938,6 +4460,10 @@ const ALBUMS = [
     "year": "1999",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2r1m6u.jpg",
     "recommendedTracks": [
       "D1. Nas Is Like"
@@ -3964,6 +4490,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -3976,6 +4503,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qzgd4.jpg",
     "recommendedTracks": [
       "A1. Teki",
@@ -3997,6 +4528,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4009,6 +4541,10 @@ const ALBUMS = [
     "year": "1961",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qy9rm.jpg",
     "recommendedTracks": [
       "4. Diane",
@@ -4026,6 +4562,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4038,6 +4575,10 @@ const ALBUMS = [
     "year": "1965",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qxiw0.jpg",
     "recommendedTracks": [
       "1. I Put a Spell On You",
@@ -4061,6 +4602,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4073,6 +4615,10 @@ const ALBUMS = [
     "year": "1999",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qu0xa.jpg",
     "recommendedTracks": [
       "A2. The Watcher",
@@ -4107,6 +4653,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4119,6 +4666,10 @@ const ALBUMS = [
     "year": "1995",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qs1y7.jpg",
     "recommendedTracks": [
       "A3. MC's Act Like They Don't Know",
@@ -4145,6 +4696,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4157,6 +4709,10 @@ const ALBUMS = [
     "year": "1963",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qqqd1.jpg",
     "recommendedTracks": [
       "A1 Night Lights",
@@ -4174,6 +4730,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4186,6 +4743,10 @@ const ALBUMS = [
     "year": "1987",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/04klcekph7sxj8m-1.webp",
     "recommendedTracks": [
       "A1 Stella By Starlight",
@@ -4202,6 +4763,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4214,6 +4776,10 @@ const ALBUMS = [
     "year": "1981",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qkzzo.jpg",
     "recommendedTracks": [
       "1. B Minor Waltz",
@@ -4237,6 +4803,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4249,6 +4816,10 @@ const ALBUMS = [
     "year": "1998",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qkacs.jpg",
     "recommendedTracks": [
       "3. Ex-Factor",
@@ -4277,6 +4848,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4289,6 +4861,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qiwye.jpg",
     "recommendedTracks": [
       "A4        See You Again",
@@ -4315,6 +4891,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4327,6 +4904,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qhpdw.jpg",
     "recommendedTracks": [
       "10. Just a Moment (feat. Quan)",
@@ -4363,6 +4944,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4375,6 +4957,10 @@ const ALBUMS = [
     "year": "2002",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qfioe.jpg",
     "recommendedTracks": [
       "1. Doo Rags",
@@ -4398,6 +4984,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4410,6 +4997,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qerxo.jpg",
     "recommendedTracks": [
       "2. Death Row East",
@@ -4438,6 +5029,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4450,6 +5042,10 @@ const ALBUMS = [
     "year": "1957",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qbbgq.jpg",
     "recommendedTracks": [
       "A1 Blue Train",
@@ -4473,6 +5069,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4485,6 +5082,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2qa7b8.jpg",
     "recommendedTracks": [
       "2. Leave The Door Open",
@@ -4509,6 +5110,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4521,6 +5123,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2q8x7d.jpg",
     "recommendedTracks": [
       "2. Cheat Codes",
@@ -4546,6 +5152,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4558,6 +5165,10 @@ const ALBUMS = [
     "year": "2006",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/d018bb5e-1.webp",
     "recommendedTracks": [
       "A1. We Got It For Cheap (Intro)",
@@ -4582,6 +5193,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4594,6 +5206,10 @@ const ALBUMS = [
     "year": "1994",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/immshja7fmxtrfppiqbhptplc-uezyzhwuhsybih-nrgbca7pdiflch9bi7t1au-n8falrozocuptvwrl3nqyq.webp",
     "recommendedTracks": [
       "A3. Gimme The Loot",
@@ -4626,6 +5242,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4638,6 +5255,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2py7t0.jpg",
     "recommendedTracks": [
       "1. I'm All for You",
@@ -4660,6 +5281,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4672,6 +5294,10 @@ const ALBUMS = [
     "year": "1993",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2puxci.jpg",
     "recommendedTracks": [
       "A1. Bring Da Ruckus",
@@ -4699,6 +5325,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4711,6 +5338,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pr8d5.jpg",
     "recommendedTracks": [
       "A2. Yeah!",
@@ -4745,6 +5376,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4757,6 +5389,10 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2po32c.jpg",
     "recommendedTracks": [
       "A2. Didn't Cha Know",
@@ -4783,6 +5419,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4795,6 +5432,10 @@ const ALBUMS = [
     "year": "1995",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pl6uj.jpg",
     "recommendedTracks": [
       "A1. Bullshit",
@@ -4825,6 +5466,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4837,6 +5479,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pkgqr.jpg",
     "recommendedTracks": [
       "2. N95",
@@ -4869,6 +5515,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4881,6 +5528,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pij2k.jpg",
     "recommendedTracks": [
       "A1. Igor's Theme",
@@ -4907,6 +5558,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4919,6 +5571,10 @@ const ALBUMS = [
     "year": "1964",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pgzy1.jpg",
     "recommendedTracks": [
       "1. Little Lulu",
@@ -4939,6 +5595,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4951,6 +5608,10 @@ const ALBUMS = [
     "year": "1998",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/1200x1200bf-60-1.jpg",
     "recommendedTracks": [
       "4. Re:Definition",
@@ -4975,6 +5636,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -4987,6 +5649,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pd3xi.jpg",
     "recommendedTracks": [
       "2. 기억리듬",
@@ -5011,6 +5677,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5023,6 +5690,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pbbsv.jpg",
     "recommendedTracks": [
       "A2. DNA.",
@@ -5050,6 +5721,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5062,6 +5734,10 @@ const ALBUMS = [
     "year": "1973",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2pamq1.jpg",
     "recommendedTracks": [
       "4. Summer Song",
@@ -5081,6 +5757,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5093,7 +5770,9 @@ const ALBUMS = [
     "year": "2006",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/image-1645168255978.jpg",
     "recommendedTracks": [
@@ -5120,6 +5799,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5132,6 +5812,10 @@ const ALBUMS = [
     "year": "2003",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2lpozq.jpg",
     "recommendedTracks": [
       "A2. Light Your Ass On Fire",
@@ -5161,6 +5845,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5173,7 +5858,9 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/20351623-1.jpg",
     "recommendedTracks": [
@@ -5192,6 +5879,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5204,6 +5892,10 @@ const ALBUMS = [
     "year": "2002",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2lislm.jpg",
     "recommendedTracks": [
       "A1. Intro",
@@ -5232,6 +5924,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5244,6 +5937,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2lemhw.jpg",
     "recommendedTracks": [
       "A4. BANKROLL",
@@ -5274,6 +5971,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5286,6 +5984,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2lbsxu.jpg",
     "recommendedTracks": [
       "A1. Shattered Dreams",
@@ -5313,6 +6015,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5325,6 +6028,10 @@ const ALBUMS = [
     "year": "1966",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2l86h8.jpg",
     "recommendedTracks": [
       "A2. Spring Is Here",
@@ -5343,6 +6050,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5355,6 +6063,10 @@ const ALBUMS = [
     "year": "1961",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2l7izs.jpg",
     "recommendedTracks": [
       "1. Picture of Heath",
@@ -5374,6 +6086,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5386,6 +6099,10 @@ const ALBUMS = [
     "year": "2001",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2l6px5.jpg",
     "recommendedTracks": [
       "1. Stillmatic (The Intro)",
@@ -5412,6 +6129,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5424,6 +6142,10 @@ const ALBUMS = [
     "year": "1957",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2l5cmv.jpg",
     "recommendedTracks": [
       "1. My Funny Valentine",
@@ -5439,6 +6161,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5451,6 +6174,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2l32bq.jpg",
     "recommendedTracks": [
       "A3. Dance Now",
@@ -5479,6 +6206,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5491,7 +6219,9 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms2kylvd.jpg",
     "recommendedTracks": [
@@ -5533,6 +6263,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5545,7 +6276,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합", "알앤비"],
+    "genres": [
+      "힙합",
+      "알앤비"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms2ky1d7.jpg",
     "recommendedTracks": [
@@ -5570,6 +6304,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5582,6 +6317,10 @@ const ALBUMS = [
     "year": "1955",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2kv1jm.jpg",
     "recommendedTracks": [
       "A1. Let's Get Lost",
@@ -5605,6 +6344,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5617,6 +6357,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ktck1.jpg",
     "recommendedTracks": [
       "A2. Afro Blue",
@@ -5642,6 +6386,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5654,6 +6399,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ks957.jpg",
     "recommendedTracks": [
       "3. Toronto 2014",
@@ -5685,6 +6434,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5697,6 +6447,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2krext.jpg",
     "recommendedTracks": [
       "1. What's on Your Mind?",
@@ -5720,6 +6474,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5732,6 +6487,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2kp5zx.jpg",
     "recommendedTracks": [
       "A1. Oscar Isaac - Hang Me, Oh Hang Me",
@@ -5760,6 +6519,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5772,6 +6532,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2koleo.jpg",
     "recommendedTracks": [
       "1. Alone Together",
@@ -5795,6 +6559,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5807,6 +6572,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2kn565.jpg",
     "recommendedTracks": [
       "3. Just A Stranger",
@@ -5835,6 +6604,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5847,6 +6617,10 @@ const ALBUMS = [
     "year": "1989",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ki418.jpg",
     "recommendedTracks": [
       "A2. The Magic Number",
@@ -5883,6 +6657,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5895,6 +6670,10 @@ const ALBUMS = [
     "year": "1962",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2kglk1.jpg",
     "recommendedTracks": [
       "1. Without a Song",
@@ -5912,6 +6691,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5924,6 +6704,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/images-1.jpg",
     "recommendedTracks": [
       "A3. Got Ur Self A Gun",
@@ -5959,6 +6743,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -5971,6 +6756,10 @@ const ALBUMS = [
     "year": "1970",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2kc674.jpg",
     "recommendedTracks": [
       "1. Don't Play That Song",
@@ -5996,6 +6785,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6008,6 +6798,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/saba-few-good-things-1.webp",
     "recommendedTracks": [
       "A2. One Way Or Every Nigga With A Budget",
@@ -6035,6 +6829,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6047,7 +6842,9 @@ const ALBUMS = [
     "year": "1987",
     "format": "Vinyl",
     "genre": "팝",
-    "genres": ["팝"],
+    "genres": [
+      "팝"
+    ],
     "country": "한국",
     "coverImage": "covers/album-ms2k8kyg.jpg",
     "recommendedTracks": [
@@ -6072,6 +6869,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6084,6 +6882,10 @@ const ALBUMS = [
     "year": "2003",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2k7jw0.jpg",
     "recommendedTracks": [
       "2. Slim's Return",
@@ -6113,6 +6915,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6125,6 +6928,10 @@ const ALBUMS = [
     "year": "1957",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2k5xas.jpg",
     "recommendedTracks": [
       "2. Well You Needn't",
@@ -6142,6 +6949,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6154,6 +6962,10 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2k2eu2.jpg",
     "recommendedTracks": [
       "A2. The Who - Sparks",
@@ -6184,6 +6996,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6196,6 +7009,10 @@ const ALBUMS = [
     "year": "1962",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2k0hwq.jpg",
     "recommendedTracks": [
       "A1. My Foolish Heart",
@@ -6213,6 +7030,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6225,6 +7043,10 @@ const ALBUMS = [
     "year": "2017/2018",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jwt0c.jpg",
     "recommendedTracks": [
       "A1\t\t501's",
@@ -6245,6 +7067,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6257,6 +7080,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/cover-1785115863275.jpg",
     "recommendedTracks": [
       "A1. Life Is Like A Dice Game"
@@ -6269,6 +7096,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6281,6 +7109,10 @@ const ALBUMS = [
     "year": "2002",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jr698.jpg",
     "recommendedTracks": [
       "A1. Get Down",
@@ -6307,6 +7139,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6319,6 +7152,10 @@ const ALBUMS = [
     "year": "1977",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jq1vz.jpg",
     "recommendedTracks": [
       "1. Feels So Good"
@@ -6335,6 +7172,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6347,6 +7185,10 @@ const ALBUMS = [
     "year": "1972",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/r-4127548-1431382857-2401-1.jpg",
     "recommendedTracks": [
       "A3. Sweetie Pie",
@@ -6376,6 +7218,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6388,6 +7231,10 @@ const ALBUMS = [
     "year": "1975",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jkojp.jpg",
     "recommendedTracks": [
       "3. Mister Magic"
@@ -6402,6 +7249,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6414,6 +7262,10 @@ const ALBUMS = [
     "year": "1962",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jjj3y.jpg",
     "recommendedTracks": [
       "2. Samba Dees Days",
@@ -6433,6 +7285,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6445,6 +7298,10 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/ab67616d0000b27343c34c29834e87000e6a5ad2-1.jpg",
     "recommendedTracks": [
       "A3. Sunday Morning Drive",
@@ -6466,6 +7323,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6478,6 +7336,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jeqjx.jpg",
     "recommendedTracks": [
       "1. Come Rain or Shine",
@@ -6500,6 +7362,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6512,6 +7375,10 @@ const ALBUMS = [
     "year": "2009",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2jcz0b.jpg",
     "recommendedTracks": [
       "A2. Do You Dig U?",
@@ -6532,6 +7399,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6544,6 +7412,10 @@ const ALBUMS = [
     "year": "1989",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/a3760919201-10.jpg",
     "recommendedTracks": [
       "A1. Premier & The Guru",
@@ -6578,6 +7450,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6590,6 +7463,10 @@ const ALBUMS = [
     "year": "1954",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/61wx7vwb6jl-uf350-350-ql50.jpg",
     "recommendedTracks": [
       "2. It's Always You",
@@ -6620,6 +7497,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6632,6 +7510,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2j4hzd.jpg",
     "recommendedTracks": [
       "A2. Corso",
@@ -6675,6 +7557,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6687,6 +7570,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2j22xv.jpg",
     "recommendedTracks": [
       "3. Ohio",
@@ -6717,6 +7604,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6729,6 +7617,10 @@ const ALBUMS = [
     "year": "1996",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2izzzq.jpg",
     "recommendedTracks": [
       "A1. Best Foot Forward",
@@ -6754,6 +7646,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6766,6 +7659,10 @@ const ALBUMS = [
     "year": "1981",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2iz9gu.jpg",
     "recommendedTracks": [
       "1. Ai No Corrida (feat. Dune)",
@@ -6787,6 +7684,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6799,6 +7697,10 @@ const ALBUMS = [
     "year": "1958",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2iyoo5.jpg",
     "recommendedTracks": [
       "2. Bow Jest",
@@ -6818,6 +7720,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6830,6 +7733,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2iy1ci.jpg",
     "recommendedTracks": [
       "1. Time",
@@ -6853,6 +7760,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6865,6 +7773,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "CD",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2iwxja.jpg",
     "recommendedTracks": [
       "1. Hafla",
@@ -6887,6 +7799,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6899,6 +7812,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2iu69j.jpg",
     "recommendedTracks": [
       "C1        IFHY",
@@ -6929,6 +7846,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6941,6 +7859,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ita74.jpg",
     "recommendedTracks": [
       "11. Dooyo"
@@ -6962,6 +7884,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -6974,6 +7897,10 @@ const ALBUMS = [
     "year": "1971",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2iopeo.jpg",
     "recommendedTracks": [
       "A1. What Are You Doing The Rest Of Your Life?",
@@ -6994,6 +7921,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7006,6 +7934,10 @@ const ALBUMS = [
     "year": "2007",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2inmkc.jpg",
     "recommendedTracks": [
       "1. 다시 쓰는 이력서",
@@ -7029,6 +7961,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7041,6 +7974,10 @@ const ALBUMS = [
     "year": "1966",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2im0p1.jpg",
     "recommendedTracks": [
       "1. Tequila",
@@ -7060,6 +7997,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7072,6 +8010,10 @@ const ALBUMS = [
     "year": "1963",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-ms2ikgie.jpg",
     "recommendedTracks": [
       "1. They Say It's Wonderful",
@@ -7089,6 +8031,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7101,6 +8044,10 @@ const ALBUMS = [
     "year": "1961",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrobkl8x.jpg",
     "recommendedTracks": [
       "1. La Nevada",
@@ -7117,6 +8064,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7129,6 +8077,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrobeygs.jpg",
     "recommendedTracks": [
       "2. Big City Blues",
@@ -7145,6 +8097,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7157,6 +8110,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrobdn0g.jpg",
     "recommendedTracks": [
       "A1. 아니라고 (Feat. Zion.T)",
@@ -7186,6 +8143,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7198,6 +8156,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "일렉트로닉",
+    "genres": [
+      "일렉트로닉"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrobd1s4-1.jpg",
     "recommendedTracks": [
       "4. Postman",
@@ -7222,6 +8184,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7234,6 +8197,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrobbbi0-1.jpg",
     "recommendedTracks": [
       "2. Moonlight Becomes You",
@@ -7256,6 +8223,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7268,6 +8236,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mroa7yiz.jpg",
     "recommendedTracks": [
       "2. Am I Dreaming",
@@ -7293,6 +8265,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7305,6 +8278,10 @@ const ALBUMS = [
     "year": "1997",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mro9fqzj.jpg",
     "recommendedTracks": [
       "B1. Iraq (See The World)",
@@ -7338,6 +8315,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7350,7 +8328,9 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mro9cy4i.jpg",
     "recommendedTracks": [
@@ -7374,6 +8354,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7386,6 +8367,10 @@ const ALBUMS = [
     "year": "2006",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mro9b5wf.jpg",
     "recommendedTracks": [
       "A4. Kick, Push",
@@ -7413,6 +8398,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7425,6 +8411,10 @@ const ALBUMS = [
     "year": "2002",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/71hohjasb7l-uf1000-1000-ql80.jpg",
     "recommendedTracks": [
       "C1. Suga Baby",
@@ -7454,6 +8444,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7466,6 +8457,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4vewt.jpg",
     "recommendedTracks": [
       "A1. K.R.I.T. Here",
@@ -7497,6 +8492,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7509,6 +8505,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4sral.jpg",
     "recommendedTracks": [
       "A2 Abracadabra",
@@ -7533,6 +8533,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7545,6 +8546,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4s3hl.jpg",
     "recommendedTracks": [
       "1. 섬으로 가요 (Feat. 오혁)",
@@ -7567,6 +8572,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7579,6 +8585,10 @@ const ALBUMS = [
     "year": "1978",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4qzyf.jpg",
     "recommendedTracks": [
       "2. My Song"
@@ -7595,6 +8605,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7607,6 +8618,10 @@ const ALBUMS = [
     "year": "1980",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4qevb.jpg",
     "recommendedTracks": [
       "1. Remote Control"
@@ -7626,6 +8641,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7638,6 +8654,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4mt8f.jpg",
     "recommendedTracks": [
       "A2. Oh Shit",
@@ -7665,6 +8685,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7677,6 +8698,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4lbtm.jpg",
     "recommendedTracks": [
       "A1. Nikes",
@@ -7706,6 +8731,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7718,6 +8744,10 @@ const ALBUMS = [
     "year": "1964",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4kfv7.jpg",
     "recommendedTracks": [],
     "tracklist": [
@@ -7731,6 +8761,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7743,6 +8774,10 @@ const ALBUMS = [
     "year": "1993",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/ab67616d0000b273733af86f8dea9692a3f59d29-1.jpg",
     "recommendedTracks": [
       "A2. G Funk Intro",
@@ -7771,6 +8806,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7783,6 +8819,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4fugm.jpg",
     "recommendedTracks": [
       "2. We Never Knew",
@@ -7808,6 +8848,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7820,7 +8861,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "팝",
-    "genres": ["팝", "록"],
+    "genres": [
+      "팝",
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrn4ezn9.jpg",
     "recommendedTracks": [
@@ -7841,6 +8885,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7853,6 +8898,10 @@ const ALBUMS = [
     "year": "1974",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4efg4.jpg",
     "recommendedTracks": [
       "1. Autumn Leaves",
@@ -7872,6 +8921,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7884,6 +8934,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4dszv.jpg",
     "recommendedTracks": [
       "2. Little Notes",
@@ -7906,6 +8960,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7918,6 +8973,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4bpkt.jpg",
     "recommendedTracks": [
       "A1. Mic Checka",
@@ -7939,6 +8998,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7951,6 +9011,10 @@ const ALBUMS = [
     "year": "1995",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn4a6v8.jpg",
     "recommendedTracks": [
       "3. \"Eternal\"",
@@ -7978,6 +9042,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -7990,6 +9055,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn47q3z.jpg",
     "recommendedTracks": [
       "A2. Cosign",
@@ -8007,6 +9076,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8019,6 +9089,10 @@ const ALBUMS = [
     "year": "1980",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn46w9i.jpg",
     "recommendedTracks": [
       "1. It'll All Be Over",
@@ -8039,6 +9113,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8051,6 +9126,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/screen-shot-2021-09-01-at-7-10-39-pm-27766.jpg",
     "recommendedTracks": [
       "A1 Four 7:18",
@@ -8067,6 +9146,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8079,6 +9159,10 @@ const ALBUMS = [
     "year": "1975",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn43c9y.jpg",
     "recommendedTracks": [
       "1. Afrodesia",
@@ -8095,6 +9179,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8107,6 +9192,10 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn41raf.jpg",
     "recommendedTracks": [
       "A1. Time Travelin' (A Tribute To Fela)",
@@ -8135,6 +9224,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8147,6 +9237,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn40lj1.jpg",
     "recommendedTracks": [
       "4. Run, Run, Run",
@@ -8168,6 +9262,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8180,6 +9275,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn403fi.jpg",
     "recommendedTracks": [
       "1. Etude",
@@ -8204,6 +9303,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8216,6 +9316,10 @@ const ALBUMS = [
     "year": "1991",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/81zwvkkxxdl-uf1000-1000-ql80.jpg",
     "recommendedTracks": [
       "B4. Live At The Barbeque"
@@ -8239,6 +9343,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8251,6 +9356,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3uqcz.jpg",
     "recommendedTracks": [
       "2. Young And Foolish (Remastered 2024)",
@@ -8272,6 +9381,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8284,6 +9394,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3u4dc.jpg",
     "recommendedTracks": [
       "1. The Other Side Of Melancholy",
@@ -8302,6 +9416,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8314,6 +9429,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3p70o.jpg",
     "recommendedTracks": [
       "2. Northern Shuffle",
@@ -8342,6 +9461,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8354,6 +9474,10 @@ const ALBUMS = [
     "year": "1986",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3oi40.jpg",
     "recommendedTracks": [
       "1. Long Ago and Far Away",
@@ -8374,6 +9498,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8386,6 +9511,10 @@ const ALBUMS = [
     "year": "1981",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3nthj.jpg",
     "recommendedTracks": [
       "2. You're My Latest, My Greatest Inspiration",
@@ -8405,6 +9534,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8417,6 +9547,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3n4ei.jpg",
     "recommendedTracks": [
       "1. Come On Girl Let’s Get It On",
@@ -8438,6 +9572,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8450,6 +9585,10 @@ const ALBUMS = [
     "year": "1978",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3lu5n.jpg",
     "recommendedTracks": [
       "A1. Life Is A Song Worth Singing",
@@ -8469,6 +9608,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8481,6 +9621,10 @@ const ALBUMS = [
     "year": "1991",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3kbbp.jpg",
     "recommendedTracks": [
       "A3. O.P.P."
@@ -8504,6 +9648,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8516,6 +9661,10 @@ const ALBUMS = [
     "year": "1982",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3iwkn.jpg",
     "recommendedTracks": [
       "A1. Burning Down One Side",
@@ -8535,6 +9684,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8547,6 +9697,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3i4o5.jpg",
     "recommendedTracks": [
       "1. 'Deed I Do",
@@ -8574,6 +9728,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8586,6 +9741,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3h9gu.jpg",
     "recommendedTracks": [
       "3. Be Who You Are (feat. JID, NewJeans & Camilo)",
@@ -8620,6 +9779,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8632,6 +9792,10 @@ const ALBUMS = [
     "year": "1982",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3fmjr.jpg",
     "recommendedTracks": [
       "A2. Heart's Desire",
@@ -8651,6 +9815,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8663,6 +9828,10 @@ const ALBUMS = [
     "year": "1991",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn3dzuk.jpg",
     "recommendedTracks": [
       "A2. Full Clip",
@@ -8707,6 +9876,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8719,7 +9889,9 @@ const ALBUMS = [
     "year": "2014",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrn3alj5.jpg",
     "recommendedTracks": [
@@ -8749,6 +9921,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8761,6 +9934,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/bobmarley-onelove-musicinspired-vinyl-cover-1.jpg",
     "recommendedTracks": [
       "A3. Daniel Caesar - Waiting In Vain",
@@ -8784,6 +9961,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8796,7 +9974,9 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrn34ctd.jpg",
     "recommendedTracks": [
@@ -8829,6 +10009,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8841,6 +10022,10 @@ const ALBUMS = [
     "year": "1978",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/211459f22cdbe3306cca392a0f26192a-1.jpg",
     "recommendedTracks": [],
     "tracklist": [
@@ -8855,6 +10040,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8867,6 +10053,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn305bn.jpg",
     "recommendedTracks": [
       "5. Computer Love (Feat. Patrice Quinn, DJ Battlecat, Brandon Coleman)",
@@ -8890,6 +10080,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8902,6 +10093,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrn2wv32.jpg",
     "recommendedTracks": [
       "A3. Eh freestyle",
@@ -8926,6 +10121,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8938,6 +10134,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrit31zq.jpg",
     "recommendedTracks": [
       "A4. The Shining Pt.1 (Diamonds)",
@@ -8977,6 +10177,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -8989,6 +10190,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrit1h8b.jpg",
     "recommendedTracks": [
       "3. Wngs",
@@ -9019,6 +10224,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9031,6 +10237,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrit0bod.jpg",
     "recommendedTracks": [
       "D1. Cherry Wine"
@@ -9055,6 +10265,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9067,6 +10278,10 @@ const ALBUMS = [
     "year": "2007",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriszs6i.jpg",
     "recommendedTracks": [
       "1. Open Spaces",
@@ -9089,6 +10304,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9101,6 +10317,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisz2ho.jpg",
     "recommendedTracks": [
       "2. Emily (Live) [feat. Marty Morell & Eddie Gomez]",
@@ -9127,6 +10347,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9139,7 +10360,9 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrisvjom.jpg",
     "recommendedTracks": [
@@ -9169,6 +10392,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9181,6 +10405,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mristvuq.jpg",
     "recommendedTracks": [
       "A1. High Risk Travel",
@@ -9208,6 +10436,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9220,6 +10449,10 @@ const ALBUMS = [
     "year": "2007",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisrxsj.jpg",
     "recommendedTracks": [
       "A4. We Celebrate",
@@ -9247,6 +10480,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9259,6 +10493,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrispxjf.jpg",
     "recommendedTracks": [
       "1. Third Time's the Charm",
@@ -9285,6 +10523,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9297,6 +10536,10 @@ const ALBUMS = [
     "year": "1967",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisjtmh.jpg",
     "recommendedTracks": [
       "1. Sgt. Pepper's Lonely Hearts Club Band",
@@ -9327,6 +10570,7 @@ const ALBUMS = [
     "descriptionEn": "In August 1966, The Beatles stopped touring and performing altogether. Worn down by years of punishing schedules, concerts where the cheering and screaming drowned out the music itself, and a press and public ready to tear them apart for anything they said or did, they decided they would no longer play live or tour.\n\nAnd that decision became, in my view, the best one of The Beatles’ career.\n\nThe experimentation on earlier albums such as [Rubber Soul] and [Revolver] had been well received, but as touring musicians, they could hardly bring a string octet on the road for Eleanor Rigby alone, or reproduce the layers of tape loops on Tomorrow Never Knows live. In other words, The Beatles making great experiments in the studio were becoming an ever-greater burden on The Beatles playing live.\n\nNow that the live Beatles were gone, the studio Beatles had complete freedom.\nBehind this album were four of the greatest geniuses in the history of pop music, wholly absorbed in making it without giving a moment’s thought to whether it could be performed live.\n\nThe change in style was so complete that the members wanted to drop The Beatles name and release the album as “Sgt. Pepper’s Lonely Hearts Club Band.” Fragments of that plan remain throughout the album and on its cover.\n\nWhat more could I possibly add to this great album?\nIt is one of the greatest albums in the history of pop music.\nWrite down any song from it, and the owner’s face will light up when he sees your request slip.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9339,6 +10583,10 @@ const ALBUMS = [
     "year": "2008",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisiflj.jpg",
     "recommendedTracks": [
       "3. A Milli",
@@ -9367,6 +10615,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9379,6 +10628,10 @@ const ALBUMS = [
     "year": "2008",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisgebw.jpg",
     "recommendedTracks": [
       "B1. Hero"
@@ -9404,6 +10657,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9416,7 +10670,9 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrisdmim.jpg",
     "recommendedTracks": [
@@ -9461,6 +10717,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9473,6 +10730,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriscwpo.jpg",
     "recommendedTracks": [
       "A6. Babay",
@@ -9496,6 +10757,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9508,6 +10770,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisbclu.jpg",
     "recommendedTracks": [
       "B2. 코케인 러브♥",
@@ -9530,6 +10796,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9542,6 +10809,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrisa77w.jpg",
     "recommendedTracks": [
       "3. Water",
@@ -9568,6 +10839,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9580,6 +10852,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mris8a52.jpg",
     "recommendedTracks": [
       "A1. Dreamin'",
@@ -9608,6 +10884,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9620,6 +10897,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mris6ah1.jpg",
     "recommendedTracks": [
       "A4. Sunday",
@@ -9646,6 +10927,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9658,6 +10940,10 @@ const ALBUMS = [
     "year": "1996",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mris4rcr.jpg",
     "recommendedTracks": [
       "1. Intro (Stakes Is High)",
@@ -9689,6 +10975,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9701,6 +10988,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mris2sn7.jpg",
     "recommendedTracks": [
       "1. Screens",
@@ -9718,6 +11009,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9730,7 +11022,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "알앤비",
-    "genres": ["알앤비", "팝"],
+    "genres": [
+      "알앤비",
+      "팝"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mris1zht.jpg",
     "recommendedTracks": [
@@ -9756,6 +11051,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9768,6 +11064,10 @@ const ALBUMS = [
     "year": "1970",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mris0p4p.jpg",
     "recommendedTracks": [
       "1. Leaves",
@@ -9791,6 +11091,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9803,6 +11104,10 @@ const ALBUMS = [
     "year": "1975",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirz8uy.jpg",
     "recommendedTracks": [
       "B1. Concierto De Aranjuez"
@@ -9817,6 +11122,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9829,6 +11135,10 @@ const ALBUMS = [
     "year": "1987",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirykqb.jpg",
     "recommendedTracks": [
       "1. Never Gonna Give You Up"
@@ -9849,6 +11159,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9861,6 +11172,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirxmnf.jpg",
     "recommendedTracks": [
       "1. Persian Rug (Live)",
@@ -9877,6 +11192,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9889,6 +11205,10 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirw9nw.jpg",
     "recommendedTracks": [
       "2. Footprints",
@@ -9918,6 +11238,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9930,6 +11251,10 @@ const ALBUMS = [
     "year": "1964",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirvkpz.jpg",
     "recommendedTracks": [
       "1. A Hard Day's Night",
@@ -9956,6 +11281,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -9968,6 +11294,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "일렉트로닉",
+    "genres": [
+      "일렉트로닉"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirul7v.jpg",
     "recommendedTracks": [
       "1. Give Life Back to Music",
@@ -10009,6 +11339,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10021,6 +11352,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirsmi8.jpg",
     "recommendedTracks": [
       "3. Baby, Come Home",
@@ -10042,6 +11377,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10054,6 +11390,10 @@ const ALBUMS = [
     "year": "1996",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirr562.jpg",
     "recommendedTracks": [
       "A6. Uknowhowwedu",
@@ -10079,6 +11419,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10091,6 +11432,10 @@ const ALBUMS = [
     "year": "1991",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirn43s.jpg",
     "recommendedTracks": [
       "C2\t\tCheck The Rhime",
@@ -10117,6 +11462,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10129,6 +11475,10 @@ const ALBUMS = [
     "year": "1998",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirkjwm.jpg",
     "recommendedTracks": [
       "A2\t\tFind A Way",
@@ -10163,6 +11513,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10175,6 +11526,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirjsts.jpg",
     "recommendedTracks": [
       "2. Hargrove",
@@ -10194,6 +11549,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10206,6 +11562,10 @@ const ALBUMS = [
     "year": "1960",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mririrrx.jpg",
     "recommendedTracks": [
       "1. A Night In Tunisia",
@@ -10226,6 +11586,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10238,6 +11599,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrirggbp.jpg",
     "recommendedTracks": [
       "05 Gorgeous (Feat. Jhene Aiko)"
@@ -10263,6 +11628,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10275,6 +11641,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrireq7f.jpg",
     "recommendedTracks": [
       "A2. Cannonball (feat. Reiya Terakubo)",
@@ -10301,6 +11671,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10313,6 +11684,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrird7dd.jpg",
     "recommendedTracks": [
       "3. I Can't Get Started with You",
@@ -10331,6 +11706,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10343,6 +11719,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrira4en.jpg",
     "recommendedTracks": [
       "A3. dAsh!",
@@ -10370,6 +11750,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10382,6 +11763,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir99jx.jpg",
     "recommendedTracks": [
       "1. 보통의 이별",
@@ -10403,6 +11788,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10415,7 +11801,9 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
-    "genres": ["재즈"],
+    "genres": [
+      "재즈"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrir80r5.jpg",
     "recommendedTracks": [
@@ -10440,6 +11828,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10452,6 +11841,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir7fs7.jpg",
     "recommendedTracks": [
       "2. squabble up",
@@ -10478,6 +11871,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10490,6 +11884,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "CD",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir6i7v-1.jpg",
     "recommendedTracks": [
       "1. Comes Love",
@@ -10513,6 +11911,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10525,6 +11924,10 @@ const ALBUMS = [
     "year": "1971",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir60f5-1.jpg",
     "recommendedTracks": [
       "2. The Two Lonely People",
@@ -10545,6 +11948,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10557,6 +11961,10 @@ const ALBUMS = [
     "year": "1968",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir5bq6-1.jpg",
     "recommendedTracks": [
       "5. Brilliant Corners",
@@ -10580,6 +11988,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10592,6 +12001,10 @@ const ALBUMS = [
     "year": "1961",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir4oyx-1.jpg",
     "recommendedTracks": [
       "5. Love Theme From Spartacus (Remastered 2023)"
@@ -10611,6 +12024,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10623,6 +12037,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir3684-1.jpg",
     "recommendedTracks": [
       "2. Numbers On the Boards",
@@ -10646,6 +12064,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10658,6 +12077,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir2lgt-1.jpg",
     "recommendedTracks": [
       "3. BOILED PEANUTS",
@@ -10689,6 +12112,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10701,6 +12125,10 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrir0dkj.jpg",
     "recommendedTracks": [
       "A3. GP4",
@@ -10727,6 +12155,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10739,6 +12168,10 @@ const ALBUMS = [
     "year": "1962",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqywo0.jpg",
     "recommendedTracks": [
       "2. I Hear a Rhapsody",
@@ -10761,6 +12194,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10773,6 +12207,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqy15s.jpg",
     "recommendedTracks": [
       "3. Keep On Walking",
@@ -10794,6 +12232,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10806,6 +12245,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqx30m.jpg",
     "recommendedTracks": [
       "1. Dirty Computer (feat. Brian Wilson)",
@@ -10832,6 +12275,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10844,6 +12288,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqunrg.jpg",
     "recommendedTracks": [
       "4. Bad Idea (feat. Chance the Rapper)",
@@ -10870,6 +12318,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10882,6 +12331,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqtckg.jpg",
     "recommendedTracks": [
       "A2. 힙합의 학생",
@@ -10905,6 +12358,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10917,6 +12371,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqsznd.jpg",
     "recommendedTracks": [
       "2. Copenhagen"
@@ -10935,6 +12393,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10947,6 +12406,10 @@ const ALBUMS = [
     "year": "2003",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqsiev.jpg",
     "recommendedTracks": [
       "3. Somewhere I Belong",
@@ -10974,6 +12437,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -10986,6 +12450,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqrw9b.jpg",
     "recommendedTracks": [
       "10. From The Start",
@@ -11015,6 +12483,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11027,6 +12496,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqr4xy.jpg",
     "recommendedTracks": [
       "2. Magnum P.I.",
@@ -11054,6 +12527,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11066,6 +12540,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqq5c1.jpg",
     "recommendedTracks": [
       "1. Begin Again",
@@ -11092,6 +12570,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11104,6 +12583,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqostt.jpg",
     "recommendedTracks": [
       "A4. 보통의 삶",
@@ -11128,6 +12611,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11140,6 +12624,10 @@ const ALBUMS = [
     "year": "1964",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqo2y9.jpg",
     "recommendedTracks": [
       "3. My One and Only Love",
@@ -11163,6 +12651,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11175,6 +12664,10 @@ const ALBUMS = [
     "year": "2008",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqn5hi.jpg",
     "recommendedTracks": [
       "1. I'm Not So Sure",
@@ -11201,6 +12694,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11213,6 +12707,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqmixl.jpg",
     "recommendedTracks": [
       "4. Fragile (Live at the Hollywood Bowl)",
@@ -11240,6 +12738,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11252,6 +12751,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqlj7y.jpg",
     "recommendedTracks": [
       "2. Double Southpaw",
@@ -11269,6 +12772,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11281,6 +12785,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqkkbl.jpg",
     "recommendedTracks": [
       "3. SMiLE",
@@ -11308,6 +12816,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11320,6 +12829,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriqihrd.jpg",
     "recommendedTracks": [
       "1. Reboot",
@@ -11340,6 +12853,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11352,7 +12866,10 @@ const ALBUMS = [
     "year": "2008",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록", "팝"],
+    "genres": [
+      "록",
+      "팝"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mriqhrro.jpg",
     "recommendedTracks": [
@@ -11378,6 +12895,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11390,6 +12908,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mriq3zx9.jpg",
     "recommendedTracks": [
       "A1. When Tony Met Sosa",
@@ -11409,6 +12931,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11421,6 +12944,10 @@ const ALBUMS = [
     "year": "1963",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrexalon.jpg",
     "recommendedTracks": [
       "1. Chitlins Con Carne",
@@ -11441,6 +12968,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11453,6 +12981,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrexa22a.jpg",
     "recommendedTracks": [
       "1. Tributary",
@@ -11475,6 +13007,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11487,6 +13020,10 @@ const ALBUMS = [
     "year": "2021",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex8ne4.jpg",
     "recommendedTracks": [
       "A3. The Gonlan Song 곤란한 노래",
@@ -11510,6 +13047,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11522,7 +13060,9 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록"],
+    "genres": [
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrex8cph.jpg",
     "recommendedTracks": [
@@ -11542,6 +13082,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11554,7 +13095,9 @@ const ALBUMS = [
     "year": "2014",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록"],
+    "genres": [
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrex6zqk.jpg",
     "recommendedTracks": [
@@ -11573,6 +13116,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11585,6 +13129,10 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex6hhz.jpg",
     "recommendedTracks": [
       "1. I Want You To Love Me",
@@ -11608,6 +13156,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11620,6 +13169,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex5xus.jpg",
     "recommendedTracks": [
       "7. Workin Out"
@@ -11644,6 +13197,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11656,6 +13210,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex4pn1.jpg",
     "recommendedTracks": [
       "A3. Twenty Eight",
@@ -11675,6 +13233,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11687,6 +13246,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex46jv.jpg",
     "recommendedTracks": [
       "4. Bourbon",
@@ -11715,6 +13278,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11727,6 +13291,10 @@ const ALBUMS = [
     "year": "2005",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex3jzd.jpg",
     "recommendedTracks": [
       "2. Quien Será",
@@ -11750,6 +13318,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11762,6 +13331,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex30ic.jpg",
     "recommendedTracks": [
       "6. Old Devil Moon"
@@ -11787,6 +13360,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11799,6 +13373,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex2epp.jpg",
     "recommendedTracks": [
       "1. Spiral Dance",
@@ -11816,6 +13394,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11828,6 +13407,10 @@ const ALBUMS = [
     "year": "2022",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrex1shw.jpg",
     "recommendedTracks": [
       "3. Dreamin Of The Past (feat. Kanye West)"
@@ -11850,6 +13433,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11862,6 +13446,10 @@ const ALBUMS = [
     "year": "1998",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewzpyb.jpg",
     "recommendedTracks": [
       "1. New York Fascination"
@@ -11882,6 +13470,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11894,6 +13483,10 @@ const ALBUMS = [
     "year": "1974",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewzc5m.jpg",
     "recommendedTracks": [
       "1. Love Is Everywhere"
@@ -11906,6 +13499,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11918,6 +13512,10 @@ const ALBUMS = [
     "year": "1998",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewxg0r.jpg",
     "recommendedTracks": [
       "A5. Still Not A Player",
@@ -11953,6 +13551,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -11965,6 +13564,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewwui2.jpg",
     "recommendedTracks": [
       "2. Tomorrow Is The Question",
@@ -11988,6 +13591,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12000,6 +13604,10 @@ const ALBUMS = [
     "year": "2008",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreww39b.jpg",
     "recommendedTracks": [
       "1. Like the Rest of Us",
@@ -12026,6 +13634,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12038,6 +13647,10 @@ const ALBUMS = [
     "year": "1964",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewvmlq.jpg",
     "recommendedTracks": [
       "1. Embalo",
@@ -12060,6 +13673,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12072,6 +13686,10 @@ const ALBUMS = [
     "year": "1994",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewt1gb.jpg",
     "recommendedTracks": [
       "A1. Resurrection",
@@ -12098,6 +13716,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12110,6 +13729,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewskkb.jpg",
     "recommendedTracks": [
       "2. Persian Rug",
@@ -12133,6 +13756,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12145,6 +13769,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewrc1t.jpg",
     "recommendedTracks": [
       "A2. Thinkin Bout You",
@@ -12175,6 +13803,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12187,7 +13816,9 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrewpnhm.jpg",
     "recommendedTracks": [
@@ -12211,6 +13842,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12223,6 +13855,10 @@ const ALBUMS = [
     "year": "1962",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewp5mr.jpg",
     "recommendedTracks": [
       "2. Danny Boy"
@@ -12239,6 +13875,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12251,6 +13888,10 @@ const ALBUMS = [
     "year": "1974",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewmzk1.jpg",
     "recommendedTracks": [
       "A1. No Problem",
@@ -12272,6 +13913,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12284,6 +13926,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewlsh1.jpg",
     "recommendedTracks": [
       "2. Sugar On My Tongue",
@@ -12306,6 +13952,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12318,6 +13965,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewl3ic.jpg",
     "recommendedTracks": [
       "3. Take Five"
@@ -12335,6 +13986,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12347,6 +13999,10 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewjh6x.jpg",
     "recommendedTracks": [
       "A-1 Get You (feat. Kali Uchis)",
@@ -12371,6 +14027,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12383,6 +14040,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "CD",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewgt9k.jpg",
     "recommendedTracks": [
       "9. Never Cursed",
@@ -12412,6 +14073,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12424,7 +14086,10 @@ const ALBUMS = [
     "year": "2009",
     "format": "Vinyl",
     "genre": "일렉트로닉",
-    "genres": ["일렉트로닉", "팝"],
+    "genres": [
+      "일렉트로닉",
+      "팝"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrewg9y6.jpg",
     "recommendedTracks": [
@@ -12450,6 +14115,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12462,6 +14128,10 @@ const ALBUMS = [
     "year": "1975",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrewfnpn.jpg",
     "recommendedTracks": [
       "1. Monday Morning",
@@ -12485,6 +14155,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12497,6 +14168,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreweowm.jpg",
     "recommendedTracks": [
       "2. Chains & Whips",
@@ -12523,6 +14198,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12535,6 +14211,10 @@ const ALBUMS = [
     "year": "2003",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrew36nf.jpg",
     "recommendedTracks": [
       "A1. Fazers",
@@ -12559,6 +14239,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12571,7 +14252,10 @@ const ALBUMS = [
     "year": "2012",
     "format": "Vinyl",
     "genre": "팝",
-    "genres": ["팝", "록"],
+    "genres": [
+      "팝",
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrew2k1h.jpg",
     "recommendedTracks": [
@@ -12596,6 +14280,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12608,6 +14293,10 @@ const ALBUMS = [
     "year": "2013",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrew21n4.jpg",
     "recommendedTracks": [
       "2. Ruby My Dear (Live From Salle Pleyel, Paris, France / 1969)",
@@ -12631,6 +14320,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12643,7 +14333,9 @@ const ALBUMS = [
     "year": "1994",
     "format": "Vinyl",
     "genre": "팝",
-    "genres": ["팝"],
+    "genres": [
+      "팝"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrew1gtv.jpg",
     "recommendedTracks": [
@@ -12667,6 +14359,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12679,6 +14372,10 @@ const ALBUMS = [
     "year": "1959",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreuc62v.jpg",
     "recommendedTracks": [
       "1. So What",
@@ -12695,6 +14392,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12707,6 +14405,10 @@ const ALBUMS = [
     "year": "1982",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreubgao.jpg",
     "recommendedTracks": [
       "1. California Here I Come (Live At The Village Vanguard / 1967)",
@@ -12737,6 +14439,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12749,6 +14452,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrehbfxj.jpg",
     "recommendedTracks": [
       "6. Redbone"
@@ -12770,6 +14477,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12782,6 +14490,10 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreham6m.jpg",
     "recommendedTracks": [
       "A1 The Ramble"
@@ -12803,6 +14515,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12815,6 +14528,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh9dbl.jpg",
     "recommendedTracks": [
       "A5. Find Your Wings"
@@ -12839,6 +14556,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12851,6 +14569,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh7zoq.jpg",
     "recommendedTracks": [
       "2 Lover Girl"
@@ -12875,6 +14597,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12887,6 +14610,10 @@ const ALBUMS = [
     "year": "2015",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh6724.jpg",
     "recommendedTracks": [
       "A-2 Death & Taxes",
@@ -12907,6 +14634,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12919,6 +14647,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh4jss.jpg",
     "recommendedTracks": [
       "A-2 Cyanide",
@@ -12942,6 +14674,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12954,6 +14687,10 @@ const ALBUMS = [
     "year": "1986",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh40uq.jpg",
     "recommendedTracks": [
       "1. 'Round Midnight",
@@ -12976,6 +14713,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -12988,6 +14726,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh2jsg.jpg",
     "recommendedTracks": [
       "2. Just As Though You Were Here (feat. John Patitucci & Billy Hart)",
@@ -13010,6 +14752,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13022,6 +14765,10 @@ const ALBUMS = [
     "year": "1958",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh1y9s.jpg",
     "recommendedTracks": [
       "2. Waltz",
@@ -13044,6 +14791,7 @@ const ALBUMS = [
     "descriptionEn": "Bassist Scott LaFaro, a name that comes up often in the album notes at Punch-drunk, is best known for his work with the Bill Evans Trio.\nBut of course, that was not where his career began.\nThe first time Scott LaFaro's name appeared on an album was right here, on [The Arrival of Victor Feldman].\nThe young man in blue at the center of the cover is Scott LaFaro.\n\nEven on his first album appearance, LaFaro's impact is enormous.\nHe plays with such force that you almost worry the strings might rip right off, bringing the bass's presence fully to the fore.\nJust 21 at the time, he joined the Bill Evans Trio the year after this album was released and went on to make history.\n\nDespite a career that lasted only about three and a half years, Scott LaFaro never fails to come up in any discussion of the greatest jazz bassists. I hope we can listen together to where this great bassist began.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13056,6 +14804,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreh0ahk.jpg",
     "recommendedTracks": [
       "A1 Be (Intro)",
@@ -13091,6 +14843,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13103,6 +14856,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregzpv0.jpg",
     "recommendedTracks": [
       "2. Rich Girl"
@@ -13122,6 +14879,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13134,6 +14892,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregz5sf.jpg",
     "recommendedTracks": [
       "1. St. Chroma (feat. Daniel Caesar)",
@@ -13161,6 +14923,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13173,6 +14936,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregyk5r.jpg",
     "recommendedTracks": [
       "1. Now And Then"
@@ -13185,6 +14952,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13197,7 +14965,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "알앤비",
-    "genres": ["알앤비", "힙합"],
+    "genres": [
+      "알앤비",
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mregx5pv.jpg",
     "recommendedTracks": [
@@ -13214,6 +14985,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13226,6 +14998,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregw0xd.jpg",
     "recommendedTracks": [
       "2. Have A Baby (With Me)",
@@ -13251,6 +15027,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13263,6 +15040,10 @@ const ALBUMS = [
     "year": "1971",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreguwff.jpg",
     "recommendedTracks": [
       "1. So What"
@@ -13278,6 +15059,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13290,6 +15072,10 @@ const ALBUMS = [
     "year": "2004",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregswjz.jpg",
     "recommendedTracks": [
       "4. We Know (feat. Faith Evans)"
@@ -13313,6 +15099,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13325,6 +15112,10 @@ const ALBUMS = [
     "year": "2002",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregqpff.jpg",
     "recommendedTracks": [
       "1. Sugar"
@@ -13338,6 +15129,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13350,6 +15142,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregp0m3.jpg",
     "recommendedTracks": [
       "4. My Love"
@@ -13368,6 +15164,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13380,6 +15177,10 @@ const ALBUMS = [
     "year": "1968",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregoaq3.jpg",
     "recommendedTracks": [
       "2. Little Madimba (Remastered 2003/Rudy Van Gelder Edition)"
@@ -13396,6 +15197,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13408,6 +15210,10 @@ const ALBUMS = [
     "year": "1988",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregl635.jpg",
     "recommendedTracks": [
       "A2 The Ruler's Back",
@@ -13431,6 +15237,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13443,6 +15250,10 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregk6xn.jpg",
     "recommendedTracks": [
       "1. Kids",
@@ -13463,6 +15274,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13475,7 +15287,9 @@ const ALBUMS = [
     "year": "2017",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록"],
+    "genres": [
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mregjc6a.jpg",
     "recommendedTracks": [
@@ -13503,6 +15317,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13515,7 +15330,9 @@ const ALBUMS = [
     "year": "2018",
     "format": "Vinyl",
     "genre": "록",
-    "genres": ["록"],
+    "genres": [
+      "록"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mreghaug.jpg",
     "recommendedTracks": [
@@ -13535,6 +15352,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13547,6 +15365,10 @@ const ALBUMS = [
     "year": "2016",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregg0ba.jpg",
     "recommendedTracks": [
       "2. untitled 02 l 06.23.2014.",
@@ -13567,6 +15389,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13579,6 +15402,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregez92.jpg",
     "recommendedTracks": [
       "2. Just Friends",
@@ -13603,6 +15430,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13615,6 +15443,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreged3a.jpg",
     "recommendedTracks": [
       "1. Emotions"
@@ -13632,6 +15464,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13644,6 +15477,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregdt98.jpg",
     "recommendedTracks": [
       "1. Opal (feat. John Medeski, Jorge Roeder & Kenny Wollesen)",
@@ -13666,6 +15503,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13678,7 +15516,9 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mregd8y1.jpg",
     "recommendedTracks": [
@@ -13701,6 +15541,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13713,6 +15554,10 @@ const ALBUMS = [
     "year": "1976",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mregb0zv.jpg",
     "recommendedTracks": [
       "5. Sir Duke",
@@ -13747,6 +15592,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13759,6 +15605,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreg97kl.jpg",
     "recommendedTracks": [
       "1 Dope Shit (feat. Maha Adachi Earth)",
@@ -13790,6 +15640,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13802,6 +15653,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefq6k3-1.jpg",
     "recommendedTracks": [
       "1 Us Against the World",
@@ -13827,6 +15682,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13839,6 +15695,10 @@ const ALBUMS = [
     "year": "2000",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefkvvp.jpg",
     "recommendedTracks": [
       "11 Fall In Love",
@@ -13871,6 +15731,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13883,6 +15744,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefk5k1.jpg",
     "recommendedTracks": [
       "2. 5th Floor (10pm)",
@@ -13901,6 +15766,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13913,6 +15779,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefif7s.jpg",
     "recommendedTracks": [
       "1. Tokyo Lift (5am)",
@@ -13933,6 +15803,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13945,6 +15816,10 @@ const ALBUMS = [
     "year": "1992",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefgln9-1.jpg",
     "recommendedTracks": [
       "2. Jump",
@@ -13971,6 +15846,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -13983,6 +15859,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/album-mreffysl.jpg",
     "recommendedTracks": [
       "1. kiss me blue",
@@ -14003,6 +15883,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14015,6 +15896,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefebee.jpg",
     "recommendedTracks": [
       "2. Depth (Live at the Bern Jazz Festival 2000)",
@@ -14031,6 +15916,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14043,6 +15929,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefdd8a.jpg",
     "recommendedTracks": [
       "1. no te vayas",
@@ -14064,6 +15954,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14076,6 +15967,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrefcvui.jpg",
     "recommendedTracks": [
       "1. Ogun",
@@ -14098,6 +15993,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14110,7 +16006,9 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mrees8o0.jpg",
     "recommendedTracks": [
@@ -14133,6 +16031,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14145,7 +16044,9 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합"],
+    "genres": [
+      "힙합"
+    ],
     "country": "한국",
     "coverImage": "covers/album-mreeqsvi.jpg",
     "recommendedTracks": [
@@ -14173,6 +16074,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14185,6 +16087,10 @@ const ALBUMS = [
     "year": "2002",
     "format": "Vinyl",
     "genre": "사운드트랙",
+    "genres": [
+      "사운드트랙"
+    ],
+    "country": "",
     "coverImage": "covers/images-2.jpeg",
     "recommendedTracks": [
       "1. Overture",
@@ -14236,6 +16142,10 @@ const ALBUMS = [
     "year": "1974",
     "format": "Vinyl",
     "genre": "월드/라틴",
+    "genres": [
+      "월드/라틴"
+    ],
+    "country": "",
     "coverImage": "covers/b.jpg",
     "recommendedTracks": [
       "1. Rei Do Carnaval",
@@ -14258,6 +16168,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14270,6 +16181,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/g.jpg",
     "recommendedTracks": [
       "1. hello",
@@ -14292,6 +16207,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14304,6 +16220,10 @@ const ALBUMS = [
     "year": "2024",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/e.jpg",
     "recommendedTracks": [
       "1. Patience",
@@ -14341,6 +16261,7 @@ const ALBUMS = [
     "descriptionEn": "There is an American record label called Numero Group. The label’s main project is reissuing soul and funk records from around the 1970s and ’80s. Its worthwhile Eccentric Soul series, which gathers tracks once released by small independent American labels into label-by-label compilations, has been warmly received by fans. [Eccentric Soul: The Capsoul Label], for example, collects music from Capsoul, the now-defunct legendary label from Columbus, Ohio.\n\nIn 2012, Numero Group undertook a huge project called [Eccentric Soul: Omnibus]. It brought together some ninety tracks they had uncovered through their research but found difficult to shape into individual projects, and released them as a single box set. Made up of no fewer than forty-five 7-inch records, it originally sold for $250 and now changes hands for around $800.\n\nThe album you are looking at now, [Eccentric Soul: Minibus], was made by carefully choosing another twenty-five tracks from [Omnibus]. Most of them came from labels that no longer exist. Thinking that, without a project like this, those of us all the way over in Korea might have gone through life never knowing these songs existed makes every track feel that much more precious. And as with much of the soul and funk from that era, most of it is easy on the ears, whether lively or laid-back. Whichever track you point to and request, you should have a good time with it.\n\nThe owner of Interplay in Daegu happened to hear this album on a business trip to Japan and recommended it to me. I then recommended it to the owner of Goof in Busan, who bought it for me as a gift.\n\nThey say it takes a village to raise a child. Punch-drunk was raised by bar owners from across the Gyeongsang region.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14353,6 +16274,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/s.jpg",
     "recommendedTracks": [
       "2. Chica De Ipanema",
@@ -14375,6 +16300,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14387,6 +16313,10 @@ const ALBUMS = [
     "year": "2025",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/t.jpg",
     "recommendedTracks": [
       "3. Taito City Hideout",
@@ -14415,6 +16345,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14427,7 +16358,10 @@ const ALBUMS = [
     "year": "2019",
     "format": "Vinyl",
     "genre": "힙합",
-    "genres": ["힙합", "알앤비"],
+    "genres": [
+      "힙합",
+      "알앤비"
+    ],
     "country": "한국",
     "coverImage": "covers/c-1.jpg",
     "recommendedTracks": [
@@ -14449,6 +16383,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14461,6 +16396,10 @@ const ALBUMS = [
     "year": "2020",
     "format": "Vinyl",
     "genre": "알앤비",
+    "genres": [
+      "알앤비"
+    ],
+    "country": "",
     "coverImage": "covers/h.jpg",
     "recommendedTracks": [
       "2. alley-oop"
@@ -14477,6 +16416,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14489,6 +16429,10 @@ const ALBUMS = [
     "year": "2023",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrdesidb.jpg",
     "recommendedTracks": [
       "2. How Far",
@@ -14518,6 +16462,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14530,6 +16475,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrdesidb-1.jpg",
     "recommendedTracks": [
       "1. As You Lie There",
@@ -14555,6 +16504,7 @@ const ALBUMS = [
     "descriptionEn": "Like anyone who loves music, the owner went through a Beatlemania phase.\nOn my first trip to Europe, I forced Liverpool into the itinerary and earned plenty of complaints from my mother, who was traveling with me. Even when her worrying kept me from bringing my passport out, leaving me with a Coke instead of a beer at the Cavern Club, where The Beatles began, I was happy.\n\nWhen Paul McCartney’s 2014 concert in Korea was announced, I was just about to enlist. I thought I could see the show and then head off to the army, but it was canceled because of McCartney’s health, and I enlisted in a daze. I remember losing my mind, folding the ticket into a paper airplane, and throwing it away. Looking back, I wish I had kept it.\nThe following year, Paul McCartney announced another concert in Korea, and this one went ahead. But it fell on the exact day my company was assigned to the combined five-minute standby unit, so I could not go. I think it was the next day when I saw a report on the concert on Saengsaeng Jeongbotong and felt more than a little heartbroken.\nFor me, even all the affection I have for every other musician put together probably would not equal what I feel for Paul McCartney alone.\n\nPaul McCartney’s [The Boys of Dungeon Lane] is intensely nostalgic.\nThere is nothing surprising about that from someone who was writing songs like Penny Lane in his early twenties, but I cannot remember another McCartney album built so completely around looking back on his own life.\nAfter my first listen, I actually checked whether there had been any news of his retirement.\n\nEven within The Beatles’ enormous catalog, Paul McCartney wrote nostalgic songs better than anyone, and that gift remains intact now that he is past eighty. I love this album so much that it is the first Paul McCartney solo album I have ever bought.\nHis age is now plainly audible in his voice, but whenever he lets out a shout, there is a sudden flash of the young man from Liverpool—guitar in hand, leaning face-to-face with another singer around a single microphone.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14567,6 +16517,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/m.jpg",
     "recommendedTracks": [
       "1. DUMMY",
@@ -14590,6 +16544,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14602,6 +16557,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/album-mrdesidb-2.jpg",
     "recommendedTracks": [
       "2. HALO",
@@ -14628,6 +16587,7 @@ const ALBUMS = [
     "descriptionEn": "",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14640,6 +16600,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/j.jpg",
     "recommendedTracks": [
       "1. First Song (with. Julian Lage, Asante Santi Debriano & Will Calhoun)",
@@ -14658,6 +16622,7 @@ const ALBUMS = [
     "descriptionEn": "When I heard in 2025 that Joe Lovano and Julian Lage were going on tour as the Paramount Quartet, I went around telling everyone how much I wanted this lineup to make an album. Truthfully, though, I never thought it would actually happen.\n\nJulian Lage had grown into such a major name that it was hard to imagine him joining someone else’s session. More than anything, Joe Lovano was with ECM while Julian Lage was one of Blue Note’s leading artists, which made for an intriguing picture. Even knowing that label contracts in jazz are not especially binding when it comes to session work, I did not get my hopes up.\n\nThen, in 2026, just as the name Paramount Quartet was beginning to fade from memory, ECM released this album.\n\nJoe Lovano, a true master, shows off the breadth of his musical range with some superb playing. Julian Lage clearly cedes the frontman’s spot and plays from the back, yet his distinctive tone makes his personality and color unmistakable.\n\nFor jazz fans, this collaboration is something of a dream. And there is a certain pleasure in seeing Julian Lage’s name on an ECM cover.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14670,6 +16635,10 @@ const ALBUMS = [
     "year": "2026",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/album-1783593276547.jpg",
     "recommendedTracks": [
       "1. Anyone In Love",
@@ -14693,6 +16662,7 @@ const ALBUMS = [
     "descriptionEn": "One day in 2026, the owner heard a track from this album on Instagram. Thrilled to have stumbled onto some great old music, I put on the album.\nIts vintage, funky sound was exactly my taste, and I naturally assumed it must be from sometime in the ’70s, so I looked up the release date.\nBut—ta-da! It hadn’t even been out for two weeks.\n\nSo the owner thought, “Ah! It must be a greatest-hits collection!” A compilation of hits by a musician from back in the day, released two weeks ago.\nBut—ta-da! Jalen Ngonda was born in 1994, the same year as the owner.\n\nThe melodic lines that had me convinced this was an old album are steeped in the sound of that era. But the way the songs cut out things like dance-floor drum breaks, pack their main ideas into tight, compact arrangements, and move straight on to the next track feels very Gen Z.\nBy trimming away the more dated elements, the album is actually lighter and easier to enjoy. It is an approach that only works because every song can stand on its own.\n\nThis album captures the feel of that era so astonishingly well that it instantly became one of my summer-soundtrack records.\nI hope it does something for your summer too.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14705,6 +16675,10 @@ const ALBUMS = [
     "year": "1962",
     "format": "Vinyl",
     "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
     "coverImage": "covers/moon-beams.jpg",
     "recommendedTracks": [
       "1. Re : Person I Knew",
@@ -14725,6 +16699,7 @@ const ALBUMS = [
     "descriptionEn": "From the time of his debut, Bill Evans had gone from strength to strength with scarcely a setback, and was riding high on the New York jazz scene. His albums as a leader were well received, and his appearance on Miles Davis’s [Kind of Blue], often called the greatest album in jazz history, raised his profile further. Around this time, Evans formed a new trio with drummer Paul Motian and bassist Scott LaFaro and released an album. The famous Bill Evans Trio was born. In intervals of no more than two years, and sometimes just a few months, the trio produced masterpieces like [Portrait in Jazz], [Explorations], and [Sunday at the Village Vanguard], albums that jazz fans still embrace with fervor today.\n\nThen, in 1961, as they were building this extraordinary body of work, Scott LaFaro was killed in a car accident.\n\nDevastated, Bill Evans spent several months without performing or recording. Eventually, Orrin Keepnews, the producer who had discovered him, came to see him and persuaded him to return to music.\n\nIn December 1962, a little over a year after that return, the Bill Evans Trio finally released [Moon Beams], its first album with Chuck Israels on bass. Evans had played on several records in the meantime, but this was his first trio album since LaFaro’s death, and the first that had to fill the space he left behind.\n\nThe album opens with an Evans composition, [Re : Person I Knew]. Its title suggests a reply to someone he once knew, and the piece can be heard as a remembrance of Scott LaFaro. At the same time, the title is an anagram of Orrin Keepnews, the producer who discovered Evans and pulled him out of his grief. The first track by a Bill Evans Trio returning from a profound loss carries both a longing for the man who was gone and a tribute to the one who remained at his side.\n\nFor those who know the sorrow that ran through Bill Evans’s life, there is another sadness here: if a man capable of overcoming one loss with such courage and beauty had not suffered so many wounds, perhaps he would not have fallen apart so easily.\n\nFor now, though, I think the greatest blessing we can offer the man who left these songs behind is simply to enjoy their beauty as fully as we can.",
     "weeklyReason": "이번 주에는 바의 조명이 조금 낮아지는 시간에 가장 잘 어울리는 음반으로 골랐습니다. 조용하지만 비어 있지 않고, 첫 잔과 두 번째 잔 사이의 속도를 천천히 맞춰줍니다.",
     "weeklyReasonEn": "This week I chose it as the record that fits best when the lights in the bar get a little lower. It is quiet but not empty, gently setting the pace between the first glass and the second.",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14737,6 +16712,10 @@ const ALBUMS = [
     "year": "1970",
     "format": "Vinyl",
     "genre": "소울/펑크",
+    "genres": [
+      "소울/펑크"
+    ],
+    "country": "",
     "coverImage": "covers/curtis.jpg",
     "recommendedTracks": [
       "3. The Makings of You",
@@ -14756,6 +16735,7 @@ const ALBUMS = [
     "descriptionEn": "A warm soul album that works in the daytime and at night. Good to pull out when you want to lift the room's temperature without making it too quiet.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14768,6 +16748,10 @@ const ALBUMS = [
     "year": "1994",
     "format": "Vinyl",
     "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
     "coverImage": "covers/illmatic.jpg",
     "recommendedTracks": [
       "2. N.Y. State of Mind",
@@ -14796,6 +16780,7 @@ const ALBUMS = [
     "descriptionEn": "Nas, the owner’s favorite rapper, was clearly something special from the very beginning.\n\nIn 1991, a 17-year-old rapper grabbed the mic during a Main Source live performance, and a single verse had all of New York buzzing. When word got out that the young kid who had become New York’s most anticipated rapper on the strength of that famous [Live at the Barbeque] verse alone was starting work on an album, the hip-hop scene lit up.\n\nThere were two reasons for this. The first, of course, was the anticipation surrounding Nas’s ability. The second was the news that not one or two, but five of the era’s finest producers were joining the album of this young, completely untested rapper. DJ Premier, Large Professor, Pete Rock, Q-Tip, and L.E.S.—without exaggeration, the very “best” producers in hip-hop at the time—had all signed on to make an album with this one rookie rapper.\n(Word has it they all volunteered, practically begging to be involved.)\n\nWith expectations that high, meeting them is nearly impossible. But as everyone knows, this twenty-year-old rapper’s debut became one of the albums most often named whenever the greatest album in hip-hop history is discussed, and a legendary record that came to define the boom-bap era.\n\nOne of the first three records the owner ever bought, this great album is recommended in its entirety, intro aside.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   },
   {
@@ -14808,6 +16793,10 @@ const ALBUMS = [
     "year": "1979",
     "format": "Vinyl",
     "genre": "팝",
+    "genres": [
+      "팝"
+    ],
+    "country": "",
     "coverImage": "covers/off-the-wall.jpg",
     "recommendedTracks": [
       "1. Don't Stop 'Til You Get Enough",
@@ -14830,6 +16819,7 @@ const ALBUMS = [
     "descriptionEn": "With his highly controlling father as manager, Michael Jackson had spent his career performing alongside his brothers in the Jackson 5 and the Jacksons. In 1979, he decided to go solo.\n\nIt was not that he had never made a solo album before. But those records had all been made when he was very young, shaped by his father’s decisions and Motown’s direction, so it is hard to hear them as expressions of his own musical vision. Now grown and determined to show what his music could be, Michael Jackson brought in Quincy Jones as producer.\n\nThe first album made together by Quincy Jones and Michael Jackson—a pairing that would later go down as the greatest producer-artist duo in pop music history—is remembered as a flawless record that put the final stamp on the funk and disco of the 1970s.\n\nWith his first solo album, Michael Jackson brought the disco decade to a close, then moved on to an even greater next step.\n\nNearly fifty years later, the opening of Don't Stop 'Til You Get Enough still sets countless hearts racing.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
+    "weeklyHistory": [],
     "isWeekly": false
   }
 ];
