@@ -304,10 +304,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T11:03:37.820Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록",
-      "일렉트로닉"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mu14xaak.jpg",
@@ -352,9 +351,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T11:01:52.323Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mu14v0w2.jpg",
@@ -430,9 +429,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T10:56:11.597Z",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "기타",
+    "genre": "한국음악",
     "genres": [
-      "기타"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mu14npzh.jpg",
@@ -467,10 +466,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T10:54:21.635Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합",
-      "일렉트로닉"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mu14ld4z.jpg",
@@ -646,10 +644,9 @@ const ALBUMS = [
     "addedAt": "2026-08-26T02:05:57.582Z",
     "year": "2017",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합",
-      "소울/펑크"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mt9gcngu.jpg",
@@ -688,10 +685,9 @@ const ALBUMS = [
     "addedAt": "2026-08-26T02:03:52.126Z",
     "year": "2015",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합",
-      "소울/펑크"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mt9g9yny.jpg",
@@ -1126,10 +1122,9 @@ const ALBUMS = [
     "addedAt": "2026-08-05T02:15:37.898Z",
     "year": "2013",
     "format": "CD",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝",
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-msfgg78q.jpg",
@@ -1167,10 +1162,9 @@ const ALBUMS = [
     "addedAt": "2026-08-05T02:15:37.009Z",
     "year": "2008",
     "format": "CD",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝",
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-msfgg6k1.jpg",
@@ -1335,9 +1329,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T04:40:33.985Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms463rup.jpg",
@@ -1687,9 +1681,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T03:57:12.386Z",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/8b5e2269fde9fbdec22f7f96427b37f1.jpg",
@@ -2441,9 +2435,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T01:17:33.995Z",
     "year": "2014",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms3yuppn.jpg",
@@ -2480,9 +2474,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T01:15:03.377Z",
     "year": "2015",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/images-5.jpg",
@@ -2522,9 +2516,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T01:12:18.009Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/cover-1785201200199.jpg",
@@ -2929,10 +2923,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T05:41:46.898Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "알앤비",
+    "genre": "한국음악",
     "genres": [
-      "알앤비",
-      "팝"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms2sun81.jpg",
@@ -3392,11 +3385,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T05:27:51.008Z",
     "year": "1984",
     "format": "Vinyl",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝",
-      "록",
-      "소울/펑크"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms2scq8v.jpg",
@@ -3433,9 +3424,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T05:25:43.322Z",
     "year": "1993",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/r-9959875-1489251659-3887-1.jpg",
@@ -5769,9 +5760,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:24:06.376Z",
     "year": "2006",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/image-1645168255978.jpg",
@@ -5857,9 +5848,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:19:08.758Z",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/20351623-1.jpg",
@@ -6218,9 +6209,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:00:54.841Z",
     "year": "2018",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms2kylvd.jpg",
@@ -6275,10 +6266,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:00:28.267Z",
     "year": "2022",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합",
-      "알앤비"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms2ky1d7.jpg",
@@ -6841,9 +6831,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T01:40:40.600Z",
     "year": "1987",
     "format": "Vinyl",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-ms2k8kyg.jpg",
@@ -8327,9 +8317,9 @@ const ALBUMS = [
     "addedAt": "2026-07-17T01:27:22.050Z",
     "year": "2016",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mro9cy4i.jpg",
@@ -8860,10 +8850,9 @@ const ALBUMS = [
     "addedAt": "2026-07-16T06:21:13.077Z",
     "year": "2022",
     "format": "Vinyl",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝",
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrn4ezn9.jpg",
@@ -9888,9 +9877,9 @@ const ALBUMS = [
     "addedAt": "2026-07-16T05:49:48.545Z",
     "year": "2014",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrn3alj5.jpg",
@@ -9973,9 +9962,9 @@ const ALBUMS = [
     "addedAt": "2026-07-16T05:44:57.313Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrn34ctd.jpg",
@@ -10359,9 +10348,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:47:05.446Z",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrisvjom.jpg",
@@ -10669,9 +10658,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:33:09.310Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrisdmim.jpg",
@@ -11021,10 +11010,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:24:06.257Z",
     "year": "2024",
     "format": "Vinyl",
-    "genre": "알앤비",
+    "genre": "한국음악",
     "genres": [
-      "알앤비",
-      "팝"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mris1zht.jpg",
@@ -11800,9 +11788,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:00:48.209Z",
     "year": "2024",
     "format": "Vinyl",
-    "genre": "재즈",
+    "genre": "한국음악",
     "genres": [
-      "재즈"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrir80r5.jpg",
@@ -12865,10 +12853,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T04:40:23.508Z",
     "year": "2008",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록",
-      "팝"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mriqhrro.jpg",
@@ -13059,9 +13046,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2015",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrex8cph.jpg",
@@ -13094,9 +13081,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2014",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrex6zqk.jpg",
@@ -13815,9 +13802,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrewpnhm.jpg",
@@ -14085,10 +14072,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2009",
     "format": "Vinyl",
-    "genre": "일렉트로닉",
+    "genre": "한국음악",
     "genres": [
-      "일렉트로닉",
-      "팝"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrewg9y6.jpg",
@@ -14251,10 +14237,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2012",
     "format": "Vinyl",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝",
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrew2k1h.jpg",
@@ -14332,9 +14317,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "1994",
     "format": "Vinyl",
-    "genre": "팝",
+    "genre": "한국음악",
     "genres": [
-      "팝"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrew1gtv.jpg",
@@ -14964,10 +14949,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "알앤비",
+    "genre": "한국음악",
     "genres": [
-      "알앤비",
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mregx5pv.jpg",
@@ -15286,9 +15270,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2017",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mregjc6a.jpg",
@@ -15329,9 +15313,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2018",
     "format": "Vinyl",
-    "genre": "록",
+    "genre": "한국음악",
     "genres": [
-      "록"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mreghaug.jpg",
@@ -15515,9 +15499,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2000",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mregd8y1.jpg",
@@ -16005,9 +15989,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mrees8o0.jpg",
@@ -16043,9 +16027,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/album-mreeqsvi.jpg",
@@ -16357,10 +16341,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2019",
     "format": "Vinyl",
-    "genre": "힙합",
+    "genre": "한국음악",
     "genres": [
-      "힙합",
-      "알앤비"
+      "한국음악"
     ],
     "country": "한국",
     "coverImage": "covers/c-1.jpg",

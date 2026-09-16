@@ -726,13 +726,8 @@
   }
 
   function getAlbumGenres(album) {
-    const source = Array.isArray(album?.genres) && album.genres.length
-      ? album.genres
-      : [album?.genre];
-    const genres = source
-      .map(value => isLegacyKoreanGenre(value) ? '기타' : classifyGenre(value))
-      .filter(Boolean);
-    return [...new Set(genres.length ? genres : ['기타'])];
+    const primaryGenre = album?.genre || album?.genres?.[0] || '기타';
+    return [classifyGenre(primaryGenre)];
   }
 
   function getAlbumCountry(album) {
@@ -1768,10 +1763,7 @@
   function matchesAlbumFilters(album, terms, options = {}) {
     const includeFormat = options.includeFormat !== false;
     const includeGenre = options.includeGenre !== false;
-    const matchesGenre = state.genre === GENRE_ALL
-      || (state.genre === '한국음악'
-        ? getAlbumCountry(album) === '한국'
-        : getAlbumGenres(album).includes(state.genre));
+    const matchesGenre = state.genre === GENRE_ALL || getAlbumGenres(album)[0] === state.genre;
     return (!includeFormat || state.format === FORMAT_ALL || album.format === state.format)
       && (!includeGenre || matchesGenre)
       && (!state.recentOnly || isRecentlyAdded(album))
@@ -1791,8 +1783,8 @@
     const terms = getSearchTerms();
     const relevant = albums.filter(album => matchesAlbumFilters(album, terms, { includeGenre: false }));
     const counts = relevant.reduce((map, album) => {
-      getAlbumGenres(album).forEach(genre => map.set(genre, (map.get(genre) || 0) + 1));
-      if (getAlbumCountry(album) === '한국') map.set('한국음악', (map.get('한국음악') || 0) + 1);
+      const genre = getAlbumGenres(album)[0];
+      map.set(genre, (map.get(genre) || 0) + 1);
       return map;
     }, new Map());
     return [
