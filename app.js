@@ -11,6 +11,8 @@
   const ALBUM_VIEWS = new Set(['grid-2', 'grid-3', 'list']);
   const FORMAT_ALL = '전체';
   const GENRE_ALL = '전체 장르';
+  const COUNTRY_ALL = '전체 국가';
+  const COUNTRY_UNKNOWN = '미입력';
   const NEW_ALBUM_DAYS = 14;
   const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
   const REQUEST_TRACKS_STORAGE_KEY = 'pd-request-tracks-v1';
@@ -117,6 +119,7 @@
     query: '',
     format: FORMAT_ALL,
     genre: GENRE_ALL,
+    country: COUNTRY_ALL,
     sort: 'default',
     recentOnly: false,
     filtersExpanded: false,
@@ -159,7 +162,6 @@
     '일렉트로닉',
     '사운드트랙',
     '월드/라틴',
-    '한국음악',
     '기타',
   ];
 
@@ -175,7 +177,6 @@
       '일렉트로닉': '일렉트로닉',
       '사운드트랙': '사운드트랙',
       '월드/라틴': '월드/라틴',
-      '한국음악': '한국음악',
       '기타': '기타',
     },
     en: {
@@ -189,7 +190,6 @@
       '일렉트로닉': 'Electronic',
       '사운드트랙': 'Soundtrack',
       '월드/라틴': 'World/Latin',
-      '한국음악': 'Korean Music',
       '기타': 'Other',
     },
   };
@@ -206,6 +206,13 @@
       details: '음반 자세히 보기 →',
       chooseWeekly: '금주의 음반을 선택하세요',
       weeklyDefaultReason: '이번 주 Punch-drunk의 분위기와 잘 맞는 음반으로 골랐습니다.',
+      weeklyHistory: '지난 선택들',
+      weeklyHistoryTitle: '금주의 음반 선정 이력',
+      weeklyHistoryEmpty: '아직 기록된 선택이 없습니다.',
+      weeklyHistoryClose: '선정 이력 닫기',
+      weeklyHistoryCurrent: '현재',
+      weeklyMotionPlay: '영상 재생',
+      weeklyMotionPause: '영상 정지',
       requestGuideTitle: '신청 안내',
       requestGuideLine1: '신청곡은 받으신 신청 용지에 적어 직원에게 건네주세요.',
       requestGuideLine2: '리스트에 없는 곡은 스트리밍으로 재생됩니다.',
@@ -222,6 +229,7 @@
       sortArtist: '아티스트순',
       sortTitle: '앨범명순',
       randomAlbum: '오늘 뭐 듣지?',
+      randomFilteredAlbum: '이 조건에서 고르기',
       newAlbums: '새로 온 음반',
       resetFilters: '필터 초기화',
       requestListCount: count => `신청곡 메모 ${count}`,
@@ -254,9 +262,9 @@
       goToPage: '이동',
       swipePagePosition: '음반 목록 현재 위치',
       pageStatus: (page, total) => `${page} / ${total} 페이지`,
-      resultSummary: ({ format, genre, total, start, end }) => total
-        ? `${format} / ${genre} · ${total}장 중 ${start}-${end}번째`
-        : `${format} / ${genre} · 0장의 음반`,
+      resultSummary: ({ format, genre, country, total, start, end }) => total
+        ? `${format} / ${genre} / ${country} · ${total}장 중 ${start}-${end}번째`
+        : `${format} / ${genre} / ${country} · 0장의 음반`,
       previousView: '← 이전 화면',
       albumListButton: '음반 목록',
       tracklist: '트랙리스트',
@@ -290,6 +298,13 @@
       details: 'View album →',
       chooseWeekly: 'Choose an album of the week',
       weeklyDefaultReason: 'Selected because it fits the mood of Punch-drunk this week.',
+      weeklyHistory: 'Past picks',
+      weeklyHistoryTitle: 'Album of the Week history',
+      weeklyHistoryEmpty: 'No selections have been recorded yet.',
+      weeklyHistoryClose: 'Close selection history',
+      weeklyHistoryCurrent: 'Current',
+      weeklyMotionPlay: 'Play video',
+      weeklyMotionPause: 'Pause video',
       requestGuideTitle: 'Song requests',
       requestGuideLine1: 'Please write your request on the slip provided and hand it to a member of staff.',
       requestGuideLine2: 'Songs not on the list will be played via streaming.',
@@ -306,6 +321,7 @@
       sortArtist: 'Artist',
       sortTitle: 'Album title',
       randomAlbum: 'Pick for Me',
+      randomFilteredAlbum: 'Pick from These',
       newAlbums: 'New arrivals',
       resetFilters: 'Reset filters',
       requestListCount: count => `Request notes ${count}`,
@@ -338,9 +354,9 @@
       goToPage: 'Go',
       swipePagePosition: 'Current album list position',
       pageStatus: (page, total) => `Page ${page} of ${total}`,
-      resultSummary: ({ format, genre, total, start, end }) => total
-        ? `${format} / ${genre} · ${start}-${end} of ${total} albums`
-        : `${format} / ${genre} · 0 albums`,
+      resultSummary: ({ format, genre, country, total, start, end }) => total
+        ? `${format} / ${genre} / ${country} · ${start}-${end} of ${total} albums`
+        : `${format} / ${genre} / ${country} · 0 albums`,
       previousView: '← Previous',
       albumListButton: 'Album list',
       tracklist: 'Tracklist',
@@ -628,6 +644,17 @@
     return GENRE_LABELS[language]?.[genre] || genre || '';
   }
 
+  function getCountryLabel(country, language = state.language) {
+    const value = String(country || COUNTRY_UNKNOWN).trim() || COUNTRY_UNKNOWN;
+    if (value === COUNTRY_ALL) return language === 'en' ? 'All countries' : COUNTRY_ALL;
+    if (value === COUNTRY_UNKNOWN) return language === 'en' ? 'Country not set' : COUNTRY_UNKNOWN;
+    if (language === 'en' && value === '한국') return 'South Korea';
+    if (language === 'en' && value === '미국') return 'United States';
+    if (language === 'en' && value === '영국') return 'United Kingdom';
+    if (language === 'en' && value === '일본') return 'Japan';
+    return value;
+  }
+
   function applyStaticTranslations(root = document) {
     root.querySelectorAll('[data-i18n]').forEach(element => {
       element.textContent = t(element.dataset.i18n);
@@ -687,7 +714,6 @@
     // Jazz Rap처럼 다른 장르명이 함께 있어도 힙합 하위 장르를 먼저 힙합으로 묶습니다.
     if (/hiphop|hip\/hop|rap|boombap|jazzhop|drill|grime|crunk|gfunk|phonk|turntabl|gangsta|lofihiphop|memphisrap|pluggnb|plugg|붐뱁|트랩|드릴|그라임|갱스터|지펑크|쥐펑크|힙합|랩/.test(genre)) return '힙합';
     if (/jazz|bebop|bop|fusion|swing|ragtime|재즈/.test(genre)) return '재즈';
-    if (/kpop|korean|koreanmusic|koreanpop|가요|케이팝|한국|한국음악/.test(genre)) return '한국음악';
     if (/rband|rnb|randb|rhythmandblues|알앤비/.test(genre)) return '알앤비';
     if (/soul|funk|motown|disco|소울|펑크/.test(genre)) return '소울/펑크';
     if (/alternative|rock|punk|indie|grunge|newwave|metal|hardcore|록|락|얼터너티브|메탈/.test(genre)) return '록';
@@ -695,19 +721,52 @@
     if (/latin|brazil|brasil|bossa|samba|world|afro|reggae|ska|dub|koreantraditional|국악|월드|라틴|브라질/.test(genre)) {
       return '월드/라틴';
     }
-    if (/pop|kpop|jpop|cpop|가요|케이팝|팝/.test(genre)) return '팝';
+    if (/pop|kpop|koreanpop|jpop|cpop|가요|케이팝|팝/.test(genre)) return '팝';
     const exact = STANDARD_GENRES.find(item => normalizeGenreName(item) === genre);
     return exact || '기타';
   }
 
+  function isLegacyKoreanGenre(value) {
+    return /^(한국음악|koreanmusic|korean)$/i.test(String(value || '').trim().replace(/\s+/g, ''));
+  }
+
+  function getAlbumGenres(album) {
+    const source = Array.isArray(album?.genres) && album.genres.length
+      ? album.genres
+      : [album?.genre];
+    const genres = source
+      .map(value => isLegacyKoreanGenre(value) ? '기타' : classifyGenre(value))
+      .filter(Boolean);
+    return [...new Set(genres.length ? genres : ['기타'])];
+  }
+
+  function getAlbumCountry(album) {
+    return String(album?.country || '').trim() || COUNTRY_UNKNOWN;
+  }
+
+  function normalizeWeeklyHistory(history) {
+    if (!Array.isArray(history)) return [];
+    return history.map((entry, index) => ({
+      id: String(entry?.id || `weekly-${index + 1}`).trim(),
+      selectedAt: String(entry?.selectedAt || '').trim(),
+      reason: String(entry?.reason || '').trim(),
+      reasonEn: String(entry?.reasonEn || '').trim(),
+    })).filter(entry => entry.selectedAt);
+  }
+
   albums.forEach(album => {
-    album.genre = classifyGenre(album.genre);
+    const legacyGenre = album.genre;
+    if (!String(album.country || '').trim() && isLegacyKoreanGenre(legacyGenre)) album.country = '한국';
+    album.country = String(album.country || '').trim();
+    album.genres = getAlbumGenres(album);
+    album.genre = album.genres[0];
+    album.weeklyHistory = normalizeWeeklyHistory(album.weeklyHistory);
   });
   function getWeeklyAlbum() {
     return albums.find(album => album.isWeekly === true || album.weekly === true) || null;
   }
 
-  function setupWeeklyMotion(card, album) {
+  function setupWeeklyMotionLegacy(card, album) {
     const video = card?.querySelector('[data-weekly-motion-video]');
     const scrim = card?.querySelector('[data-weekly-motion-scrim]');
     const indicator = card?.querySelector('[data-weekly-motion-indicator]');
@@ -931,6 +990,172 @@
         return true;
       },
     };
+  }
+
+  function setupWeeklyMotion(card, toggle, album) {
+    const video = card?.querySelector('[data-weekly-motion-video]');
+    const scrim = card?.querySelector('[data-weekly-motion-scrim]');
+    const enabled = Boolean(
+      WEEKLY_MOTION_TEST.enabled
+      && album?.id === WEEKLY_MOTION_TEST.albumId
+      && video
+      && scrim
+      && toggle
+    );
+
+    if (!enabled) {
+      if (toggle) toggle.hidden = true;
+      return;
+    }
+
+    video.src = WEEKLY_MOTION_TEST.src;
+    video.poster = WEEKLY_MOTION_TEST.poster;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.hidden = false;
+    scrim.hidden = false;
+    toggle.hidden = false;
+    card.classList.add('has-weekly-motion');
+    card.setAttribute('aria-label', `${album.title || t('weeklyAlbum')}: ${t('details')}`);
+
+    const updateButton = playing => {
+      card.classList.toggle('is-motion-playing', playing);
+      toggle.dataset.playing = String(playing);
+      toggle.setAttribute('aria-pressed', String(playing));
+      const label = playing ? t('weeklyMotionPause') : t('weeklyMotionPlay');
+      toggle.setAttribute('aria-label', label);
+      const labelNode = toggle.querySelector('[data-weekly-motion-label]');
+      if (labelNode) labelNode.textContent = label;
+    };
+
+    toggle.addEventListener('click', async () => {
+      if (!video.paused) {
+        video.pause();
+        updateButton(false);
+        return;
+      }
+      try {
+        video.muted = true;
+        await video.play();
+        updateButton(true);
+      } catch (error) {
+        updateButton(false);
+        console.warn('Weekly motion preview could not start.', error);
+      }
+    });
+    video.addEventListener('pause', () => updateButton(false));
+    video.addEventListener('error', () => updateButton(false));
+    updateButton(false);
+    video.load();
+  }
+
+  function getWeeklyHistoryEntries() {
+    return albums.flatMap(album => (album.weeklyHistory || []).map((entry, index) => ({
+      album,
+      entry,
+      index,
+    }))).sort((a, b) => {
+      const dateOrder = String(b.entry.selectedAt).localeCompare(String(a.entry.selectedAt));
+      if (dateOrder) return dateOrder;
+      return String(b.entry.id).localeCompare(String(a.entry.id));
+    });
+  }
+
+  function formatWeeklyHistoryDate(value) {
+    const date = new Date(`${String(value || '').slice(0, 10)}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return String(value || '');
+    return new Intl.DateTimeFormat(state.language === 'en' ? 'en-US' : 'ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(date);
+  }
+
+  function openWeeklyHistory(trigger) {
+    document.querySelector('.weekly-history-overlay')?.remove();
+    const entries = getWeeklyHistoryEntries();
+    const overlay = document.createElement('div');
+    overlay.className = 'weekly-history-overlay';
+    overlay.setAttribute('role', 'presentation');
+    const panel = document.createElement('section');
+    panel.className = 'weekly-history-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-labelledby', 'weekly-history-title');
+
+    const head = document.createElement('header');
+    const title = document.createElement('h2');
+    title.id = 'weekly-history-title';
+    title.textContent = t('weeklyHistoryTitle');
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'weekly-history-close';
+    close.textContent = '×';
+    close.setAttribute('aria-label', t('weeklyHistoryClose'));
+    head.append(title, close);
+
+    const list = document.createElement('div');
+    list.className = 'weekly-history-list';
+    if (!entries.length) {
+      const empty = document.createElement('p');
+      empty.className = 'weekly-history-empty';
+      empty.textContent = t('weeklyHistoryEmpty');
+      list.append(empty);
+    } else {
+      const current = getWeeklyAlbum();
+      entries.forEach((item, itemIndex) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'weekly-history-item';
+        const cover = createCover(item.album, 'weekly-history-cover');
+        const copy = document.createElement('span');
+        copy.className = 'weekly-history-copy';
+        const date = document.createElement('span');
+        date.className = 'weekly-history-date';
+        date.textContent = formatWeeklyHistoryDate(item.entry.selectedAt);
+        if (itemIndex === 0 && current?.id === item.album.id) {
+          const currentBadge = document.createElement('b');
+          currentBadge.textContent = t('weeklyHistoryCurrent');
+          date.append(' · ', currentBadge);
+        }
+        const albumTitle = document.createElement('strong');
+        albumTitle.textContent = item.album.title || '';
+        const artist = document.createElement('span');
+        artist.textContent = getLocalizedArtist(item.album) || '';
+        const reason = document.createElement('p');
+        reason.textContent = String(state.language === 'en' ? item.entry.reasonEn : item.entry.reason).trim()
+          || getLocalizedWeeklyReason(item.album);
+        copy.append(date, albumTitle, artist, reason);
+        button.append(cover, copy);
+        button.addEventListener('click', () => {
+          closeOverlay(false);
+          openAlbum(item.album.id, { transitionSource: cover.querySelector('.cover-frame') });
+        });
+        list.append(button);
+      });
+    }
+
+    const closeOverlay = (restoreFocus = true) => {
+      overlay.remove();
+      document.body.classList.remove('weekly-history-open');
+      if (restoreFocus && trigger?.isConnected) trigger.focus({ preventScroll: true });
+    };
+    close.addEventListener('click', () => closeOverlay());
+    overlay.addEventListener('click', event => {
+      if (event.target === overlay) closeOverlay();
+    });
+    overlay.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeOverlay();
+    });
+    panel.append(head, list);
+    overlay.append(panel);
+    document.body.append(overlay);
+    document.body.classList.add('weekly-history-open');
+    close.focus({ preventScroll: true });
   }
 
   function formatLabel(format, language = state.language) {
@@ -1545,26 +1770,59 @@
     return !terms.length || getAlbumSearchGroups(album).some(value => matchesSearch(value, terms));
   }
 
-  function matchesAlbumFilters(album, terms, includeGenre = true) {
-    return (state.format === FORMAT_ALL || album.format === state.format)
-      && (!includeGenre || state.genre === GENRE_ALL || classifyGenre(album.genre) === state.genre)
+  function matchesAlbumFilters(album, terms, options = {}) {
+    const includeFormat = options.includeFormat !== false;
+    const includeGenre = options.includeGenre !== false;
+    const includeCountry = options.includeCountry !== false;
+    return (!includeFormat || state.format === FORMAT_ALL || album.format === state.format)
+      && (!includeGenre || state.genre === GENRE_ALL || getAlbumGenres(album).includes(state.genre))
+      && (!includeCountry || state.country === COUNTRY_ALL || getAlbumCountry(album) === state.country)
       && (!state.recentOnly || isRecentlyAdded(album))
       && albumMatchesSearch(album, terms);
   }
 
-  function getGenresForCurrentFormat() {
+  function getFormatFilterCounts() {
     const terms = getSearchTerms();
-    // 장르 개수는 검색·포맷·최근 추가 조건을 반영하며, 다른 장르로도 이동할 수 있게 합니다.
-    const relevant = albums.filter(album => matchesAlbumFilters(album, terms, false));
+    const relevant = albums.filter(album => matchesAlbumFilters(album, terms, { includeFormat: false }));
+    return [FORMAT_ALL, 'Vinyl', 'CD'].map(name => ({
+      name,
+      count: name === FORMAT_ALL ? relevant.length : relevant.filter(album => album.format === name).length,
+    }));
+  }
+
+  function getGenreFilterCounts() {
+    const terms = getSearchTerms();
+    const relevant = albums.filter(album => matchesAlbumFilters(album, terms, { includeGenre: false }));
     const counts = relevant.reduce((map, album) => {
-      const genre = classifyGenre(album.genre);
-      if (genre) map.set(genre, (map.get(genre) || 0) + 1);
+      getAlbumGenres(album).forEach(genre => map.set(genre, (map.get(genre) || 0) + 1));
       return map;
     }, new Map());
     return [
       { name: GENRE_ALL, count: relevant.length },
       ...STANDARD_GENRES.filter(name => counts.has(name) || name === state.genre)
         .map(name => ({ name, count: counts.get(name) || 0 })),
+    ];
+  }
+
+  function getCountryFilterCounts() {
+    const terms = getSearchTerms();
+    const relevant = albums.filter(album => matchesAlbumFilters(album, terms, { includeCountry: false }));
+    const counts = relevant.reduce((map, album) => {
+      const country = getAlbumCountry(album);
+      map.set(country, (map.get(country) || 0) + 1);
+      return map;
+    }, new Map());
+    const countries = [...counts.keys()].sort((a, b) => {
+      if (a === COUNTRY_UNKNOWN) return 1;
+      if (b === COUNTRY_UNKNOWN) return -1;
+      if (a === '한국') return -1;
+      if (b === '한국') return 1;
+      return a.localeCompare(b, state.language === 'en' ? 'en' : 'ko');
+    });
+    if (state.country !== COUNTRY_ALL && !countries.includes(state.country)) countries.push(state.country);
+    return [
+      { name: COUNTRY_ALL, count: relevant.length },
+      ...countries.map(name => ({ name, count: counts.get(name) || 0 })),
     ];
   }
   function getFilteredAlbums() {
@@ -2441,8 +2699,17 @@
 
   function updateRandomAlbumButtons(root = app) {
     const empty = getFilteredAlbums().length === 0;
+    const filteredChoice = Boolean(
+      state.query.trim()
+      || state.format !== FORMAT_ALL
+      || state.genre !== GENRE_ALL
+      || state.country !== COUNTRY_ALL
+      || state.recentOnly
+    );
     root.querySelectorAll('[data-random-album]').forEach(button => {
       button.disabled = empty;
+      button.textContent = t(filteredChoice ? 'randomFilteredAlbum' : 'randomAlbum');
+      button.setAttribute('aria-label', button.textContent);
     });
   }
 
@@ -2462,7 +2729,8 @@
   function getFilterToggleSummary() {
     const formatText = state.format === FORMAT_ALL ? t('all') : formatLabel(state.format);
     const genreText = getGenreLabel(state.genre);
-    const parts = [formatText, genreText];
+    const countryText = getCountryLabel(state.country);
+    const parts = [formatText, genreText, countryText];
     if (state.recentOnly) parts.unshift(t('newAlbums'));
 
     const sortKeyByValue = {
@@ -2647,21 +2915,31 @@
     applyStaticTranslations(node);
     const weekly = getWeeklyAlbum();
     const weeklyButton = node.querySelector('[data-weekly-open]');
+    const weeklyMotionToggle = node.querySelector('[data-weekly-motion-toggle]');
+    const weeklyHistoryButton = node.querySelector('[data-weekly-history]');
+    const weeklyHistoryCount = node.querySelector('[data-weekly-history-count]');
+    const weeklyHistoryEntries = getWeeklyHistoryEntries();
+
+    if (weeklyHistoryButton) {
+      weeklyHistoryButton.hidden = weeklyHistoryEntries.length === 0;
+      weeklyHistoryButton.addEventListener('click', () => openWeeklyHistory(weeklyHistoryButton));
+    }
+    if (weeklyHistoryCount) weeklyHistoryCount.textContent = String(weeklyHistoryEntries.length);
 
     if (weekly) {
       const weeklyCover = createCover(weekly, 'weekly-cover-art', { priority: true });
       node.querySelector('[data-weekly-cover]').append(weeklyCover);
-      node.querySelector('[data-weekly-format]').textContent = [formatLabel(weekly.format), getGenreLabel(classifyGenre(weekly.genre))].filter(Boolean).join(' · ');
+      node.querySelector('[data-weekly-format]').textContent = [
+        formatLabel(weekly.format),
+        getAlbumGenres(weekly).map(genre => getGenreLabel(genre)).join(' · '),
+        getAlbumCountry(weekly) === COUNTRY_UNKNOWN ? '' : getCountryLabel(getAlbumCountry(weekly)),
+      ].filter(Boolean).join(' · ');
       node.querySelector('[data-weekly-title]').textContent = weekly.title || t('chooseWeekly');
       node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
       node.querySelector('[data-weekly-year]').textContent = weekly.year ? t('released')(weekly.year) : '';
       node.querySelector('[data-weekly-reason]').textContent = getLocalizedWeeklyReason(weekly);
-      const weeklyMotion = setupWeeklyMotion(weeklyButton, weekly);
-      weeklyButton.addEventListener('click', event => {
-        if (weeklyMotion.shouldSuppressClick()) {
-          event.preventDefault();
-          return;
-        }
+      setupWeeklyMotion(weeklyButton, weeklyMotionToggle, weekly);
+      weeklyButton.addEventListener('click', () => {
         openAlbum(weekly.id, {
           transitionSource: weeklyButton.querySelector('.cover-frame'),
         });
@@ -2669,6 +2947,7 @@
       weeklyButton.addEventListener('pointerdown', () => preloadTransitionCover(weekly, weeklyCover.querySelector('img')?.currentSrc), { passive: true });
       weeklyButton.addEventListener('focus', () => preloadTransitionCover(weekly, weeklyCover.querySelector('img')?.currentSrc));
     } else {
+      if (weeklyMotionToggle) weeklyMotionToggle.hidden = true;
       weeklyButton.disabled = true;
       weeklyButton.classList.add('is-empty');
       node.querySelector('[data-weekly-cover]').append(createFallbackCover({ artist: 'PUNCH-DRUNK', title: t('chooseWeekly') }, 'weekly-cover-art'));
@@ -2692,7 +2971,7 @@
     updateSearchClearButton();
     searchInput.addEventListener('input', event => {
       state.query = event.target.value;
-      renderGenreFilters(app.querySelector('[data-genre-filters]'));
+      renderAllFilterControls(app);
       resetAlbumPage();
       updateAlbumGrid();
       updateSearchClearButton();
@@ -2700,7 +2979,7 @@
     searchClearButton.addEventListener('click', () => {
       state.query = '';
       searchInput.value = '';
-      renderGenreFilters(app.querySelector('[data-genre-filters]'));
+      renderAllFilterControls(app);
       resetAlbumPage();
       updateAlbumGrid();
       updateSearchClearButton();
@@ -2727,7 +3006,6 @@
     newAlbumsButton.setAttribute('aria-pressed', String(state.recentOnly));
     newAlbumsButton.addEventListener('click', () => {
       state.recentOnly = !state.recentOnly;
-      state.genre = GENRE_ALL;
       resetAlbumPage();
       renderHome();
     });
@@ -2736,6 +3014,7 @@
       state.query = '';
       state.format = FORMAT_ALL;
       state.genre = GENRE_ALL;
+      state.country = COUNTRY_ALL;
       state.sort = 'default';
       state.recentOnly = false;
       state.filtersExpanded = false;
@@ -2749,8 +3028,7 @@
       requestListButton.addEventListener('click', openRequestTrackList);
     }
 
-    renderFormatFilters(node.querySelector('[data-format-filters]'));
-    renderGenreFilters(node.querySelector('[data-genre-filters]'));
+    renderAllFilterControls(node);
     updateFilterPanel(node);
     setupAlbumSwipe(node.querySelector('[data-grid-section]'));
     if (ensurePersistentViewLayers()) {
@@ -2793,25 +3071,28 @@
   }
 
   function renderFormatFilters(container) {
-    const formats = [FORMAT_ALL, 'Vinyl', 'CD'];
-    container.replaceChildren(...formats.map(format => {
+    if (!container) return;
+    const formats = getFormatFilterCounts();
+    container.replaceChildren(...formats.map(item => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'filter-chip';
-      button.textContent = format === FORMAT_ALL ? t('all') : formatLabel(format);
-      button.dataset.active = String(state.format === format);
+      button.textContent = `${item.name === FORMAT_ALL ? t('all') : formatLabel(item.name)} ${item.count}`;
+      button.dataset.active = String(state.format === item.name);
       button.addEventListener('click', () => {
-        state.format = format;
-        state.genre = GENRE_ALL;
+        state.format = item.name;
         resetAlbumPage();
-        renderHome();
+        renderAllFilterControls();
+        updateAlbumGrid();
+        updateFilterPanel(app);
       });
       return button;
     }));
   }
 
   function renderGenreFilters(container) {
-    const genres = getGenresForCurrentFormat();
+    if (!container) return;
+    const genres = getGenreFilterCounts();
     container.replaceChildren(...genres.map(genre => {
       const button = document.createElement('button');
       button.type = 'button';
@@ -2821,23 +3102,54 @@
       button.addEventListener('click', () => {
         state.genre = genre.name;
         resetAlbumPage();
+        renderAllFilterControls();
         updateAlbumGrid();
         updateFilterPanel(app);
-        container.querySelectorAll('.filter-chip').forEach(chip => chip.dataset.active = 'false');
-        button.dataset.active = 'true';
       });
       return button;
     }));
 
-    const scrollShell = container.closest('[data-genre-scroll-shell]');
+    setupFilterScrollHints(container, '[data-genre-scroll-shell]', '_genreScrollHandler');
+  }
+
+  function renderCountryFilters(container) {
+    if (!container) return;
+    const countries = getCountryFilterCounts();
+    container.replaceChildren(...countries.map(country => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'filter-chip country-chip';
+      button.textContent = `${getCountryLabel(country.name)} ${country.count}`;
+      button.dataset.active = String(state.country === country.name);
+      button.addEventListener('click', () => {
+        state.country = country.name;
+        resetAlbumPage();
+        renderAllFilterControls();
+        updateAlbumGrid();
+        updateFilterPanel(app);
+      });
+      return button;
+    }));
+
+    setupFilterScrollHints(container, '[data-country-scroll-shell]', '_countryScrollHandler');
+  }
+
+  function renderAllFilterControls(root = app) {
+    renderFormatFilters(root.querySelector('[data-format-filters]'));
+    renderGenreFilters(root.querySelector('[data-genre-filters]'));
+    renderCountryFilters(root.querySelector('[data-country-filters]'));
+  }
+
+  function setupFilterScrollHints(container, shellSelector, handlerKey) {
+    const scrollShell = container.closest(shellSelector);
     const updateScrollHints = () => {
       if (!scrollShell) return;
       const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
       scrollShell.classList.toggle('can-scroll-left', container.scrollLeft > 3);
       scrollShell.classList.toggle('can-scroll-right', maxScroll - container.scrollLeft > 3);
     };
-    if (container._genreScrollHandler) container.removeEventListener('scroll', container._genreScrollHandler);
-    container._genreScrollHandler = updateScrollHints;
+    if (container[handlerKey]) container.removeEventListener('scroll', container[handlerKey]);
+    container[handlerKey] = updateScrollHints;
     container.addEventListener('scroll', updateScrollHints, { passive: true });
     requestAnimationFrame(updateScrollHints);
   }
@@ -3028,7 +3340,12 @@
     meta.innerHTML = `<strong class="album-card-artist">${escapeHtml(getLocalizedArtist(album) || '')}</strong><em class="album-card-title">${escapeHtml(album.title || '')}</em>`;
     const facts = document.createElement('span');
     facts.className = 'album-card-facts';
-    [getGenreLabel(classifyGenre(album.genre)), String(album.year || '').trim(), formatLabel(album.format)]
+    [
+      getAlbumGenres(album).map(genre => getGenreLabel(genre)).join(', '),
+      getAlbumCountry(album) === COUNTRY_UNKNOWN ? '' : getCountryLabel(getAlbumCountry(album)),
+      String(album.year || '').trim(),
+      formatLabel(album.format),
+    ]
       .filter(Boolean).forEach(value => {
         const fact = document.createElement('span');
         fact.textContent = value;
@@ -3557,9 +3874,11 @@
     if (state.recentOnly) summaryPrefixes.push(t('newAlbums'));
     const formatText = [...summaryPrefixes, baseFormatText].join(' · ');
     const genreText = getGenreLabel(state.genre);
+    const countryText = getCountryLabel(state.country);
     summary.textContent = t('resultSummary')({
       format: formatText,
       genre: genreText,
+      country: countryText,
       total: filtered.length,
       start: shownStart,
       end: shownEnd,
@@ -3703,7 +4022,12 @@
     node.querySelector('[data-detail-title]').textContent = album.title || '';
     node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
 
-    const tags = [formatLabel(album.format), getGenreLabel(classifyGenre(album.genre)), album.year].filter(Boolean);
+    const tags = [
+      formatLabel(album.format),
+      ...getAlbumGenres(album).map(genre => getGenreLabel(genre)),
+      getAlbumCountry(album) === COUNTRY_UNKNOWN ? '' : getCountryLabel(getAlbumCountry(album)),
+      album.year,
+    ].filter(Boolean);
     node.querySelector('[data-detail-tags]').replaceChildren(...tags.map(tag => {
       const span = document.createElement('span');
       span.className = 'pill';

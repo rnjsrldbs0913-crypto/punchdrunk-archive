@@ -269,7 +269,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T11:03:37.820Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록", "일렉트로닉"],
+    "country": "한국",
     "coverImage": "covers/album-mu14xaak.jpg",
     "recommendedTracks": [
       "B3. NO PAIN",
@@ -311,7 +313,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T11:01:52.323Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mu14v0w2.jpg",
     "recommendedTracks": [
       "2. HOWMUCH?",
@@ -379,7 +383,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T10:56:11.597Z",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "기타",
+    "genres": ["기타"],
+    "country": "한국",
     "coverImage": "covers/album-mu14npzh.jpg",
     "recommendedTracks": [
       "A5. 미친 건가 (Re-Make)"
@@ -411,7 +417,9 @@ const ALBUMS = [
     "addedAt": "2026-09-14T10:54:21.635Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합", "일렉트로닉"],
+    "country": "한국",
     "coverImage": "covers/album-mu14ld4z.jpg",
     "recommendedTracks": [
       "1. 홍대래퍼 (feat. Leellamarz)"
@@ -564,7 +572,9 @@ const ALBUMS = [
     "addedAt": "2026-08-26T02:05:57.582Z",
     "year": "2017",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합", "소울/펑크"],
+    "country": "한국",
     "coverImage": "covers/album-mt9gcngu.jpg",
     "recommendedTracks": [
       "A1. AFTER SUMMER DAY X YUN SEOK CHEOL & JEONG YOO JONG",
@@ -600,7 +610,9 @@ const ALBUMS = [
     "addedAt": "2026-08-26T02:03:52.126Z",
     "year": "2015",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합", "소울/펑크"],
+    "country": "한국",
     "coverImage": "covers/album-mt9g9yny.jpg",
     "recommendedTracks": [
       "A3. I GET LIFTED X BEENZINO",
@@ -982,7 +994,9 @@ const ALBUMS = [
     "addedAt": "2026-08-05T02:15:37.898Z",
     "year": "2013",
     "format": "CD",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝", "록"],
+    "country": "한국",
     "coverImage": "covers/album-msfgg78q.jpg",
     "recommendedTracks": [
       "1. 나의 쓸모",
@@ -1017,7 +1031,9 @@ const ALBUMS = [
     "addedAt": "2026-08-05T02:15:37.009Z",
     "year": "2008",
     "format": "CD",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝", "록"],
+    "country": "한국",
     "coverImage": "covers/album-msfgg6k1.jpg",
     "recommendedTracks": [
       "3. 에구구구",
@@ -1164,7 +1180,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T04:40:33.985Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-ms463rup.jpg",
     "recommendedTracks": [
       "A2. Jumper",
@@ -1476,7 +1494,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T03:57:12.386Z",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/8b5e2269fde9fbdec22f7f96427b37f1.jpg",
     "recommendedTracks": [
       "A1. INTRO",
@@ -2130,7 +2150,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T01:17:33.995Z",
     "year": "2014",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-ms3yuppn.jpg",
     "recommendedTracks": [
       "A1. 안산 느와르"
@@ -2164,7 +2186,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T01:15:03.377Z",
     "year": "2015",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/images-5.jpg",
     "recommendedTracks": [
       "A1. Bentley",
@@ -2201,7 +2225,9 @@ const ALBUMS = [
     "addedAt": "2026-07-28T01:12:18.009Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/cover-1785201200199.jpg",
     "recommendedTracks": [
       "A5. CYBERTRUCK BEASTMODE",
@@ -2558,7 +2584,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T05:41:46.898Z",
     "year": "2026",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "알앤비",
+    "genres": ["알앤비", "팝"],
+    "country": "한국",
     "coverImage": "covers/album-ms2sun81.jpg",
     "recommendedTracks": [
       "1. BAD",
@@ -2965,7 +2993,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T05:27:51.008Z",
     "year": "1984",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝", "록", "소울/펑크"],
+    "country": "한국",
     "coverImage": "covers/album-ms2scq8v.jpg",
     "recommendedTracks": [
       "1. 사랑했어요",
@@ -2999,7 +3029,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T05:25:43.322Z",
     "year": "1993",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록"],
+    "country": "한국",
     "coverImage": "covers/r-9959875-1489251659-3887-1.jpg",
     "recommendedTracks": [
       "1. 소나기",
@@ -5060,7 +5092,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:24:06.376Z",
     "year": "2006",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/image-1645168255978.jpg",
     "recommendedTracks": [
       "B2. 지켜볼게",
@@ -5138,7 +5172,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:19:08.758Z",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/20351623-1.jpg",
     "recommendedTracks": [
       "A1. BENTLEY 1.5",
@@ -5454,7 +5490,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:00:54.841Z",
     "year": "2018",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-ms2kylvd.jpg",
     "recommendedTracks": [
       "A3. Switch",
@@ -5506,7 +5544,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T02:00:28.267Z",
     "year": "2022",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합", "알앤비"],
+    "country": "한국",
     "coverImage": "covers/album-ms2ky1d7.jpg",
     "recommendedTracks": [
       "1. Holy",
@@ -6006,7 +6046,9 @@ const ALBUMS = [
     "addedAt": "2026-07-27T01:40:40.600Z",
     "year": "1987",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝"],
+    "country": "한국",
     "coverImage": "covers/album-ms2k8kyg.jpg",
     "recommendedTracks": [
       "2. 그대 내 품에",
@@ -7307,7 +7349,9 @@ const ALBUMS = [
     "addedAt": "2026-07-17T01:27:22.050Z",
     "year": "2016",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mro9cy4i.jpg",
     "recommendedTracks": [
       "A4. mmm",
@@ -7775,7 +7819,9 @@ const ALBUMS = [
     "addedAt": "2026-07-16T06:21:13.077Z",
     "year": "2022",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝", "록"],
+    "country": "한국",
     "coverImage": "covers/album-mrn4ezn9.jpg",
     "recommendedTracks": [
       "1. Tommy",
@@ -8672,7 +8718,9 @@ const ALBUMS = [
     "addedAt": "2026-07-16T05:49:48.545Z",
     "year": "2014",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mrn3alj5.jpg",
     "recommendedTracks": [
       "A3. 더",
@@ -8747,7 +8795,9 @@ const ALBUMS = [
     "addedAt": "2026-07-16T05:44:57.313Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mrn34ctd.jpg",
     "recommendedTracks": [
       "A3. HONDA !",
@@ -9088,7 +9138,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:47:05.446Z",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mrisvjom.jpg",
     "recommendedTracks": [
       "A2. 꽃 (flower)",
@@ -9363,7 +9415,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:33:09.310Z",
     "year": "2023",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mrisdmim.jpg",
     "recommendedTracks": [
       "A1. No Boss",
@@ -9675,7 +9729,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:24:06.257Z",
     "year": "2024",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "알앤비",
+    "genres": ["알앤비", "팝"],
+    "country": "한국",
     "coverImage": "covers/album-mris1zht.jpg",
     "recommendedTracks": [
       "1. BLUFF",
@@ -10358,7 +10414,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T05:00:48.209Z",
     "year": "2024",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "재즈",
+    "genres": ["재즈"],
+    "country": "한국",
     "coverImage": "covers/album-mrir80r5.jpg",
     "recommendedTracks": [
       "1. Sonny Never Gets Blue (feat. Park Ki Hun, Samsu Lee & Q the Trumpet)",
@@ -11293,7 +11351,9 @@ const ALBUMS = [
     "addedAt": "2026-07-13T04:40:23.508Z",
     "year": "2008",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록", "팝"],
+    "country": "한국",
     "coverImage": "covers/album-mriqhrro.jpg",
     "recommendedTracks": [
       "1. 좋아해줘",
@@ -11461,7 +11521,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2015",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록"],
+    "country": "한국",
     "coverImage": "covers/album-mrex8cph.jpg",
     "recommendedTracks": [
       "2. 와리가리",
@@ -11491,7 +11553,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2014",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록"],
+    "country": "한국",
     "coverImage": "covers/album-mrex6zqk.jpg",
     "recommendedTracks": [
       "3. Ohio",
@@ -12122,7 +12186,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mrewpnhm.jpg",
     "recommendedTracks": [
       "A4. IE러니",
@@ -12357,7 +12423,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2009",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "일렉트로닉",
+    "genres": ["일렉트로닉", "팝"],
+    "country": "한국",
     "coverImage": "covers/album-mrewg9y6.jpg",
     "recommendedTracks": [
       "1. 초콜릿 트러플",
@@ -12502,7 +12570,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2012",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝", "록"],
+    "country": "한국",
     "coverImage": "covers/album-mrew2k1h.jpg",
     "recommendedTracks": [
       "6. 소나기",
@@ -12572,7 +12642,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "1994",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "팝",
+    "genres": ["팝"],
+    "country": "한국",
     "coverImage": "covers/album-mrew1gtv.jpg",
     "recommendedTracks": [
       "2. 사랑을 할꺼야",
@@ -13124,7 +13196,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "알앤비",
+    "genres": ["알앤비", "힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mregx5pv.jpg",
     "recommendedTracks": [
       "1. LOVE ME"
@@ -13400,7 +13474,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2017",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록"],
+    "country": "한국",
     "coverImage": "covers/album-mregjc6a.jpg",
     "recommendedTracks": [
       "2. Tokyo Inn",
@@ -13438,7 +13514,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2018",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "록",
+    "genres": ["록"],
+    "country": "한국",
     "coverImage": "covers/album-mreghaug.jpg",
     "recommendedTracks": [
       "3 LOVE YA!",
@@ -13599,7 +13677,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2000",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mregd8y1.jpg",
     "recommendedTracks": [
       "4. Candy Funk"
@@ -14029,7 +14109,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2020",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mrees8o0.jpg",
     "recommendedTracks": [
       "1. Alibi",
@@ -14062,7 +14144,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2025",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합"],
+    "country": "한국",
     "coverImage": "covers/album-mreeqsvi.jpg",
     "recommendedTracks": [
       "1. YAHO",
@@ -14132,6 +14216,14 @@ const ALBUMS = [
     "descriptionEn": "This is the soundtrack to Punch-Drunk Love, the film that inspired the bar. It is one of Jon Brion's finest works, giving real lift to Paul Thomas Anderson as he experimented with a shift in style in his early period.",
     "weeklyReason": "테스트니까 히히",
     "weeklyReasonEn": "Just a test, hehe.",
+    "weeklyHistory": [
+      {
+        "id": "weekly-2026-09-15-initial",
+        "selectedAt": "2026-09-15",
+        "reason": "테스트니까 히히",
+        "reasonEn": "Just a test, hehe."
+      }
+    ],
     "isWeekly": true
   },
   {
@@ -14334,7 +14426,9 @@ const ALBUMS = [
     "addedAt": "",
     "year": "2019",
     "format": "Vinyl",
-    "genre": "한국음악",
+    "genre": "힙합",
+    "genres": ["힙합", "알앤비"],
+    "country": "한국",
     "coverImage": "covers/c-1.jpg",
     "recommendedTracks": [
       "2. Can I Love ? (feat. 유라 & Meego)",

@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="logo-punchdrunk-circle.png" />
   <script src="customer-config.js?v=20260827154000"></script>
   <script src="customer-theme.js?v=20260818150000"></script>
-  <link rel="stylesheet" href="styles.css?v=20260818143000" />
+  <link rel="stylesheet" href="styles.css?v=2026091601" />
   <link rel="stylesheet" href="customer-polish.css?v=20260818143000" />
   <link rel="stylesheet" href="customer-modern.css?v=20260827154000" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
@@ -79,38 +79,49 @@
         <div id="panel-weekly" class="home-section-panel is-active" role="tabpanel" aria-labelledby="tab-weekly" data-home-panel="weekly" tabindex="0">
           <section class="weekly-section" aria-label="금주의 음반" data-i18n-aria="weeklyAlbum">
             <div class="section-heading">
-              <p class="section-kicker" data-i18n="weeklyAlbum">금주의 음반</p>
-              <p class="section-note" data-i18n="weeklyNote">이번 주 가장 먼저 들어볼 음반</p>
-            </div>
-            <button class="weekly-card" type="button" data-weekly-open>
-              <video
-                class="weekly-motion-video"
-                data-weekly-motion-video
-                muted
-                loop
-                playsinline
-                webkit-playsinline
-                preload="auto"
-                aria-hidden="true"
-                hidden
-              ></video>
-              <span class="weekly-motion-scrim" data-weekly-motion-scrim aria-hidden="true" hidden></span>
-              <div class="weekly-cover" data-weekly-cover></div>
-              <div class="weekly-meta">
-                <div class="weekly-info">
-                  <span class="pill" data-weekly-format></span>
-                  <h1 data-weekly-title></h1>
-                  <p data-weekly-artist></p>
-                  <p class="weekly-year" data-weekly-year></p>
-                </div>
-                <div class="weekly-reason">
-                  <span data-i18n="selectionReason">선정 이유</span>
-                  <p data-weekly-reason></p>
-                </div>
-                <span class="weekly-cta" data-i18n="details">자세히 보기</span>
+              <div>
+                <p class="section-kicker" data-i18n="weeklyAlbum">금주의 음반</p>
+                <p class="section-note" data-i18n="weeklyNote">이번 주 가장 먼저 들어볼 음반</p>
               </div>
-              <span class="weekly-motion-indicator" data-weekly-motion-indicator aria-hidden="true" hidden></span>
-            </button>
+              <button class="weekly-history-button" type="button" data-weekly-history hidden>
+                <span data-i18n="weeklyHistory">지난 선택들</span>
+                <b data-weekly-history-count>0</b>
+              </button>
+            </div>
+            <div class="weekly-card-shell">
+              <button class="weekly-card" type="button" data-weekly-open>
+                <video
+                  class="weekly-motion-video"
+                  data-weekly-motion-video
+                  muted
+                  loop
+                  playsinline
+                  webkit-playsinline
+                  preload="auto"
+                  aria-hidden="true"
+                  hidden
+                ></video>
+                <span class="weekly-motion-scrim" data-weekly-motion-scrim aria-hidden="true" hidden></span>
+                <div class="weekly-cover" data-weekly-cover></div>
+                <div class="weekly-meta">
+                  <div class="weekly-info">
+                    <span class="pill" data-weekly-format></span>
+                    <h1 data-weekly-title></h1>
+                    <p data-weekly-artist></p>
+                    <p class="weekly-year" data-weekly-year></p>
+                  </div>
+                  <div class="weekly-reason">
+                    <span data-i18n="selectionReason">선정 이유</span>
+                    <p data-weekly-reason></p>
+                  </div>
+                  <span class="weekly-cta" data-i18n="details">자세히 보기</span>
+                </div>
+              </button>
+              <button class="weekly-motion-toggle" type="button" data-weekly-motion-toggle aria-pressed="false" hidden>
+                <span class="weekly-motion-toggle-icon" aria-hidden="true"></span>
+                <span data-weekly-motion-label data-i18n="weeklyMotionPlay">영상 재생</span>
+              </button>
+            </div>
           </section>
 
         </div>
@@ -144,6 +155,9 @@
               <div class="filter-row format-row" data-format-filters></div>
               <div class="filter-scroll-shell" data-genre-scroll-shell>
                 <div class="filter-row genre-row" data-genre-filters></div>
+              </div>
+              <div class="filter-scroll-shell" data-country-scroll-shell>
+                <div class="filter-row country-row" data-country-filters></div>
               </div>
             </div>
             <div class="album-view-switch" role="group" aria-label="보기 방식" data-i18n-aria="albumView">
@@ -227,7 +241,7 @@
     </article>
   </template>
 
-  <script src="albums-data.js?v=20260915144542"></script>
-  <script src="app.js?v=2026091501"></script>
+  <script src="albums-data.js?v=2026091601"></script>
+  <script src="app.js?v=2026091601"></script>
 </body>
 </html>
