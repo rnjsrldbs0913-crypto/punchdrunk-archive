@@ -160,6 +160,7 @@
     '일렉트로닉',
     '사운드트랙',
     '월드/라틴',
+    '한국음악',
     '기타',
   ];
 
@@ -175,6 +176,7 @@
       '일렉트로닉': '일렉트로닉',
       '사운드트랙': '사운드트랙',
       '월드/라틴': '월드/라틴',
+      '한국음악': '한국음악',
       '기타': '기타',
     },
     en: {
@@ -188,6 +190,7 @@
       '일렉트로닉': 'Electronic',
       '사운드트랙': 'Soundtrack',
       '월드/라틴': 'World/Latin',
+      '한국음악': 'Korean Music',
       '기타': 'Other',
     },
   };
@@ -1765,8 +1768,12 @@
   function matchesAlbumFilters(album, terms, options = {}) {
     const includeFormat = options.includeFormat !== false;
     const includeGenre = options.includeGenre !== false;
+    const matchesGenre = state.genre === GENRE_ALL
+      || (state.genre === '한국음악'
+        ? getAlbumCountry(album) === '한국'
+        : getAlbumGenres(album).includes(state.genre));
     return (!includeFormat || state.format === FORMAT_ALL || album.format === state.format)
-      && (!includeGenre || state.genre === GENRE_ALL || getAlbumGenres(album).includes(state.genre))
+      && (!includeGenre || matchesGenre)
       && (!state.recentOnly || isRecentlyAdded(album))
       && albumMatchesSearch(album, terms);
   }
@@ -1785,6 +1792,7 @@
     const relevant = albums.filter(album => matchesAlbumFilters(album, terms, { includeGenre: false }));
     const counts = relevant.reduce((map, album) => {
       getAlbumGenres(album).forEach(genre => map.set(genre, (map.get(genre) || 0) + 1));
+      if (getAlbumCountry(album) === '한국') map.set('한국음악', (map.get('한국음악') || 0) + 1);
       return map;
     }, new Map());
     return [
@@ -3044,7 +3052,10 @@
       button.type = 'button';
       button.className = 'filter-chip';
       button.textContent = `${item.name === FORMAT_ALL ? t('all') : formatLabel(item.name)} ${item.count}`;
-      button.dataset.active = String(state.format === item.name);
+      const active = state.format === item.name;
+      button.dataset.active = String(active);
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
       button.addEventListener('click', () => {
         state.format = item.name;
         resetAlbumPage();
@@ -3064,7 +3075,10 @@
       button.type = 'button';
       button.className = 'filter-chip genre-chip';
       button.textContent = `${getGenreLabel(genre.name)} ${genre.count}`;
-      button.dataset.active = String(state.genre === genre.name);
+      const active = state.genre === genre.name;
+      button.dataset.active = String(active);
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
       button.addEventListener('click', () => {
         state.genre = genre.name;
         resetAlbumPage();
