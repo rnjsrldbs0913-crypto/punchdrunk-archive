@@ -11,7 +11,6 @@
   const ALBUM_VIEWS = new Set(['grid-2', 'grid-3', 'list']);
   const FORMAT_ALL = '전체';
   const GENRE_ALL = '전체 장르';
-  const COUNTRY_ALL = '전체 국가';
   const COUNTRY_UNKNOWN = '미입력';
   const NEW_ALBUM_DAYS = 14;
   const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
@@ -119,7 +118,6 @@
     query: '',
     format: FORMAT_ALL,
     genre: GENRE_ALL,
-    country: COUNTRY_ALL,
     sort: 'default',
     recentOnly: false,
     filtersExpanded: false,
@@ -262,9 +260,9 @@
       goToPage: '이동',
       swipePagePosition: '음반 목록 현재 위치',
       pageStatus: (page, total) => `${page} / ${total} 페이지`,
-      resultSummary: ({ format, genre, country, total, start, end }) => total
-        ? `${format} / ${genre} / ${country} · ${total}장 중 ${start}-${end}번째`
-        : `${format} / ${genre} / ${country} · 0장의 음반`,
+      resultSummary: ({ format, genre, total, start, end }) => total
+        ? `${format} / ${genre} · ${total}장 중 ${start}-${end}번째`
+        : `${format} / ${genre} · 0장의 음반`,
       previousView: '← 이전 화면',
       albumListButton: '음반 목록',
       tracklist: '트랙리스트',
@@ -354,9 +352,9 @@
       goToPage: 'Go',
       swipePagePosition: 'Current album list position',
       pageStatus: (page, total) => `Page ${page} of ${total}`,
-      resultSummary: ({ format, genre, country, total, start, end }) => total
-        ? `${format} / ${genre} / ${country} · ${start}-${end} of ${total} albums`
-        : `${format} / ${genre} / ${country} · 0 albums`,
+      resultSummary: ({ format, genre, total, start, end }) => total
+        ? `${format} / ${genre} · ${start}-${end} of ${total} albums`
+        : `${format} / ${genre} · 0 albums`,
       previousView: '← Previous',
       albumListButton: 'Album list',
       tracklist: 'Tracklist',
@@ -644,15 +642,9 @@
     return GENRE_LABELS[language]?.[genre] || genre || '';
   }
 
-  function getCountryLabel(country, language = state.language) {
-    const value = String(country || COUNTRY_UNKNOWN).trim() || COUNTRY_UNKNOWN;
-    if (value === COUNTRY_ALL) return language === 'en' ? 'All countries' : COUNTRY_ALL;
-    if (value === COUNTRY_UNKNOWN) return language === 'en' ? 'Country not set' : COUNTRY_UNKNOWN;
-    if (language === 'en' && value === '한국') return 'South Korea';
-    if (language === 'en' && value === '미국') return 'United States';
-    if (language === 'en' && value === '영국') return 'United Kingdom';
-    if (language === 'en' && value === '일본') return 'Japan';
-    return value;
+  // 국가 값은 관리자 데이터에 보존하되 손님 화면에는 아직 분류로 노출하지 않습니다.
+  function getCountryLabel() {
+    return '';
   }
 
   function applyStaticTranslations(root = document) {
@@ -1773,10 +1765,8 @@
   function matchesAlbumFilters(album, terms, options = {}) {
     const includeFormat = options.includeFormat !== false;
     const includeGenre = options.includeGenre !== false;
-    const includeCountry = options.includeCountry !== false;
     return (!includeFormat || state.format === FORMAT_ALL || album.format === state.format)
       && (!includeGenre || state.genre === GENRE_ALL || getAlbumGenres(album).includes(state.genre))
-      && (!includeCountry || state.country === COUNTRY_ALL || getAlbumCountry(album) === state.country)
       && (!state.recentOnly || isRecentlyAdded(album))
       && albumMatchesSearch(album, terms);
   }
@@ -1804,27 +1794,6 @@
     ];
   }
 
-  function getCountryFilterCounts() {
-    const terms = getSearchTerms();
-    const relevant = albums.filter(album => matchesAlbumFilters(album, terms, { includeCountry: false }));
-    const counts = relevant.reduce((map, album) => {
-      const country = getAlbumCountry(album);
-      map.set(country, (map.get(country) || 0) + 1);
-      return map;
-    }, new Map());
-    const countries = [...counts.keys()].sort((a, b) => {
-      if (a === COUNTRY_UNKNOWN) return 1;
-      if (b === COUNTRY_UNKNOWN) return -1;
-      if (a === '한국') return -1;
-      if (b === '한국') return 1;
-      return a.localeCompare(b, state.language === 'en' ? 'en' : 'ko');
-    });
-    if (state.country !== COUNTRY_ALL && !countries.includes(state.country)) countries.push(state.country);
-    return [
-      { name: COUNTRY_ALL, count: relevant.length },
-      ...countries.map(name => ({ name, count: counts.get(name) || 0 })),
-    ];
-  }
   function getFilteredAlbums() {
     const terms = getSearchTerms();
     return albums.filter(album => matchesAlbumFilters(album, terms));
@@ -2703,7 +2672,6 @@
       state.query.trim()
       || state.format !== FORMAT_ALL
       || state.genre !== GENRE_ALL
-      || state.country !== COUNTRY_ALL
       || state.recentOnly
     );
     root.querySelectorAll('[data-random-album]').forEach(button => {
@@ -2729,8 +2697,7 @@
   function getFilterToggleSummary() {
     const formatText = state.format === FORMAT_ALL ? t('all') : formatLabel(state.format);
     const genreText = getGenreLabel(state.genre);
-    const countryText = getCountryLabel(state.country);
-    const parts = [formatText, genreText, countryText];
+    const parts = [formatText, genreText];
     if (state.recentOnly) parts.unshift(t('newAlbums'));
 
     const sortKeyByValue = {
@@ -3014,7 +2981,6 @@
       state.query = '';
       state.format = FORMAT_ALL;
       state.genre = GENRE_ALL;
-      state.country = COUNTRY_ALL;
       state.sort = 'default';
       state.recentOnly = false;
       state.filtersExpanded = false;
@@ -3112,32 +3078,9 @@
     setupFilterScrollHints(container, '[data-genre-scroll-shell]', '_genreScrollHandler');
   }
 
-  function renderCountryFilters(container) {
-    if (!container) return;
-    const countries = getCountryFilterCounts();
-    container.replaceChildren(...countries.map(country => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'filter-chip country-chip';
-      button.textContent = `${getCountryLabel(country.name)} ${country.count}`;
-      button.dataset.active = String(state.country === country.name);
-      button.addEventListener('click', () => {
-        state.country = country.name;
-        resetAlbumPage();
-        renderAllFilterControls();
-        updateAlbumGrid();
-        updateFilterPanel(app);
-      });
-      return button;
-    }));
-
-    setupFilterScrollHints(container, '[data-country-scroll-shell]', '_countryScrollHandler');
-  }
-
   function renderAllFilterControls(root = app) {
     renderFormatFilters(root.querySelector('[data-format-filters]'));
     renderGenreFilters(root.querySelector('[data-genre-filters]'));
-    renderCountryFilters(root.querySelector('[data-country-filters]'));
   }
 
   function setupFilterScrollHints(container, shellSelector, handlerKey) {
@@ -3874,11 +3817,9 @@
     if (state.recentOnly) summaryPrefixes.push(t('newAlbums'));
     const formatText = [...summaryPrefixes, baseFormatText].join(' · ');
     const genreText = getGenreLabel(state.genre);
-    const countryText = getCountryLabel(state.country);
     summary.textContent = t('resultSummary')({
       format: formatText,
       genre: genreText,
-      country: countryText,
       total: filtered.length,
       start: shownStart,
       end: shownEnd,
