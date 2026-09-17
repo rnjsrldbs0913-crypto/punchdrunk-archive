@@ -3,6 +3,41 @@
 
 const ALBUMS = [
   {
+    "id": "album-mu4xez4h",
+    "title": "기린",
+    "artist": "뱃사공",
+    "artistKo": "뱃사공",
+    "artistEn": "Bassagong",
+    "addedAt": "2026-09-17T02:44:30.929Z",
+    "year": "2020",
+    "format": "Vinyl",
+    "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mu4xez4h.jpg",
+    "recommendedTracks": [
+      "4. 탭댄스 (Feat. 카더가든, pH-1)",
+      "6. 다와가"
+    ],
+    "tracklist": [
+      "1. 먼저가",
+      "2. 기린 (Feat. 김태균)",
+      "3. 너 (Feat. chilly)",
+      "4. 탭댄스 (Feat. 카더가든, pH-1)",
+      "5. 잘자",
+      "6. 다와가",
+      "7. 막곡"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
     "id": "album-mu27jq08",
     "title": "Mother Earth's Plantasia",
     "artist": "모트 가슨",

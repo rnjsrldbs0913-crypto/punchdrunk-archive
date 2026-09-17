@@ -416,7 +416,8 @@ const COVER_IMAGES = [
   "covers/ab67616d0000b273016203ebe0693797cecd9c37-1.jpg",
   "covers/ab67616d0000b27330a6c9a5e5992b76a02db960-1.jpg",
   "covers/album-mu27jq08.jpg",
-  "covers/album-mu27hb75.jpg"
+  "covers/album-mu27hb75.jpg",
+  "covers/album-mu4xez4h.jpg"
 ];
 
 window.PD_COVERS = COVER_IMAGES;
