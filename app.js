@@ -3089,6 +3089,7 @@
       button.dataset.active = String(active);
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
+      button.disabled = item.count === 0 && !active;
       button.addEventListener('click', () => {
         state.format = item.name;
         resetAlbumPage();
@@ -3112,6 +3113,7 @@
       button.dataset.active = String(active);
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
+      button.disabled = genre.count === 0 && !active;
       button.addEventListener('click', () => {
         state.genre = genre.name;
         resetAlbumPage();

@@ -776,6 +776,24 @@ html.feature-customer-modern-style.feature-customer-higher-contrast[data-custome
     min-width: 32px;
     height: 28px;
     padding-inline: 7px;
+    position: relative;
+  }
+
+  .feature-customer-modern-style .language-switch button::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+  }
+
+  .feature-customer-modern-style .language-switch button:first-child::after {
+    left: -12px;
+  }
+
+  .feature-customer-modern-style .language-switch button:last-child::after {
+    right: -12px;
   }
 
   .feature-customer-modern-style .weekly-card {
@@ -785,6 +803,11 @@ html.feature-customer-modern-style.feature-customer-higher-contrast[data-custome
   .feature-customer-modern-style .weekly-card .weekly-info {
     padding-inline: 4px;
   }
+}
+
+.feature-customer-modern-style .filter-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 @media (prefers-reduced-motion: reduce) {
