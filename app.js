@@ -854,6 +854,7 @@
     video.load();
 
     let activeInteraction = null;
+    const holdGestureMs = 300;
     let suppressNextClick = false;
     let suppressClickTimer = null;
     let cancelledMotionTimer = null;
@@ -914,7 +915,7 @@
       if (!activeInteraction
         || activeInteraction.type !== type
         || activeInteraction.id !== id) return;
-      const heldLongEnough = performance.now() - activeInteraction.startedAt >= 160;
+      const heldLongEnough = performance.now() - activeInteraction.startedAt >= holdGestureMs;
       const movedWhilePressed = Boolean(activeInteraction.moved);
       activeInteraction = null;
       stopMotion({ suppressClick: suppressClick && (heldLongEnough || movedWhilePressed) });
@@ -1010,7 +1011,7 @@
           .find(item => item.identifier === activeInteraction.id);
         if (changedTouches.length && !touch) return;
 
-        const heldLongEnough = performance.now() - activeInteraction.startedAt >= 160;
+        const heldLongEnough = performance.now() - activeInteraction.startedAt >= holdGestureMs;
         if (heldLongEnough) {
           keepMotionAfterBrowserCancel();
           return;
@@ -1039,7 +1040,7 @@
         }
 
         if (activeInteraction
-          && performance.now() - activeInteraction.startedAt >= 160) {
+          && performance.now() - activeInteraction.startedAt >= holdGestureMs) {
           armClickSuppression();
           return true;
         }
