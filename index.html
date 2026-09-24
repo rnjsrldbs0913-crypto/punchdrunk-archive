@@ -21,7 +21,7 @@
   <script src="customer-theme.js?v=20260818150000"></script>
   <link rel="stylesheet" href="styles.css?v=2026092403" />
   <link rel="stylesheet" href="customer-polish.css?v=20260818143000" />
-  <link rel="stylesheet" href="customer-modern.css?v=2026092401" />
+  <link rel="stylesheet" href="customer-modern.css?v=2026092402" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
   <link rel="stylesheet" href="customer-views.css?v=2026091604" />
   <link rel="stylesheet" href="customer-brand.css?v=2026091401" />
@@ -154,9 +154,15 @@
                 <button class="tool-button" type="button" data-new-albums data-i18n="newAlbums" aria-pressed="false">새로 온 음반</button>
                 <button class="tool-button" type="button" data-reset-filters data-i18n="resetFilters">필터 초기화</button>
               </div>
-              <div class="filter-row format-row" data-format-filters></div>
-              <div class="filter-scroll-shell" data-genre-scroll-shell>
-                <div class="filter-row genre-row" data-genre-filters></div>
+              <div class="filter-group format-filter-group" role="group" aria-labelledby="format-filter-heading">
+                <p class="filter-group-heading" id="format-filter-heading" data-i18n="formatFilter">음반 형식</p>
+                <div class="filter-row format-row" data-format-filters></div>
+              </div>
+              <div class="filter-group genre-filter-group" role="group" aria-labelledby="genre-filter-heading">
+                <p class="filter-group-heading" id="genre-filter-heading" data-i18n="genreFilter">장르</p>
+                <div class="filter-scroll-shell" data-genre-scroll-shell>
+                  <div class="filter-row genre-row" data-genre-filters></div>
+                </div>
               </div>
               <div class="decade-filter">
                 <label for="decade-select" data-i18n="releaseDecade">발매 연대</label>
@@ -245,6 +251,6 @@
   </template>
 
   <script src="albums-data.js?v=2026092401"></script>
-  <script src="app.js?v=2026092405"></script>
+  <script src="app.js?v=2026092406"></script>
 </body>
 </html>
