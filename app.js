@@ -756,7 +756,7 @@
     return albums.find(album => album.isWeekly === true || album.weekly === true) || null;
   }
 
-  function setupWeeklyMotionLegacy(card, album) {
+  function setupWeeklyMotion(card, album) {
     const video = card?.querySelector('[data-weekly-motion-video]');
     const scrim = card?.querySelector('[data-weekly-motion-scrim]');
     const indicator = card?.querySelector('[data-weekly-motion-indicator]');
@@ -980,67 +980,6 @@
         return true;
       },
     };
-  }
-
-  function setupWeeklyMotion(card, toggle, album) {
-    const video = card?.querySelector('[data-weekly-motion-video]');
-    const scrim = card?.querySelector('[data-weekly-motion-scrim]');
-    const enabled = Boolean(
-      WEEKLY_MOTION_TEST.enabled
-      && album?.id === WEEKLY_MOTION_TEST.albumId
-      && video
-      && scrim
-      && toggle
-    );
-
-    if (!enabled) {
-      if (toggle) toggle.hidden = true;
-      return;
-    }
-
-    video.src = WEEKLY_MOTION_TEST.src;
-    video.poster = WEEKLY_MOTION_TEST.poster;
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.hidden = false;
-    scrim.hidden = false;
-    toggle.hidden = false;
-    card.classList.add('has-weekly-motion');
-    card.setAttribute('aria-label', `${album.title || t('weeklyAlbum')}: ${t('details')}`);
-
-    const updateButton = playing => {
-      card.classList.toggle('is-motion-playing', playing);
-      toggle.dataset.playing = String(playing);
-      toggle.setAttribute('aria-pressed', String(playing));
-      const label = playing ? t('weeklyMotionPause') : t('weeklyMotionPlay');
-      toggle.setAttribute('aria-label', label);
-      const labelNode = toggle.querySelector('[data-weekly-motion-label]');
-      if (labelNode) labelNode.textContent = label;
-    };
-
-    toggle.addEventListener('click', async () => {
-      if (!video.paused) {
-        video.pause();
-        updateButton(false);
-        return;
-      }
-      try {
-        video.muted = true;
-        await video.play();
-        updateButton(true);
-      } catch (error) {
-        updateButton(false);
-        console.warn('Weekly motion preview could not start.', error);
-      }
-    });
-    video.addEventListener('pause', () => updateButton(false));
-    video.addEventListener('error', () => updateButton(false));
-    updateButton(false);
-    video.load();
   }
 
   function getWeeklyHistoryEntries() {
@@ -1733,9 +1672,9 @@
     const words = getSearchTerms(value);
     return terms.every(term => {
       // 한글·일본어처럼 단어 안에서 이어 쓰는 언어는 부분 검색을 유지합니다.
-      // 영문과 숫자는 단어 전체가 같아야 하므로 "no"가 "known"에 걸리지 않습니다.
+      // 영문·숫자는 단어 앞부분부터 찾습니다. "no"는 "known"에 걸리지 않습니다.
       const containsCjk = /[\u1100-\u11ff\u3040-\u30ff\u3130-\u318f\u3400-\u9fff\uac00-\ud7a3]/u.test(term);
-      return words.some(word => containsCjk ? word.includes(term) : word === term);
+      return words.some(word => containsCjk ? word.includes(term) : word.startsWith(term));
     });
   }
 
@@ -1751,8 +1690,8 @@
     ].filter(Boolean).join(' ');
     return [
       metadata,
-      ...(album.recommendedTracks || []),
-      ...(album.tracklist || []),
+      ...(album.recommendedTracks || []).map(track => `${metadata} ${track}`),
+      ...(album.tracklist || []).map(track => `${metadata} ${track}`),
     ];
   }
 
@@ -2882,7 +2821,6 @@
     applyStaticTranslations(node);
     const weekly = getWeeklyAlbum();
     const weeklyButton = node.querySelector('[data-weekly-open]');
-    const weeklyMotionToggle = node.querySelector('[data-weekly-motion-toggle]');
     const weeklyHistoryButton = node.querySelector('[data-weekly-history]');
     const weeklyHistoryCount = node.querySelector('[data-weekly-history-count]');
     const weeklyHistoryEntries = getWeeklyHistoryEntries();
@@ -2905,8 +2843,12 @@
       node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
       node.querySelector('[data-weekly-year]').textContent = weekly.year ? t('released')(weekly.year) : '';
       node.querySelector('[data-weekly-reason]').textContent = getLocalizedWeeklyReason(weekly);
-      setupWeeklyMotion(weeklyButton, weeklyMotionToggle, weekly);
-      weeklyButton.addEventListener('click', () => {
+      const weeklyMotion = setupWeeklyMotion(weeklyButton, weekly);
+      weeklyButton.addEventListener('click', event => {
+        if (weeklyMotion.shouldSuppressClick()) {
+          event.preventDefault();
+          return;
+        }
         openAlbum(weekly.id, {
           transitionSource: weeklyButton.querySelector('.cover-frame'),
         });
@@ -2914,7 +2856,6 @@
       weeklyButton.addEventListener('pointerdown', () => preloadTransitionCover(weekly, weeklyCover.querySelector('img')?.currentSrc), { passive: true });
       weeklyButton.addEventListener('focus', () => preloadTransitionCover(weekly, weeklyCover.querySelector('img')?.currentSrc));
     } else {
-      if (weeklyMotionToggle) weeklyMotionToggle.hidden = true;
       weeklyButton.disabled = true;
       weeklyButton.classList.add('is-empty');
       node.querySelector('[data-weekly-cover]').append(createFallbackCover({ artist: 'PUNCH-DRUNK', title: t('chooseWeekly') }, 'weekly-cover-art'));
@@ -3081,26 +3022,11 @@
       return button;
     }));
 
-    setupFilterScrollHints(container, '[data-genre-scroll-shell]', '_genreScrollHandler');
   }
 
   function renderAllFilterControls(root = app) {
     renderFormatFilters(root.querySelector('[data-format-filters]'));
     renderGenreFilters(root.querySelector('[data-genre-filters]'));
-  }
-
-  function setupFilterScrollHints(container, shellSelector, handlerKey) {
-    const scrollShell = container.closest(shellSelector);
-    const updateScrollHints = () => {
-      if (!scrollShell) return;
-      const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
-      scrollShell.classList.toggle('can-scroll-left', container.scrollLeft > 3);
-      scrollShell.classList.toggle('can-scroll-right', maxScroll - container.scrollLeft > 3);
-    };
-    if (container[handlerKey]) container.removeEventListener('scroll', container[handlerKey]);
-    container[handlerKey] = updateScrollHints;
-    container.addEventListener('scroll', updateScrollHints, { passive: true });
-    requestAnimationFrame(updateScrollHints);
   }
 
   function renderPagination(container, totalAlbums, totalPages) {

@@ -39,56 +39,6 @@ body {
   position: relative;
 }
 
-.weekly-motion-toggle {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  bottom: auto;
-  z-index: 5;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 0 13px;
-  border: 1px solid rgba(255, 255, 255, 0.68);
-  border-radius: 999px;
-  background: rgba(9, 8, 13, 0.82);
-  color: #fff;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.weekly-motion-toggle[hidden] {
-  display: none;
-}
-
-.weekly-motion-toggle-icon {
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid currentColor;
-}
-
-.weekly-motion-toggle[data-playing="true"] {
-  border-color: rgba(129, 172, 212, 0.94);
-  background: rgba(15, 34, 58, 0.9);
-}
-
-.weekly-motion-toggle[data-playing="true"] .weekly-motion-toggle-icon {
-  width: 8px;
-  height: 11px;
-  margin-left: 0;
-  border: 0;
-  border-right: 3px solid currentColor;
-  border-left: 3px solid currentColor;
-}
-
 .weekly-history-button {
   display: inline-flex;
   align-items: center;
@@ -249,13 +199,6 @@ body.weekly-history-open {
   .weekly-section .section-heading {
     display: flex;
     align-items: center;
-  }
-
-  .weekly-motion-toggle {
-    top: 12px;
-    right: 12px;
-    bottom: auto;
-    min-height: 38px;
   }
 
   .weekly-card.has-weekly-motion .weekly-meta {
@@ -1091,32 +1034,9 @@ select:focus-visible,
   min-width: 0;
 }
 
-.filter-scroll-shell::before,
-.filter-scroll-shell::after {
-  position: absolute;
-  top: 10px;
-  bottom: 0;
-  z-index: 2;
-  width: 28px;
-  opacity: 0;
-  pointer-events: none;
-  content: "";
-  transition: opacity 160ms ease;
-}
-
-.filter-scroll-shell::before {
-  left: 0;
-  background: linear-gradient(90deg, rgba(15, 14, 20, 0.98), transparent);
-}
-
-.filter-scroll-shell::after {
-  right: 0;
-  background: linear-gradient(270deg, rgba(15, 14, 20, 0.98), transparent);
-}
-
-.filter-scroll-shell.can-scroll-left::before,
-.filter-scroll-shell.can-scroll-right::after {
-  opacity: 1;
+.genre-row {
+  flex-wrap: wrap;
+  overflow-x: visible;
 }
 
 .filter-chip {
@@ -3990,6 +3910,10 @@ body.request-list-open {
   width: 100%;
   visibility: hidden;
   pointer-events: none;
+}
+
+.weekly-motion-indicator[hidden] {
+  display: none;
 }
 
 #app.is-detail-active .customer-detail-view {
