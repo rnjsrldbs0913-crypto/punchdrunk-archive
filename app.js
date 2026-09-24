@@ -164,6 +164,63 @@
     '기타',
   ];
 
+  const BROWSE_SORTS = new Set(['default', 'newest', 'oldest', 'artist', 'title']);
+  const BROWSE_URL_KEYS = ['q', 'format', 'genre', 'sort', 'recent', 'section'];
+
+  function readBrowseStateFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const format = params.get('format');
+    const genre = params.get('genre');
+    const sort = params.get('sort');
+    const section = params.get('section');
+    const hasBrowseParams = BROWSE_URL_KEYS.some(key => key !== 'section' && params.has(key));
+    return {
+      query: String(params.get('q') || '').slice(0, 300),
+      format: format === 'Vinyl' || format === 'CD' ? format : FORMAT_ALL,
+      genre: STANDARD_GENRES.includes(genre) ? genre : GENRE_ALL,
+      sort: BROWSE_SORTS.has(sort) ? sort : 'default',
+      recentOnly: params.get('recent') === '1',
+      homeSection: HOME_SECTIONS.includes(section)
+        ? section
+        : HOME_SECTIONS.includes(history.state?.homeSection)
+          ? history.state.homeSection
+          : hasBrowseParams ? 'catalog' : HOME_SECTIONS[0],
+    };
+  }
+
+  function applyBrowseStateFromUrl() {
+    const next = readBrowseStateFromUrl();
+    const filtersChanged = ['query', 'format', 'genre', 'sort', 'recentOnly']
+      .some(key => state[key] !== next[key]);
+    Object.assign(state, next);
+    if (filtersChanged) {
+      state.page = 1;
+      state.filtersExpanded = state.format !== FORMAT_ALL
+        || state.genre !== GENRE_ALL
+        || state.sort !== 'default'
+        || state.recentOnly;
+    }
+    return filtersChanged;
+  }
+
+  function syncBrowseUrl() {
+    const params = new URLSearchParams(window.location.search);
+    BROWSE_URL_KEYS.forEach(key => params.delete(key));
+    if (state.query.trim()) params.set('q', state.query.trim());
+    if (state.format !== FORMAT_ALL) params.set('format', state.format);
+    if (state.genre !== GENRE_ALL) params.set('genre', state.genre);
+    if (state.sort !== 'default') params.set('sort', state.sort);
+    if (state.recentOnly) params.set('recent', '1');
+    if (state.homeSection !== HOME_SECTIONS[0]) params.set('section', state.homeSection);
+    const search = params.toString();
+    const url = `${window.location.pathname}${search ? `?${search}` : ''}${window.location.hash}`;
+    if (url === `${window.location.pathname}${window.location.search}${window.location.hash}`
+      && history.state?.homeSection === state.homeSection) return;
+    history.replaceState({ ...history.state, homeSection: state.homeSection }, '', url);
+  }
+
+  applyBrowseStateFromUrl();
+
   const GENRE_LABELS = {
     ko: {
       [GENRE_ALL]: '전체 장르',
@@ -2700,9 +2757,7 @@
       else panel.setAttribute('aria-hidden', 'true');
     });
     root.dataset.section = section;
-    if (options.remember !== false && !getAlbumIdFromHash()) {
-      history.replaceState({ ...history.state, view: 'home', homeSection: section }, '', window.location.href);
-    }
+    if (options.remember !== false && !getAlbumIdFromHash()) syncBrowseUrl();
     if (changed) {
       previous.querySelectorAll('video').forEach(video => video.pause());
       previous.querySelector('.is-motion-playing')?.classList.remove('is-motion-playing');
@@ -3790,6 +3845,7 @@
     if (options.scrollToGrid) {
       app.querySelector('.grid-section')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
+    syncBrowseUrl();
   }
 
   function stripTrackNumber(track) {
@@ -3840,6 +3896,7 @@
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     state.homeSection = 'weekly';
+    syncBrowseUrl();
     history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
     if (!returningFromDetail && app.querySelector('[data-home-sections]')) {
       setHomeSection(state.homeSection);
@@ -3857,6 +3914,7 @@
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     state.homeSection = 'catalog';
+    syncBrowseUrl();
     history.pushState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
     if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
   }
@@ -4071,7 +4129,7 @@
   });
 
   function renderRouteFromLocation() {
-    if (HOME_SECTIONS.includes(history.state?.homeSection)) state.homeSection = history.state.homeSection;
+    const browseChanged = applyBrowseStateFromUrl();
     const albumId = getAlbumIdFromHash();
     if (albumId && albums.some(album => album.id === albumId)) {
       const trackSearchQuery = history.state?.albumId === albumId
@@ -4084,13 +4142,14 @@
       state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
         ? { albumId, trackIndex: focusTrackIndex }
         : null;
-      if (CUSTOMER_FEATURES.persistentDetailLayers && !homeViewReady) renderHome({ keepInactive: true });
+      if (CUSTOMER_FEATURES.persistentDetailLayers && (!homeViewReady || browseChanged)) renderHome({ keepInactive: true });
       renderDetail(albumId);
       return;
     }
     state.detailTrackSearch = null;
     state.detailTrackFocus = null;
     if (window.location.hash) history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
+    if (browseChanged) return renderHome();
     if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
   }
 
@@ -4126,7 +4185,6 @@
   applyStaticTranslations(document);
 
   const initialAlbumId = getAlbumIdFromHash();
-  if (HOME_SECTIONS.includes(history.state?.homeSection)) state.homeSection = history.state.homeSection;
   if (initialAlbumId && albums.some(album => album.id === initialAlbumId)) {
     // 상세 주소로 바로 들어온 손님도 뒤로가기를 누르면 사이트 밖이 아니라 목록으로 돌아가게 합니다.
     state.homeSection = 'catalog';
