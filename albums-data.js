@@ -3,6 +3,119 @@
 
 const ALBUMS = [
   {
+    "id": "album-muhxhoqq",
+    "title": "The Renaissance",
+    "artist": "큐 팁",
+    "artistKo": "큐 팁",
+    "artistEn": "Q-Tip",
+    "addedAt": "2026-09-26T05:07:37.730Z",
+    "year": "2008",
+    "format": "Vinyl",
+    "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
+    "coverImage": "covers/album-muhxhoqq.jpg",
+    "recommendedTracks": [
+      "A3. Gettin' Up",
+      "B3. We Fight/We Love",
+      "D1. Life Is Better",
+      "D2. Believe"
+    ],
+    "tracklist": [
+      "A1. Johnny Is Dead",
+      "A2. Won't Trade",
+      "A3. Gettin' Up",
+      "B1. Official",
+      "B2. You",
+      "B3. We Fight/We Love",
+      "C1. Manwomanboogie",
+      "C2. Move",
+      "C3. Dance on Glass",
+      "D1. Life Is Better",
+      "D2. Believe",
+      "D3. Shaka"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-muhxecwj",
+    "title": "FATHERS",
+    "artist": "네이트 스미스, 키퍼, 카툰스 & 케니 비츠",
+    "artistKo": "네이트 스미스, 키퍼, 카툰스 & 케니 비츠",
+    "artistEn": "Nate Smith, Kiefer, CARRTOONS & Kenny Beats",
+    "addedAt": "2026-09-26T05:05:02.420Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-muhxecwj.jpg",
+    "recommendedTracks": [
+      "2. PATCHWORK",
+      "3. PEARL"
+    ],
+    "tracklist": [
+      "1. EYE LEVEL",
+      "2. PATCHWORK",
+      "3. PEARL",
+      "4. STUB",
+      "5. THE LEAK",
+      "6. TOMORROW, AGAIN",
+      "7. FRONT YARD",
+      "8. FIGURE 8"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-muhx9kra",
+    "title": "AOMG The Essentials",
+    "artist": "여러 아티스트",
+    "artistKo": "여러 아티스트",
+    "artistEn": "Various Artists",
+    "addedAt": "2026-09-26T05:01:19.318Z",
+    "year": "2025",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "genres": [
+      "한국음악"
+    ],
+    "country": "한국",
+    "coverImage": "covers/aomg-the-essental-1.webp",
+    "recommendedTracks": [
+      "A3. 사이먼 도미닉, 로꼬, 우원재, 쿠기, Ugly Duck - 니가 알던 내가 아냐 (2023 Remix)",
+      "B2. 우원재 - 시차 (We Are) (Feat. 로꼬 & GRAY)"
+    ],
+    "tracklist": [
+      "A1. 박재범 - 몸매 (MOMMAE) (Feat. Ugly Duck)",
+      "A2. 로꼬, GRAY - Late Night",
+      "A3. 사이먼 도미닉, 로꼬, 우원재, 쿠기, Ugly Duck - 니가 알던 내가 아냐 (2023 Remix)",
+      "B1. 사이먼 도미닉 - 사이먼 도미닉",
+      "B2. 우원재 - 시차 (We Are) (Feat. 로꼬 & GRAY)",
+      "B3. 로꼬 - A.O.M.G.",
+      "B4. 박재범, 사이먼 도미닉, 로꼬, GRAY - 뒤집어버려"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
     "id": "album-mu4xez4h",
     "title": "기린",
     "artist": "뱃사공",
