@@ -16212,6 +16212,8 @@ const ALBUMS = [
   {
     "id": "album-mrdetafz",
     "title": "Punch-Drunk Love (Original Motion Picture Soundtrack)",
+    "weeklyVideo": "media/weekly-motion-test.mp4",
+    "weeklyVideoPoster": "media/weekly-motion-test-poster.jpg",
     "artist": "존 브리온",
     "artistKo": "존 브리온",
     "artistEn": "Jon Brion",

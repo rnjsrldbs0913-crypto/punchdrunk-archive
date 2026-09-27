@@ -86,13 +86,6 @@
   if (!CUSTOMER_FEATURES.browserThemeColor) {
     document.querySelector('[data-customer-theme-color]')?.remove();
   }
-  const WEEKLY_MOTION_TEST = Object.freeze(CUSTOMER_CONFIG.weeklyMotionTest || {
-    enabled: true,
-    albumId: 'album-mrdetafz',
-    src: 'media/weekly-motion-test.mp4',
-    poster: 'media/weekly-motion-test-poster.jpg',
-  });
-
   function getInitialLanguage() {
     try {
       const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
@@ -640,10 +633,13 @@
         const trackNumber = document.createElement('span');
         trackNumber.className = 'request-list-track-number';
         trackNumber.textContent = trackParts.number || '';
+        const artistMeta = document.createElement('span');
+        artistMeta.className = 'request-list-artist';
+        artistMeta.textContent = getLocalizedArtist(resolved.album) || '';
         const albumMeta = document.createElement('span');
         albumMeta.className = 'request-list-album-meta';
-        albumMeta.textContent = `${getLocalizedArtist(resolved.album) || ''} · ${resolved.album.title || ''}`;
-        text.append(trackTitle, trackNumber, albumMeta);
+        albumMeta.textContent = resolved.album.title || '';
+        text.append(trackTitle, trackNumber, artistMeta, albumMeta);
         openButton.append(cover, text);
         openButton.addEventListener('click', () => {
           closeRequestTrackList(() => openAlbum(resolved.album.id, {
@@ -834,6 +830,8 @@
     album.genres = getAlbumGenres(album);
     album.genre = album.genres[0];
     album.weeklyHistory = normalizeWeeklyHistory(album.weeklyHistory);
+    album.weeklyVideo = String(album.weeklyVideo || '').trim();
+    album.weeklyVideoPoster = String(album.weeklyVideoPoster || '').trim();
   });
   function getWeeklyAlbum() {
     return albums.find(album => album.isWeekly === true || album.weekly === true) || null;
@@ -843,8 +841,8 @@
     const video = card?.querySelector('[data-weekly-motion-video]');
     const scrim = card?.querySelector('[data-weekly-motion-scrim]');
     const indicator = card?.querySelector('[data-weekly-motion-indicator]');
-    const enabled = WEEKLY_MOTION_TEST.enabled
-      && album?.id === WEEKLY_MOTION_TEST.albumId
+    const videoPath = String(album?.weeklyVideo || '').trim();
+    const enabled = videoPath
       && video
       && scrim
       && indicator;
@@ -853,8 +851,8 @@
       return { shouldSuppressClick: () => false };
     }
 
-    video.src = WEEKLY_MOTION_TEST.src;
-    video.poster = WEEKLY_MOTION_TEST.poster;
+    video.src = videoPath;
+    video.poster = String(album.weeklyVideoPoster || album.coverImage || '').trim();
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;

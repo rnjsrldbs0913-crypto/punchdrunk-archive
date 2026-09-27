@@ -51,11 +51,5 @@
       partialAlbumPageFix: true,
     }),
     mobilePagerMedia: '(max-width: 719px), (pointer: coarse) and (max-width: 900px)',
-    weeklyMotionTest: Object.freeze({
-      enabled: true,
-      albumId: 'album-mrdetafz',
-      src: 'media/weekly-motion-test.mp4',
-      poster: 'media/weekly-motion-test-poster.jpg',
-    }),
   });
 })();

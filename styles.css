@@ -3660,6 +3660,8 @@ body.request-list-open {
 }
 
 .request-list-panel {
+  --text: #f6f1ea;
+  --muted: rgba(246, 241, 234, 0.72);
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   width: min(620px, 100%);
@@ -3668,6 +3670,7 @@ body.request-list-open {
   border: 1px solid rgba(255, 91, 157, 0.34);
   border-radius: 8px;
   background: rgba(15, 13, 20, 0.98);
+  color: var(--text);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58);
 }
 
@@ -3770,11 +3773,9 @@ body.request-list-open {
 }
 
 .request-list-item-text strong {
-  overflow: hidden;
   font-size: 14px;
   line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .request-list-track-number {
@@ -3784,14 +3785,13 @@ body.request-list-open {
   font-weight: 750;
 }
 
+.request-list-artist,
 .request-list-album-meta {
   margin-top: 3px;
-  overflow: hidden;
   color: var(--muted);
-  font-size: 11px;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .request-list-footer {
