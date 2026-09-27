@@ -135,6 +135,11 @@
   let requestListClosing = false;
   let afterRequestListClose = null;
   let requestToastTimer = 0;
+  let artistAlbumsOverlay = null;
+  let artistAlbumsTrigger = null;
+  let artistAlbumsBaseUrl = '';
+  let artistAlbumsClosing = false;
+  let afterArtistAlbumsClose = null;
   let detailCoverViewer = null;
   let detailCoverViewerTrigger = null;
   let detailCoverViewerHistoryActive = false;
@@ -282,7 +287,11 @@
       albumSearch: '검색',
       searchPlaceholder: '음반명·아티스트·곡 제목',
       clearSearch: '검색어 지우기',
-      artistAlbumsButton: count => `이 아티스트의 다른 음반 ${count}장 보기`,
+      artistAlbumsButton: '이 아티스트의 다른 음반 보기',
+      artistAlbumsAll: '전체',
+      artistAlbumsChoose: '아티스트 선택',
+      artistAlbumsClose: '다른 음반 팝업 닫기',
+      artistAlbumsEmpty: '현재 보유한 다른 음반이 없습니다.',
       artistAlbumsScope: (artist, count) => `${artist}의 음반 ${count}장`,
       clearArtistScope: '아티스트 보기 해제',
       filters: '필터',
@@ -382,7 +391,11 @@
       albumSearch: 'Search',
       searchPlaceholder: 'Album · artist · track title',
       clearSearch: 'Clear search',
-      artistAlbumsButton: count => `More by this artist (${count})`,
+      artistAlbumsButton: 'More by this artist',
+      artistAlbumsAll: 'All',
+      artistAlbumsChoose: 'Choose an artist',
+      artistAlbumsClose: 'Close other albums',
+      artistAlbumsEmpty: 'No other albums in the archive yet.',
       artistAlbumsScope: (artist, count) => `${artist} · ${count} albums`,
       clearArtistScope: 'Clear artist selection',
       filters: 'Filters',
@@ -1185,6 +1198,98 @@
 
   function getArtistKey(album) {
     return normalize(album?.artistKo || album?.artistEn || album?.artist).normalize('NFC');
+  }
+
+  const artistDirectory = CUSTOMER_CONFIG.artistDirectory || {};
+  const artistDefinitions = Array.isArray(artistDirectory.identities) ? artistDirectory.identities : [];
+  const artistById = new Map(artistDefinitions.map(identity => [identity.id, identity]));
+  const artistAliasToId = new Map();
+  artistDefinitions.forEach(identity => {
+    [identity.ko, identity.en, ...(identity.aliases || [])].filter(Boolean).forEach(name => {
+      artistAliasToId.set(normalize(name).normalize('NFC'), identity.id);
+    });
+  });
+  // 쉼표가 이름의 일부인 경우 먼저 보호한 뒤 공동 명의의 쉼표만 나눕니다.
+  const protectedArtistNames = [...new Set(artistDefinitions.flatMap(identity =>
+    [identity.ko, identity.en, ...(identity.aliases || [])].filter(name => String(name || '').includes(','))
+  ))].sort((a, b) => b.length - a.length);
+
+  function splitArtistNames(value) {
+    const text = String(value || '').trim();
+    if (!text) return [];
+    if (artistAliasToId.has(normalize(text).normalize('NFC'))) return [text];
+    const restored = [];
+    let safeText = text;
+    protectedArtistNames.forEach(name => {
+      const pattern = new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      safeText = safeText.replace(pattern, match => {
+        const index = restored.push(match) - 1;
+        return `\uE000${index}\uE001`;
+      });
+    });
+    const parts = [];
+    let part = '';
+    let parentheses = 0;
+    for (const character of safeText) {
+      if (character === '(') parentheses += 1;
+      if (character === ')') parentheses = Math.max(0, parentheses - 1);
+      if (character === ',' && parentheses === 0) {
+        parts.push(part);
+        part = '';
+      } else {
+        part += character;
+      }
+    }
+    parts.push(part);
+    return parts.map(part =>
+      part.replace(/\uE000(\d+)\uE001/g, (_, index) => restored[Number(index)] || '').trim()
+    ).filter(Boolean);
+  }
+
+  function getAlbumArtistCredits(album) {
+    const override = artistDirectory.creditOverrides?.[album?.id];
+    if (Array.isArray(override)) {
+      return override.filter(id => artistById.has(id)).map(id => {
+        const identity = artistById.get(id);
+        return { id, ko: identity.ko, en: identity.en || identity.ko };
+      });
+    }
+    const koreanNames = splitArtistNames(album?.artistKo || album?.artist || album?.artistEn);
+    const englishNames = splitArtistNames(album?.artistEn);
+    return koreanNames.map((name, index) => {
+      const englishName = englishNames.length === koreanNames.length ? englishNames[index] : '';
+      const id = artistAliasToId.get(normalize(name).normalize('NFC'))
+        || artistAliasToId.get(normalize(englishName).normalize('NFC'))
+        || `name:${normalize(name).normalize('NFC')}`;
+      const identity = artistById.get(id);
+      return { id, ko: identity?.ko || name, en: identity?.en || englishName || name };
+    }).filter(credit => credit.id !== 'name:' && !/^(여러아티스트|variousartists)$/.test(normalize(credit.ko)));
+  }
+
+  function getArtistChoices(album) {
+    const choices = [];
+    const seen = new Set();
+    const add = credit => {
+      if (!credit?.id || seen.has(credit.id)) return;
+      seen.add(credit.id);
+      choices.push(credit);
+    };
+    getAlbumArtistCredits(album).forEach(credit => {
+      add(credit);
+      (artistById.get(credit.id)?.members || []).forEach(id => {
+        const identity = artistById.get(id);
+        if (identity) add({ id, ko: identity.ko, en: identity.en || identity.ko });
+      });
+    });
+    return choices;
+  }
+
+  function getRelatedArtistAlbums(album, artistId = '') {
+    const ids = artistId ? [artistId] : getArtistChoices(album).map(choice => choice.id);
+    if (!ids.length) return [];
+    return albums.filter(item => item.id !== album.id && getAlbumArtistCredits(item).some(credit =>
+      ids.includes(credit.id) || (artistById.get(credit.id)?.members || []).some(memberId => ids.includes(memberId))
+    ));
   }
 
   function getArtistAlbums(album) {
@@ -4048,23 +4153,135 @@
     if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
   }
 
-  function goArtistAlbums(album) {
-    const artistName = String(album.artistKo || album.artistEn || album.artist || '').trim();
-    if (!artistName || getArtistAlbums(album).length < 2) return;
-    state.artist = artistName;
-    state.query = '';
-    state.format = FORMAT_ALL;
-    state.genre = GENRE_ALL;
-    state.sort = 'default';
-    state.decade = '';
-    state.recentOnly = false;
-    state.filtersExpanded = false;
-    state.page = 1;
-    state.homeSection = 'catalog';
-    history.pushState({ view: 'home', homeSection: 'catalog' }, '', getBaseUrl());
-    syncBrowseUrl();
-    renderHome();
-    window.scrollTo({ top: 0, behavior: 'instant' });
+  function hideArtistAlbums() {
+    artistAlbumsOverlay?.remove();
+    artistAlbumsOverlay = null;
+    document.body.classList.remove('artist-albums-open');
+    if (artistAlbumsTrigger?.isConnected) artistAlbumsTrigger.focus({ preventScroll: true });
+    artistAlbumsClosing = false;
+  }
+
+  function closeArtistAlbums(afterClose) {
+    if (!artistAlbumsOverlay || artistAlbumsClosing) return;
+    afterArtistAlbumsClose = typeof afterClose === 'function' ? afterClose : null;
+    if (history.state?.artistAlbums) {
+      artistAlbumsClosing = true;
+      history.back();
+      return;
+    }
+    hideArtistAlbums();
+    const callback = afterArtistAlbumsClose;
+    afterArtistAlbumsClose = null;
+    callback?.();
+  }
+
+  function openArtistAlbums(album, trigger, options = {}) {
+    if (artistAlbumsOverlay || !getRelatedArtistAlbums(album).length) return;
+    artistAlbumsTrigger = trigger || document.activeElement;
+    artistAlbumsBaseUrl = window.location.href;
+    if (!options.fromHistory) {
+      history.pushState({ ...history.state, artistAlbums: true, artistPopupAlbumId: album.id }, '', artistAlbumsBaseUrl);
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'artist-albums-overlay';
+    const panel = document.createElement('section');
+    panel.className = 'artist-albums-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-labelledby', 'artist-albums-title');
+    const header = document.createElement('header');
+    header.className = 'artist-albums-header';
+    const title = document.createElement('h2');
+    title.id = 'artist-albums-title';
+    title.textContent = t('artistAlbumsButton');
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'artist-albums-close';
+    closeButton.textContent = '×';
+    closeButton.setAttribute('aria-label', t('artistAlbumsClose'));
+    closeButton.addEventListener('click', () => closeArtistAlbums());
+    header.append(title, closeButton);
+
+    const choices = getArtistChoices(album);
+    panel.classList.toggle('has-selector', choices.length > 1);
+    const selector = document.createElement('div');
+    selector.className = 'artist-albums-selector';
+    selector.setAttribute('role', 'group');
+    selector.setAttribute('aria-label', t('artistAlbumsChoose'));
+    const list = document.createElement('div');
+    list.className = 'artist-albums-list';
+    const showAlbums = artistId => {
+      selector.querySelectorAll('button').forEach(button => {
+        const selected = button.dataset.artistId === artistId;
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      const related = getRelatedArtistAlbums(album, artistId);
+      if (!related.length) {
+        const empty = document.createElement('p');
+        empty.className = 'artist-albums-empty';
+        empty.textContent = t('artistAlbumsEmpty');
+        list.replaceChildren(empty);
+        return;
+      }
+      list.replaceChildren(...related.map(item => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'artist-albums-item';
+        const cover = createCover(item, 'artist-albums-cover');
+        const info = document.createElement('span');
+        info.className = 'artist-albums-info';
+        const albumTitle = document.createElement('strong');
+        albumTitle.textContent = item.title || '';
+        const artist = document.createElement('span');
+        artist.className = 'artist-albums-artist';
+        artist.textContent = getLocalizedArtist(item) || '';
+        const facts = document.createElement('small');
+        facts.textContent = [formatLabel(item.format), getAlbumGenres(item).map(genre => getGenreLabel(genre)).join(', '), item.year].filter(Boolean).join(' · ');
+        info.append(albumTitle, artist, facts);
+        button.append(cover, info);
+        button.addEventListener('click', () => closeArtistAlbums(() => openAlbum(item.id)));
+        return button;
+      }));
+      list.scrollTop = 0;
+    };
+    if (choices.length > 1) {
+      [{ id: '', ko: t('artistAlbumsAll'), en: t('artistAlbumsAll') }, ...choices].forEach(choice => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.artistId = choice.id;
+        button.textContent = choice.id ? (state.language === 'en' ? choice.en : choice.ko) : t('artistAlbumsAll');
+        button.addEventListener('click', () => showAlbums(choice.id));
+        selector.append(button);
+      });
+      panel.append(header, selector, list);
+    } else {
+      panel.append(header, list);
+    }
+    overlay.append(panel);
+    overlay.addEventListener('click', event => {
+      if (event.target === overlay) closeArtistAlbums();
+    });
+    overlay.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeArtistAlbums();
+      if (event.key !== 'Tab') return;
+      const focusable = [...panel.querySelectorAll('button:not([disabled])')];
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+    document.body.append(overlay);
+    artistAlbumsOverlay = overlay;
+    document.body.classList.add('artist-albums-open');
+    showAlbums('');
+    closeButton.focus({ preventScroll: true });
   }
 
   function renderDetail(albumId, options = {}) {
@@ -4101,12 +4318,11 @@
     }
     node.querySelector('[data-detail-title]').textContent = album.title || '';
     node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
-    const sameArtistAlbums = getArtistAlbums(album);
     const artistAlbumsButton = node.querySelector('[data-artist-albums]');
-    if (sameArtistAlbums.length > 1) {
+    if (getRelatedArtistAlbums(album).length) {
       artistAlbumsButton.hidden = false;
-      artistAlbumsButton.textContent = t('artistAlbumsButton')(sameArtistAlbums.length - 1);
-      artistAlbumsButton.addEventListener('click', () => goArtistAlbums(album));
+      artistAlbumsButton.textContent = t('artistAlbumsButton');
+      artistAlbumsButton.addEventListener('click', () => openArtistAlbums(album, artistAlbumsButton));
     }
 
     const tags = [
@@ -4325,6 +4541,22 @@
     if (history.state?.requestList) {
       renderRouteFromLocation();
       openRequestTrackList({ fromHistory: true });
+      return;
+    }
+    if (artistAlbumsOverlay) {
+      const stayedOnPage = window.location.href === artistAlbumsBaseUrl;
+      hideArtistAlbums();
+      const callback = afterArtistAlbumsClose;
+      afterArtistAlbumsClose = null;
+      if (stayedOnPage) {
+        callback?.();
+        return;
+      }
+    }
+    if (history.state?.artistAlbums) {
+      renderRouteFromLocation();
+      const album = albums.find(item => item.id === history.state.artistPopupAlbumId);
+      if (album) openArtistAlbums(album, document.querySelector('[data-artist-albums]'), { fromHistory: true });
       return;
     }
     // 커버 크게 보기는 상세 페이지 위의 한 단계이므로, 뒤로가기는 먼저 뷰어만 닫습니다.

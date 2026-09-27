@@ -50,6 +50,36 @@
       // 2026-08-27: 9장이 차지 않은 마지막 묶음도 한 페이지로 정확히 이동합니다.
       partialAlbumPageFix: true,
     }),
+    // 화면에 표시하는 아티스트명은 유지하고, 같은 인물의 다른 표기와 그룹 관계만 연결합니다.
+    artistDirectory: Object.freeze({
+      identities: Object.freeze([
+        { id: 'anderson-paak', ko: '앤더슨 팩', en: 'Anderson .Paak', aliases: ['Anderson.Paak'] },
+        { id: 'bruno-mars', ko: '브루노 마스', en: 'Bruno Mars' },
+        { id: 'knxwledge', ko: '놀리지', en: 'Knxwledge' },
+        { id: 'silk-sonic', ko: '실크 소닉', en: 'Silk Sonic', aliases: ['실크 소닉 (브루노 마스 & 앤더슨 팩)', 'Silk Sonic (Bruno Mars & Anderson .Paak)'], members: ['bruno-mars', 'anderson-paak'] },
+        { id: 'nxworries', ko: '노워리스', en: 'NxWorries', aliases: ['노워리스 (앤더슨 팩 & 놀리지)', 'NxWorries (Anderson.Paak & Knxwledge)'], members: ['anderson-paak', 'knxwledge'] },
+        { id: 'kanye-west', ko: '칸예 웨스트', en: 'Kanye West' },
+        { id: 'kid-cudi', ko: '키드 커디', en: 'Kid Cudi' },
+        { id: 'kids-see-ghosts', ko: '키즈 씨 고스트', en: 'KIDS SEE GHOSTS', aliases: ['키즈 씨 고스트 (칸예 웨스트 & 키드 커디)', 'KIDS SEE GHOSTS (Kanye West & Kid Cudi)'], members: ['kanye-west', 'kid-cudi'] },
+        { id: 'mf-doom', ko: '엠에프 둠', en: 'MF DOOM' },
+        { id: 'madlib', ko: '매들립', en: 'Madlib' },
+        { id: 'madvillain', ko: '매드빌런', en: 'Madvillain', aliases: ['매드빌런 (엠에프 둠 & 매들립)', 'Madvillain (MF DOOM & Madlib)'], members: ['mf-doom', 'madlib'] },
+        { id: 'paloalto', ko: '팔로알토', en: 'Paloalto' },
+        { id: 'the-quiett', ko: '더콰이엇', en: 'The Quiett' },
+        { id: 'p-and-q', ko: '팔로알토 & 더콰이엇', en: 'Paloalto & The Quiett', aliases: ['팔로알토 & 더콰이엇 (P&Q)', 'Paloalto & The Quiett (P&Q)'], members: ['paloalto', 'the-quiett'] },
+        { id: 'sik-k', ko: '식케이', en: 'Sik-K' },
+        { id: 'haon', ko: '김하온', en: 'HAON', aliases: ['하온'] },
+        { id: 'nowimyoung', ko: '나우아임영', en: 'NOWIMYOUNG' },
+        { id: 'jmin', ko: '제이민', en: 'JMIN' },
+        { id: 'kc', ko: 'KC', en: 'KC', aliases: ['KC (식케이, 김하온, 나우아임영, 제이민)', 'KC (Sik-K, HAON, NOWIMYOUNG, JMIN)'], members: ['sik-k', 'haon', 'nowimyoung', 'jmin'] },
+        { id: 'tyler-the-creator', ko: '타일러, 더 크리에이터', en: 'Tyler, The Creator' },
+        { id: 'prophet', ko: '프로펫', en: 'Prophet' },
+      ]),
+      // 쉼표가 이름 자체에 들어간 공동 명의 음반은 참여자를 직접 지정합니다.
+      creditOverrides: Object.freeze({
+        'album-ms41jv6k': ['tyler-the-creator', 'prophet'],
+      }),
+    }),
     mobilePagerMedia: '(max-width: 719px), (pointer: coarse) and (max-width: 900px)',
   });
 })();
