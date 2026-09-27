@@ -306,6 +306,7 @@
       sortTitle: '앨범명순',
       randomAlbum: '오늘 뭐 듣지?',
       randomFilteredAlbum: '이 조건에서 고르기',
+      filterResultsJump: count => `해당 음반 ${count}장 보기 ↓`,
       newAlbums: '새로 온 음반',
       resetFilters: '필터 초기화',
       requestListCount: count => `신청곡 메모 ${count}`,
@@ -406,6 +407,7 @@
       sortTitle: 'Album title',
       randomAlbum: 'Pick for Me',
       randomFilteredAlbum: 'Pick from These',
+      filterResultsJump: count => `View ${count} albums ↓`,
       newAlbums: 'New arrivals',
       resetFilters: 'Reset filters',
       requestListCount: count => `Request notes ${count}`,
@@ -2769,6 +2771,21 @@
     return parts.join(' · ');
   }
 
+  function updateFilterResultsJumpVisibility() {
+    const button = document.querySelector('body > [data-filter-results-jump]');
+    const panel = app.querySelector('[data-filter-panel]');
+    if (!button || !panel) return;
+    const rect = panel.getBoundingClientRect();
+    button.hidden = !state.filtersExpanded
+      || state.homeSection !== 'catalog'
+      || document.body.classList.contains('is-detail-view')
+      || rect.top >= window.innerHeight - 80
+      || rect.bottom <= 80;
+  }
+
+  window.addEventListener('scroll', updateFilterResultsJumpVisibility, { passive: true });
+  window.addEventListener('resize', updateFilterResultsJumpVisibility, { passive: true });
+
   // 검색창은 항상 보이고, 정렬과 필터만 손님이 필요할 때 펼쳐서 사용합니다.
   function updateFilterPanel(root = app) {
     const toggle = root.querySelector('[data-filter-toggle]');
@@ -2779,6 +2796,7 @@
     toggle.setAttribute('aria-expanded', String(state.filtersExpanded));
     panel.hidden = !state.filtersExpanded;
     summary.textContent = getFilterToggleSummary();
+    requestAnimationFrame(updateFilterResultsJumpVisibility);
   }
 
   function setHomeSection(section, options = {}) {
@@ -2786,6 +2804,7 @@
     finishHomeSectionMotion?.();
     const root = app.querySelector('[data-home-sections]');
     state.homeSection = section;
+    requestAnimationFrame(updateFilterResultsJumpVisibility);
     if (!root) return;
     const tabs = Array.from(root.querySelectorAll('[data-home-section]'));
     const panels = Array.from(root.querySelectorAll('[data-home-panel]'));
@@ -2930,6 +2949,7 @@
   }
 
   function renderHome(options = {}) {
+    document.querySelector('body > [data-filter-results-jump]')?.remove();
     finishHomeSectionMotion?.();
     app.querySelector('[data-album-grid]')?._pdPager?.destroy();
     closeDetailCoverViewer({ restoreFocus: false });
@@ -3047,6 +3067,16 @@
       if (state.filtersExpanded) scheduleSearchToolLabelFit();
     });
 
+    node.querySelector('[data-filter-results-jump]').addEventListener('click', () => {
+      state.filtersExpanded = false;
+      updateFilterPanel(app);
+      requestAnimationFrame(() => {
+        app.querySelector('[data-grid-section]')?.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      });
+    });
     const newAlbumsButton = node.querySelector('[data-new-albums]');
     newAlbumsButton.dataset.active = String(state.recentOnly);
     newAlbumsButton.setAttribute('aria-pressed', String(state.recentOnly));
@@ -3091,9 +3121,11 @@
     } else {
       app.replaceChildren(node);
     }
+    document.body.append(app.querySelector('[data-filter-results-jump]'));
     setupHomeSections();
     refreshRequestTrackUi(app);
     updateAlbumGrid();
+    updateFilterResultsJumpVisibility();
     scheduleSearchToolLabelFit();
   }
 
@@ -3873,6 +3905,8 @@
     const summary = app.querySelector('[data-result-summary]');
     const pagination = app.querySelector('[data-pagination]');
     const filtered = getVisibleAlbums();
+    const filterResultsJump = document.querySelector('body > [data-filter-results-jump]');
+    if (filterResultsJump) filterResultsJump.textContent = t('filterResultsJump')(filtered.length);
     const perPage = getAlbumsPerPage();
     const previousPerPage = Number(grid.dataset.perPage);
     const view = getEffectiveAlbumView();
@@ -4041,6 +4075,7 @@
   }
 
   function renderDetail(albumId, options = {}) {
+    document.querySelector('body > [data-filter-results-jump]')?.setAttribute('hidden', '');
     document.body.classList.toggle('is-detail-view', CUSTOMER_FEATURES.compactDetailHeader);
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
     if (!album) return renderHome();

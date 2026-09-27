@@ -994,3 +994,41 @@ html.feature-customer-modern-style[data-customer-theme="day"] body.customer-page
     transition-duration: 1ms;
   }
 }
+
+/* 모바일 필터에서 현재 결과로 바로 이동합니다. */
+.filter-results-jump {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .filter-panel {
+    padding-bottom: 70px;
+  }
+
+  body.customer-page > .filter-results-jump:not([hidden]) {
+    position: fixed;
+    z-index: 90;
+    display: block;
+    left: 16px;
+    right: 16px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    width: calc(100% - 32px);
+    min-height: 54px;
+    padding: 10px 16px;
+    border: 1px solid rgba(179, 199, 255, 0.55);
+    border-radius: 10px;
+    background: #425fbd;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(10, 19, 53, 0.4);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  body.customer-page > .filter-results-jump:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+}
