@@ -4378,12 +4378,17 @@ html.feature-customer-typographic-pagination .pagination-nav-button {
 
 /* 상세 화면을 유지한 채 같은 아티스트의 소장 음반을 둘러보는 팝업. */
 .artist-albums-overlay {
+  --artist-dialog-gap: 20px;
   position: fixed;
   inset: 0;
   z-index: 1300;
   display: grid;
   place-items: center;
-  padding: 20px;
+  box-sizing: border-box;
+  padding: max(var(--artist-dialog-gap), env(safe-area-inset-top))
+    max(var(--artist-dialog-gap), env(safe-area-inset-right))
+    max(var(--artist-dialog-gap), env(safe-area-inset-bottom))
+    max(var(--artist-dialog-gap), env(safe-area-inset-left));
   background: rgba(3, 3, 5, 0.74);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -4399,7 +4404,9 @@ body.artist-albums-open {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   width: min(640px, 100%);
-  max-height: min(760px, calc(100svh - 40px));
+  box-sizing: border-box;
+  min-height: 0;
+  max-height: min(760px, calc(100svh - max(var(--artist-dialog-gap), env(safe-area-inset-top)) - max(var(--artist-dialog-gap), env(safe-area-inset-bottom))));
   overflow: hidden;
   border: 1px solid rgba(255, 91, 157, 0.34);
   border-radius: 10px;
@@ -4474,8 +4481,9 @@ body.artist-albums-open {
 }
 
 .artist-albums-list {
-  min-height: 80px;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 7px 12px 12px;
 }
 
@@ -4498,6 +4506,21 @@ body.artist-albums-open {
 
 .artist-albums-item:last-child {
   border-bottom: 0;
+}
+
+.artist-albums-item.is-current {
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.artist-albums-current {
+  justify-self: start;
+  padding: 3px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
 }
 
 .artist-albums-item:hover,
@@ -4550,19 +4573,10 @@ body.artist-albums-open {
 }
 
 @media (max-width: 640px) {
-  .artist-albums-overlay {
-    place-items: end stretch;
-    padding: 0;
-  }
-
   .artist-albums-panel {
     width: 100%;
-    max-height: 84svh;
-    padding-bottom: env(safe-area-inset-bottom);
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 0;
-    border-radius: 12px 12px 0 0;
+    max-height: min(76svh, calc(100svh - max(var(--artist-dialog-gap), env(safe-area-inset-top)) - max(var(--artist-dialog-gap), env(safe-area-inset-bottom))));
+    border-radius: 12px;
   }
 
   .artist-albums-item {

@@ -287,11 +287,12 @@
       albumSearch: '검색',
       searchPlaceholder: '음반명·아티스트·곡 제목',
       clearSearch: '검색어 지우기',
-      artistAlbumsButton: '이 아티스트의 다른 음반 보기',
+      artistAlbumsButton: '이 아티스트의 음반 보기',
       artistAlbumsAll: '전체',
       artistAlbumsChoose: '아티스트 선택',
-      artistAlbumsClose: '다른 음반 팝업 닫기',
-      artistAlbumsEmpty: '현재 보유한 다른 음반이 없습니다.',
+      artistAlbumsClose: '아티스트 음반 팝업 닫기',
+      artistAlbumsEmpty: '현재 보유한 음반이 없습니다.',
+      artistAlbumsCurrent: '현재 보고 있는 음반',
       artistAlbumsScope: (artist, count) => `${artist}의 음반 ${count}장`,
       clearArtistScope: '아티스트 보기 해제',
       filters: '필터',
@@ -391,11 +392,12 @@
       albumSearch: 'Search',
       searchPlaceholder: 'Album · artist · track title',
       clearSearch: 'Clear search',
-      artistAlbumsButton: 'More by this artist',
+      artistAlbumsButton: 'Albums by this artist',
       artistAlbumsAll: 'All',
       artistAlbumsChoose: 'Choose an artist',
-      artistAlbumsClose: 'Close other albums',
-      artistAlbumsEmpty: 'No other albums in the archive yet.',
+      artistAlbumsClose: 'Close artist albums',
+      artistAlbumsEmpty: 'No albums in the archive yet.',
+      artistAlbumsCurrent: 'Current album',
       artistAlbumsScope: (artist, count) => `${artist} · ${count} albums`,
       clearArtistScope: 'Clear artist selection',
       filters: 'Filters',
@@ -1227,13 +1229,15 @@
         return `\uE000${index}\uE001`;
       });
     });
+    // 알려진 그룹명은 위에서 보호합니다. 나머지는 공동 명의의 구분자만 나눕니다.
+    safeText = safeText.replace(/\s+[x×]\s+/gi, ',').replace(/\s*\/\s+/g, ',');
     const parts = [];
     let part = '';
     let parentheses = 0;
     for (const character of safeText) {
       if (character === '(') parentheses += 1;
       if (character === ')') parentheses = Math.max(0, parentheses - 1);
-      if (character === ',' && parentheses === 0) {
+      if ((character === ',' || character === '&') && parentheses === 0) {
         parts.push(part);
         part = '';
       } else {
@@ -1245,6 +1249,25 @@
       part.replace(/\uE000(\d+)\uE001/g, (_, index) => restored[Number(index)] || '').trim()
     ).filter(Boolean);
   }
+
+  // 두 언어의 참여자 수가 같을 때만 서로 연결합니다. 같은 영문명에 서로 다른
+  // 한글 표기가 쓰이거나, 일부 음반에 영문명이 없는 경우도 같은 인물로 찾습니다.
+  const albumArtistNames = albums.map(album => {
+    const ko = splitArtistNames(album.artistKo || album.artist || album.artistEn);
+    const en = splitArtistNames(album.artistEn);
+    return { ko, en: en.length === ko.length ? en : [] };
+  });
+  albumArtistNames.sort((a, b) => Number(Boolean(b.en.length)) - Number(Boolean(a.en.length)));
+  albumArtistNames.forEach(({ ko, en }) => ko.forEach((name, index) => {
+    const englishName = en[index] || '';
+    const key = normalize(name).normalize('NFC');
+    const englishKey = normalize(englishName).normalize('NFC');
+    const id = artistAliasToId.get(key) || artistAliasToId.get(englishKey) || `name:${englishKey || key}`;
+    if (!artistById.has(id)) artistById.set(id, { id, ko: name, en: englishName || name });
+    [key, englishKey].filter(Boolean).forEach(alias => {
+      if (!artistAliasToId.has(alias)) artistAliasToId.set(alias, id);
+    });
+  }));
 
   function getAlbumArtistCredits(album) {
     const override = artistDirectory.creditOverrides?.[album?.id];
@@ -1263,7 +1286,7 @@
         || `name:${normalize(name).normalize('NFC')}`;
       const identity = artistById.get(id);
       return { id, ko: identity?.ko || name, en: identity?.en || englishName || name };
-    }).filter(credit => credit.id !== 'name:' && !/^(여러아티스트|variousartists)$/.test(normalize(credit.ko)));
+    }).filter(credit => credit.id !== 'name:' && !/^(여러아티스트|variousartists)$/.test(normalize(credit.ko).normalize('NFC')));
   }
 
   function getArtistChoices(album) {
@@ -1287,7 +1310,7 @@
   function getRelatedArtistAlbums(album, artistId = '') {
     const ids = artistId ? [artistId] : getArtistChoices(album).map(choice => choice.id);
     if (!ids.length) return [];
-    return albums.filter(item => item.id !== album.id && getAlbumArtistCredits(item).some(credit =>
+    return albums.filter(item => getAlbumArtistCredits(item).some(credit =>
       ids.includes(credit.id) || (artistById.get(credit.id)?.members || []).some(memberId => ids.includes(memberId))
     ));
   }
@@ -4228,6 +4251,11 @@
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'artist-albums-item';
+        const isCurrent = item.id === album.id;
+        if (isCurrent) {
+          button.classList.add('is-current');
+          button.setAttribute('aria-current', 'page');
+        }
         const cover = createCover(item, 'artist-albums-cover');
         const info = document.createElement('span');
         info.className = 'artist-albums-info';
@@ -4239,8 +4267,14 @@
         const facts = document.createElement('small');
         facts.textContent = [formatLabel(item.format), getAlbumGenres(item).map(genre => getGenreLabel(genre)).join(', '), item.year].filter(Boolean).join(' · ');
         info.append(albumTitle, artist, facts);
+        if (isCurrent) {
+          const current = document.createElement('span');
+          current.className = 'artist-albums-current';
+          current.textContent = t('artistAlbumsCurrent');
+          info.append(current);
+        }
         button.append(cover, info);
-        button.addEventListener('click', () => closeArtistAlbums(() => openAlbum(item.id)));
+        button.addEventListener('click', () => closeArtistAlbums(isCurrent ? undefined : () => openAlbum(item.id)));
         return button;
       }));
       list.scrollTop = 0;

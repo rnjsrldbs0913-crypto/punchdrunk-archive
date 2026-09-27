@@ -61,8 +61,8 @@
         { id: 'kanye-west', ko: '칸예 웨스트', en: 'Kanye West' },
         { id: 'kid-cudi', ko: '키드 커디', en: 'Kid Cudi' },
         { id: 'kids-see-ghosts', ko: '키즈 씨 고스트', en: 'KIDS SEE GHOSTS', aliases: ['키즈 씨 고스트 (칸예 웨스트 & 키드 커디)', 'KIDS SEE GHOSTS (Kanye West & Kid Cudi)'], members: ['kanye-west', 'kid-cudi'] },
-        { id: 'mf-doom', ko: '엠에프 둠', en: 'MF DOOM' },
-        { id: 'madlib', ko: '매들립', en: 'Madlib' },
+        { id: 'mf-doom', ko: '엠에프 둠', en: 'MF DOOM', aliases: ['킹 기도라', 'King Geedorah'] },
+        { id: 'madlib', ko: '매들립', en: 'Madlib', aliases: ['콰지모토', 'Quasimoto', '콰지모토 (매들립)', 'Quasimoto (Madlib)'] },
         { id: 'madvillain', ko: '매드빌런', en: 'Madvillain', aliases: ['매드빌런 (엠에프 둠 & 매들립)', 'Madvillain (MF DOOM & Madlib)'], members: ['mf-doom', 'madlib'] },
         { id: 'paloalto', ko: '팔로알토', en: 'Paloalto' },
         { id: 'the-quiett', ko: '더콰이엇', en: 'The Quiett' },
@@ -74,6 +74,12 @@
         { id: 'kc', ko: 'KC', en: 'KC', aliases: ['KC (식케이, 김하온, 나우아임영, 제이민)', 'KC (Sik-K, HAON, NOWIMYOUNG, JMIN)'], members: ['sik-k', 'haon', 'nowimyoung', 'jmin'] },
         { id: 'tyler-the-creator', ko: '타일러, 더 크리에이터', en: 'Tyler, The Creator' },
         { id: 'prophet', ko: '프로펫', en: 'Prophet' },
+        { id: 'bill-evans', ko: '빌 에반스', en: 'Bill Evans', aliases: ['빌 에반스 트리오', 'Bill Evans Trio'] },
+        { id: 'miles-davis', ko: '마일스 데이비스', en: 'Miles Davis', aliases: ['마일스 데이비스 퀸텟', 'Miles Davis Quintet'] },
+        { id: 'roy-hargrove', ko: '로이 하그로브', en: 'Roy Hargrove', aliases: ['로이 하그로브 퀸텟', 'Roy Hargrove Quintet'] },
+        // 쉼표가 아티스트 이름 자체의 일부인 표기는 공동 명의로 나누지 않습니다.
+        { id: 'grover-washington-jr', ko: '그로버 워싱턴 주니어', en: 'Grover Washington, Jr.' },
+        { id: 'car-the-garden', ko: '카더가든', en: 'Car, the garden' },
       ]),
       // 쉼표가 이름 자체에 들어간 공동 명의 음반은 참여자를 직접 지정합니다.
       creditOverrides: Object.freeze({
