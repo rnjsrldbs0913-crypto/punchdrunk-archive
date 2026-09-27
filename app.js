@@ -305,7 +305,6 @@
       sortArtist: '아티스트순',
       sortTitle: '앨범명순',
       randomAlbum: '오늘 뭐 듣지?',
-      randomFilteredAlbum: '이 조건에서 고르기',
       filterResultsJump: count => `해당 음반 ${count}장 보기 ↓`,
       newAlbums: '새로 온 음반',
       resetFilters: '필터 초기화',
@@ -406,7 +405,6 @@
       sortArtist: 'Artist',
       sortTitle: 'Album title',
       randomAlbum: 'Pick for Me',
-      randomFilteredAlbum: 'Pick from These',
       filterResultsJump: count => `View ${count} albums ↓`,
       newAlbums: 'New arrivals',
       resetFilters: 'Reset filters',
@@ -2724,26 +2722,23 @@
     }
   }
 
+  function isWeeklyDetailRandom(button) {
+    return state.homeSection === 'weekly' && Boolean(button.closest('.detail-page'));
+  }
+
   function updateRandomAlbumButtons(root = app) {
-    const empty = getFilteredAlbums().length === 0;
-    const filteredChoice = Boolean(
-      state.query.trim()
-      || state.artist
-      || state.format !== FORMAT_ALL
-      || state.genre !== GENRE_ALL
-      || state.decade
-      || state.recentOnly
-    );
+    const filteredCount = getFilteredAlbums().length;
     root.querySelectorAll('[data-random-album]').forEach(button => {
-      button.disabled = empty;
-      button.textContent = t(filteredChoice ? 'randomFilteredAlbum' : 'randomAlbum');
+      button.disabled = isWeeklyDetailRandom(button) ? albums.length === 0 : filteredCount === 0;
+      button.textContent = t('randomAlbum');
       button.setAttribute('aria-label', button.textContent);
     });
   }
 
-  function openRandomAlbum() {
-    // 페이지나 보기 방식과 관계없이 현재 검색과 모든 필터에 맞는 전체 결과에서 고릅니다.
-    const filtered = getFilteredAlbums();
+  function openRandomAlbum(button) {
+    // 금주의 음반 상세에서는 전체 음반, 그 외에는 현재 검색과 필터 결과에서 고릅니다.
+    const ignoreFilters = isWeeklyDetailRandom(button);
+    const filtered = ignoreFilters ? albums : getFilteredAlbums();
     if (!filtered.length) return;
     const blockedId = getAlbumIdFromHash() || state.lastRandomAlbumId;
     const pool = filtered.length > 1
@@ -2751,7 +2746,7 @@
       : filtered;
     const album = pool[Math.floor(Math.random() * pool.length)];
     state.lastRandomAlbumId = album.id;
-    openAlbum(album.id, { trackSearchQuery: getTrackSearchQuery(album) });
+    openAlbum(album.id, { trackSearchQuery: ignoreFilters ? '' : getTrackSearchQuery(album) });
   }
 
   function getFilterToggleSummary() {
@@ -4264,7 +4259,8 @@
   });
 
   document.addEventListener('click', event => {
-    if (event.target.closest('[data-random-album]')) openRandomAlbum();
+    const button = event.target.closest('[data-random-album]');
+    if (button) openRandomAlbum(button);
   });
 
   let resizeTimer = null;
