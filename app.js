@@ -116,6 +116,7 @@
     homeSection: HOME_SECTIONS[0],
     albumView: getInitialAlbumView(),
     query: '',
+    artist: '',
     format: FORMAT_ALL,
     genre: GENRE_ALL,
     sort: 'default',
@@ -166,7 +167,7 @@
   ];
 
   const BROWSE_SORTS = new Set(['default', 'newest', 'oldest', 'artist', 'title']);
-  const BROWSE_URL_KEYS = ['q', 'format', 'genre', 'sort', 'decade', 'recent', 'section'];
+  const BROWSE_URL_KEYS = ['q', 'artist', 'format', 'genre', 'sort', 'decade', 'recent', 'section'];
 
   function readBrowseStateFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -175,9 +176,12 @@
     const sort = params.get('sort');
     const decade = params.get('decade');
     const section = params.get('section');
+    const requestedArtist = String(params.get('artist') || '').trim().slice(0, 120);
     const hasBrowseParams = BROWSE_URL_KEYS.some(key => key !== 'section' && params.has(key));
     return {
       query: String(params.get('q') || '').slice(0, 300),
+      artist: requestedArtist && albums.some(album => getArtistKey(album) === normalize(requestedArtist).normalize('NFC'))
+        ? requestedArtist : '',
       format: format === 'Vinyl' || format === 'CD' ? format : FORMAT_ALL,
       genre: STANDARD_GENRES.includes(genre) ? genre : GENRE_ALL,
       sort: BROWSE_SORTS.has(sort) ? sort : 'default',
@@ -193,7 +197,7 @@
 
   function applyBrowseStateFromUrl() {
     const next = readBrowseStateFromUrl();
-    const filtersChanged = ['query', 'format', 'genre', 'sort', 'decade', 'recentOnly']
+    const filtersChanged = ['query', 'artist', 'format', 'genre', 'sort', 'decade', 'recentOnly']
       .some(key => state[key] !== next[key]);
     Object.assign(state, next);
     if (filtersChanged) {
@@ -211,6 +215,7 @@
     const params = new URLSearchParams(window.location.search);
     BROWSE_URL_KEYS.forEach(key => params.delete(key));
     if (state.query.trim()) params.set('q', state.query.trim());
+    if (state.artist) params.set('artist', state.artist);
     if (state.format !== FORMAT_ALL) params.set('format', state.format);
     if (state.genre !== GENRE_ALL) params.set('genre', state.genre);
     if (state.sort !== 'default') params.set('sort', state.sort);
@@ -284,6 +289,9 @@
       albumSearch: '검색',
       searchPlaceholder: '음반명·아티스트·곡 제목',
       clearSearch: '검색어 지우기',
+      artistAlbumsButton: count => `이 아티스트의 다른 음반 ${count}장 보기`,
+      artistAlbumsScope: (artist, count) => `${artist}의 음반 ${count}장`,
+      clearArtistScope: '아티스트 보기 해제',
       filters: '필터',
       sort: '정렬',
       formatFilter: '음반 형식',
@@ -381,6 +389,9 @@
       albumSearch: 'Search',
       searchPlaceholder: 'Album · artist · track title',
       clearSearch: 'Clear search',
+      artistAlbumsButton: count => `More by this artist (${count})`,
+      artistAlbumsScope: (artist, count) => `${artist} · ${count} albums`,
+      clearArtistScope: 'Clear artist selection',
       filters: 'Filters',
       sort: 'Sort',
       formatFilter: 'Record format',
@@ -1174,6 +1185,16 @@
     return original;
   }
 
+  function getArtistKey(album) {
+    return normalize(album?.artistKo || album?.artistEn || album?.artist).normalize('NFC');
+  }
+
+  function getArtistAlbums(album) {
+    const key = getArtistKey(album);
+    if (!key || /^(여러아티스트|variousartists)$/.test(key)) return [];
+    return albums.filter(item => getArtistKey(item) === key);
+  }
+
   function getLocalizedDescription(album) {
     if (state.language === 'en') return String(album?.descriptionEn || '').trim();
     return String(album?.description || '').trim();
@@ -1777,7 +1798,8 @@
     const includeGenre = options.includeGenre !== false;
     const includeDecade = options.includeDecade !== false;
     const matchesGenre = state.genre === GENRE_ALL || getAlbumGenres(album)[0] === state.genre;
-    return (!includeFormat || state.format === FORMAT_ALL || album.format === state.format)
+    return (!state.artist || getArtistKey(album) === normalize(state.artist).normalize('NFC'))
+      && (!includeFormat || state.format === FORMAT_ALL || album.format === state.format)
       && (!includeGenre || matchesGenre)
       && (!includeDecade || !state.decade || getAlbumDecade(album) === state.decade)
       && (!state.recentOnly || isRecentlyAdded(album))
@@ -2704,6 +2726,7 @@
     const empty = getFilteredAlbums().length === 0;
     const filteredChoice = Boolean(
       state.query.trim()
+      || state.artist
       || state.format !== FORMAT_ALL
       || state.genre !== GENRE_ALL
       || state.decade
@@ -2962,6 +2985,18 @@
     }
 
     const searchInput = node.querySelector('#search-input');
+    const artistScope = node.querySelector('[data-artist-scope]');
+    if (state.artist) {
+      const artistAlbum = albums.find(item => getArtistKey(item) === normalize(state.artist).normalize('NFC'));
+      const artistName = artistAlbum ? getLocalizedArtist(artistAlbum) : state.artist;
+      artistScope.hidden = false;
+      artistScope.querySelector('[data-artist-scope-label]').textContent = t('artistAlbumsScope')(artistName, getArtistAlbums(artistAlbum).length);
+    }
+    artistScope.querySelector('[data-clear-artist-scope]').addEventListener('click', () => {
+      state.artist = '';
+      resetAlbumPage();
+      renderHome();
+    });
     updateAlbumViewButtons(node);
     node.querySelectorAll('[data-album-view-option]').forEach(button => {
       button.addEventListener('click', () => setAlbumView(button.dataset.albumViewOption));
@@ -3023,6 +3058,7 @@
 
     node.querySelector('[data-reset-filters]').addEventListener('click', () => {
       state.query = '';
+      state.artist = '';
       state.format = FORMAT_ALL;
       state.genre = GENRE_ALL;
       state.sort = 'default';
@@ -3985,6 +4021,25 @@
     if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
   }
 
+  function goArtistAlbums(album) {
+    const artistName = String(album.artistKo || album.artistEn || album.artist || '').trim();
+    if (!artistName || getArtistAlbums(album).length < 2) return;
+    state.artist = artistName;
+    state.query = '';
+    state.format = FORMAT_ALL;
+    state.genre = GENRE_ALL;
+    state.sort = 'default';
+    state.decade = '';
+    state.recentOnly = false;
+    state.filtersExpanded = false;
+    state.page = 1;
+    state.homeSection = 'catalog';
+    history.pushState({ view: 'home', homeSection: 'catalog' }, '', getBaseUrl());
+    syncBrowseUrl();
+    renderHome();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
   function renderDetail(albumId, options = {}) {
     document.body.classList.toggle('is-detail-view', CUSTOMER_FEATURES.compactDetailHeader);
     const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
@@ -4018,6 +4073,13 @@
     }
     node.querySelector('[data-detail-title]').textContent = album.title || '';
     node.querySelector('[data-detail-artist]').textContent = getLocalizedArtist(album) || '';
+    const sameArtistAlbums = getArtistAlbums(album);
+    const artistAlbumsButton = node.querySelector('[data-artist-albums]');
+    if (sameArtistAlbums.length > 1) {
+      artistAlbumsButton.hidden = false;
+      artistAlbumsButton.textContent = t('artistAlbumsButton')(sameArtistAlbums.length - 1);
+      artistAlbumsButton.addEventListener('click', () => goArtistAlbums(album));
+    }
 
     const tags = [
       formatLabel(album.format),

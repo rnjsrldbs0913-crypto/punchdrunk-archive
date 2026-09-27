@@ -21,7 +21,7 @@
   <script src="customer-theme.js?v=20260818150000"></script>
   <link rel="stylesheet" href="styles.css?v=2026092403" />
   <link rel="stylesheet" href="customer-polish.css?v=20260818143000" />
-  <link rel="stylesheet" href="customer-modern.css?v=2026092402" />
+  <link rel="stylesheet" href="customer-modern.css?v=2026092701" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
   <link rel="stylesheet" href="customer-views.css?v=2026091604" />
   <link rel="stylesheet" href="customer-brand.css?v=2026091401" />
@@ -134,6 +134,10 @@
               <input id="search-input" class="search-input" type="search" placeholder="음반명·아티스트·곡 제목" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
               <button class="search-clear-button" type="button" data-search-clear aria-label="검색어 지우기" data-i18n-aria="clearSearch" hidden></button>
             </div>
+            <div class="artist-scope" data-artist-scope hidden>
+              <span data-artist-scope-label></span>
+              <button type="button" data-clear-artist-scope aria-label="아티스트 보기 해제" data-i18n-aria="clearArtistScope">×</button>
+            </div>
             <button class="filter-panel-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="album-filter-panel">
               <span data-i18n="filters">필터</span>
               <span class="filter-toggle-summary" data-filter-toggle-summary></span>
@@ -228,6 +232,7 @@
         <div class="detail-tags" data-detail-tags></div>
         <h1 data-detail-title></h1>
         <p data-detail-artist></p>
+        <button class="detail-artist-albums" type="button" data-artist-albums hidden></button>
       </div>
       <section class="detail-section">
         <div class="detail-section-heading">
@@ -251,6 +256,6 @@
   </template>
 
   <script src="albums-data.js?v=20260926143347"></script>
-  <script src="app.js?v=2026092406"></script>
+  <script src="app.js?v=2026092701"></script>
 </body>
 </html>
