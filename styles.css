@@ -511,52 +511,26 @@ select:focus-visible,
 
 .weekly-motion-indicator {
   position: absolute;
-  right: 22px;
-  bottom: 20px;
+  right: 16px;
+  bottom: 16px;
   z-index: 3;
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 38px;
+  padding: 5px 10px;
   border: 1px solid rgba(255, 255, 255, 0.74);
-  border-radius: 50%;
-  background: rgba(9, 8, 13, 0.58);
+  border-radius: 999px;
+  background: rgba(9, 8, 13, 0.68);
   color: #fff;
+  font-size: 12px;
+  font-weight: 700;
   pointer-events: none;
 }
 
-.weekly-motion-indicator::before {
-  width: 0;
-  height: 0;
-  margin-left: 3px;
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  border-left: 11px solid currentColor;
-  content: "";
-}
-
-.weekly-motion-indicator::after {
-  position: absolute;
-  inset: -6px;
-  border: 1px solid rgba(255, 91, 157, 0.72);
-  border-radius: 50%;
-  content: "";
-  transform: scale(0.86);
-  transition: border-color 200ms ease, transform 200ms ease;
-}
-
-.weekly-card.is-motion-playing .weekly-motion-indicator::before {
-  width: 12px;
-  height: 16px;
-  margin-left: 0;
-  border: 0;
-  border-right: 4px solid currentColor;
-  border-left: 4px solid currentColor;
-}
-
-.weekly-card.is-motion-playing .weekly-motion-indicator::after {
-  border-color: rgba(129, 172, 212, 0.96);
-  transform: scale(1);
+.weekly-card.is-motion-playing .weekly-motion-indicator {
+  border-color: #aabaff;
+  background: rgba(25, 40, 77, 0.78);
 }
 
 .weekly-cover {
@@ -3587,7 +3561,7 @@ textarea:focus {
 }
 
 .feature-customer-request-track-list .track-row {
-  grid-template-columns: 12px minmax(34px, max-content) minmax(0, 1fr) 34px;
+  grid-template-columns: 12px minmax(34px, max-content) minmax(0, 1fr) var(--pd-touch-target, 44px);
 }
 
 .detail-section-heading {
@@ -3618,8 +3592,8 @@ textarea:focus {
 
 .track-request-button {
   display: block;
-  width: 30px;
-  height: 30px;
+  width: var(--pd-touch-target, 44px);
+  height: var(--pd-touch-target, 44px);
 }
 
 .track-request-button:is(button) {

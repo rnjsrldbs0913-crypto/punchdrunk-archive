@@ -14,7 +14,7 @@
   const COUNTRY_UNKNOWN = '미입력';
   const NEW_ALBUM_DAYS = 14;
   const SWIPE_HINT_STORAGE_KEY = 'pd-swipe-hint-seen-v1';
-  const REQUEST_TRACKS_STORAGE_KEY = 'pd-request-tracks-v1';
+
   const CUSTOMER_CONFIG = window.PD_CUSTOMER_CONFIG || {};
   const CUSTOMER_FEATURES = CUSTOMER_CONFIG.features || {
     gridThumbnails: true,
@@ -122,27 +122,28 @@
     detailTrackFocus: null,
     language: getInitialLanguage(),
   };
+  const {
+    normalize, getLocalizedArtist, getArtistKey, getSearchTerms,
+    matchesSearch, getAlbumArtistSearchText, getAlbumSearchMetadata, getAlbumSearchGroups,
+    albumMatchesSearch, fieldMatches, getTrackSearchMatches, getTrackSearchQuery,
+    albumHasTrackSearchMatch, getSearchMatchType, getSearchMatchLabel, stripTrackNumber,
+    splitTrackLine, isRecommendedTrack, getAlbumArtistCredits, getArtistChoices,
+    getRelatedArtistAlbums, getArtistAlbums,
+  } = window.PD_ARCHIVE.createSearch({
+    albums, state, CUSTOMER_CONFIG, t,
+  });
+
   let suppressAlbumCardClickUntil = 0;
   let swipeHintSeenInMemory = false;
   let swipeHintObserver = null;
   let swipeHintTimer = 0;
   let swipeHintQueued = false;
   let swipeHintSection = null;
-  let requestTracks = loadRequestTracks();
-  let requestListOverlay = null;
-  let requestListTrigger = null;
-  let requestListBaseUrl = '';
-  let requestListClosing = false;
-  let afterRequestListClose = null;
-  let requestToastTimer = 0;
   let artistAlbumsOverlay = null;
   let artistAlbumsTrigger = null;
   let artistAlbumsBaseUrl = '';
   let artistAlbumsClosing = false;
   let afterArtistAlbumsClose = null;
-  let detailCoverViewer = null;
-  let detailCoverViewerTrigger = null;
-  let detailCoverViewerHistoryActive = false;
   let homeViewLayer = null;
   let detailViewLayer = null;
   let homeViewReady = false;
@@ -164,71 +165,46 @@
     '기타',
   ];
 
-  const BROWSE_SORTS = new Set(['default', 'newest', 'oldest', 'artist', 'title']);
-  const BROWSE_URL_KEYS = ['q', 'artist', 'format', 'genre', 'sort', 'decade', 'recent', 'section', 'page'];
-
-  function readBrowseStateFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const format = params.get('format');
-    const genre = params.get('genre');
-    const sort = params.get('sort');
-    const decade = params.get('decade');
-    const section = params.get('section');
-    const requestedArtist = String(params.get('artist') || '').trim().slice(0, 120);
-    const hasBrowseParams = BROWSE_URL_KEYS.some(key => key !== 'section' && params.has(key));
-    return {
-      query: String(params.get('q') || '').slice(0, 300),
-      artist: requestedArtist && albums.some(album => getArtistKey(album) === normalize(requestedArtist).normalize('NFC'))
-        ? requestedArtist : '',
-      format: format === 'Vinyl' || format === 'CD' ? format : FORMAT_ALL,
-      genre: STANDARD_GENRES.includes(genre) ? genre : GENRE_ALL,
-      sort: BROWSE_SORTS.has(sort) ? sort : 'default',
-      decade: /^\d{4}$/.test(decade || '') && albums.some(album => getAlbumDecade(album) === decade) ? decade : '',
-      recentOnly: params.get('recent') === '1',
-      page: /^\d+$/.test(params.get('page') || '')
-        ? Math.min(1000000, Math.max(1, Number(params.get('page')))) : 1,
-      homeSection: HOME_SECTIONS.includes(section)
-        ? section
-        : HOME_SECTIONS.includes(history.state?.homeSection)
-          ? history.state.homeSection
-          : hasBrowseParams ? 'catalog' : HOME_SECTIONS[0],
-    };
-  }
-
-  function applyBrowseStateFromUrl() {
-    const next = readBrowseStateFromUrl();
-    const filtersChanged = ['query', 'artist', 'format', 'genre', 'sort', 'decade', 'recentOnly']
-      .some(key => state[key] !== next[key]);
-    const pageChanged = state.page !== next.page;
-    Object.assign(state, next);
-    if (filtersChanged) {
-      state.filtersExpanded = state.format !== FORMAT_ALL
-        || state.genre !== GENRE_ALL
-        || state.sort !== 'default'
-        || Boolean(state.decade)
-        || state.recentOnly;
-    }
-    return filtersChanged || pageChanged;
-  }
-
-  function syncBrowseUrl() {
-    const params = new URLSearchParams(window.location.search);
-    BROWSE_URL_KEYS.forEach(key => params.delete(key));
-    if (state.query.trim()) params.set('q', state.query.trim());
-    if (state.artist) params.set('artist', state.artist);
-    if (state.format !== FORMAT_ALL) params.set('format', state.format);
-    if (state.genre !== GENRE_ALL) params.set('genre', state.genre);
-    if (state.sort !== 'default') params.set('sort', state.sort);
-    if (state.decade) params.set('decade', state.decade);
-    if (state.recentOnly) params.set('recent', '1');
-    if (state.page > 1) params.set('page', String(state.page));
-    if (state.homeSection !== HOME_SECTIONS[0]) params.set('section', state.homeSection);
-    const search = params.toString();
-    const url = `${window.location.pathname}${search ? `?${search}` : ''}${window.location.hash}`;
-    if (url === `${window.location.pathname}${window.location.search}${window.location.hash}`
-      && history.state?.homeSection === state.homeSection) return;
-    history.replaceState({ ...history.state, homeSection: state.homeSection }, '', url);
-  }
+  // Mutable view references are shared explicitly with navigation and cover modules.
+  const sharedView = {
+    get homeViewLayer() { return homeViewLayer; },
+    set homeViewLayer(value) { homeViewLayer = value; },
+    get homeViewReady() { return homeViewReady; },
+    set homeViewReady(value) { homeViewReady = value; },
+    get homeScrollPosition() { return homeScrollPosition; },
+    set homeScrollPosition(value) { homeScrollPosition = value; },
+    get homeAlbumPage() { return homeAlbumPage; },
+    set homeAlbumPage(value) { homeAlbumPage = value; },
+    get detailViewLayer() { return detailViewLayer; },
+    set detailViewLayer(value) { detailViewLayer = value; },
+  };
+  const {
+    readBrowseStateFromUrl, applyBrowseStateFromUrl, syncBrowseUrl, getBaseUrl,
+    getAlbumHash, getAlbumIdFromHash, openAlbum, goHome,
+    goPreviousView, goAlbumList, renderRouteFromLocation,
+  } = window.PD_ARCHIVE.createNavigation({
+    albums, app, state, FORMAT_ALL, GENRE_ALL, STANDARD_GENRES, HOME_SECTIONS, CUSTOMER_FEATURES,
+    normalize, getArtistKey, getAlbumDecade, getWeeklyAlbum, renderHome, renderDetail,
+    setHomeSection, revealPersistentHomeView, view: sharedView,
+    finishHomeSectionMotion: () => finishHomeSectionMotion?.(),
+    animateDirectCoverIntoDetail: (...args) => animateDirectCoverIntoDetail(...args),
+    animateCoverIntoDetail: (...args) => animateCoverIntoDetail(...args),
+  });
+  const {
+    createFallbackCover, createCover, getComparisonCoverSource, getOptimizedCoverPath,
+    closeDetailCoverViewer, openDetailCoverViewer, requestCloseDetailCoverViewer, animateDirectCoverIntoDetail,
+    animateCoverIntoDetail, preloadTransitionCover, setupWeeklyMotion, handleCoverPopState,
+  } = window.PD_ARCHIVE.createCoverMotion({
+    app, state, CUSTOMER_FEATURES, COVER_RENDER_MODE, USES_SHARED_HIGH_QUALITY_COVERS,
+    t, escapeHtml, getLocalizedArtist, activatePersistentDetailView, view: sharedView,
+  });
+  const {
+    isTrackRequested, toggleRequestTrack, refreshRequestTrackUi, hideRequestTrackList,
+    closeRequestTrackList, openRequestTrackList, showRequestAddedToast, handleNotesPopState,
+  } = window.PD_ARCHIVE.createRequestNotes({
+    albums, app, CUSTOMER_FEATURES, t, createCover, splitTrackLine, formatLabel,
+    getLocalizedArtist, openAlbum, renderRouteFromLocation,
+  });
 
   applyBrowseStateFromUrl();
 
@@ -323,7 +299,13 @@
       requestListNotice: '이 창은 신청곡 메모용입니다. 신청곡은 받으신 종이에 적어주세요.',
       requestListClear: '전체 비우기',
       requestListClose: '신청곡 메모 닫기',
-      requestAdded: '신청곡 메모에 담았습니다.',
+      requestAdded: '메모에 담겼습니다',
+      weeklyHold: '꾹',
+      weeklyHoldLabel: '길게 눌러 영상 보기',
+      lighting: '조명',
+      searchAllAlbums: '전체 음반에서 찾기',
+      emptyAllAlbums: '보유 음반에서 찾지 못했습니다.',
+      emptyRequest: '목록에 없어도 종이에 적어주세요.',
       requestListView: '메모 보기',
       requestFloatingCount: count => `메모 ${count}곡`,
       moreMatchedTracks: count => `외 ${count}곡`,
@@ -347,9 +329,8 @@
       goToPage: '이동',
       swipePagePosition: '음반 목록 현재 위치',
       pageStatus: (page, total) => `${page} / ${total} 페이지`,
-      resultSummary: ({ format, genre, total, start, end }) => total
-        ? `${format} / ${genre} · ${total}장 중 ${start}-${end}번째`
-        : `${format} / ${genre} · 0장의 음반`,
+      resultSummary: ({ total, start, end }) => total
+        ? `${total}장 · ${start}–${end}` : '0장',
       previousView: '← 이전 화면',
       albumListButton: '음반 목록',
       tracklist: '트랙리스트',
@@ -431,7 +412,13 @@
       requestListNotice: 'For request notes only. Please write your request on the paper provided.',
       requestListClear: 'Clear all',
       requestListClose: 'Close request notes',
-      requestAdded: 'Added to your request notes.',
+      requestAdded: 'Added to notes.',
+      weeklyHold: 'Hold',
+      weeklyHoldLabel: 'Press and hold to watch the video',
+      lighting: 'Light',
+      searchAllAlbums: 'Search all records',
+      emptyAllAlbums: 'No matching records in our collection.',
+      emptyRequest: 'Not listed? You can still request it on paper.',
       requestListView: 'View notes',
       requestFloatingCount: count => `Notes ${count}`,
       moreMatchedTracks: count => `+${count} more`,
@@ -455,9 +442,8 @@
       goToPage: 'Go',
       swipePagePosition: 'Current album list position',
       pageStatus: (page, total) => `Page ${page} of ${total}`,
-      resultSummary: ({ format, genre, total, start, end }) => total
-        ? `${format} / ${genre} · ${start}-${end} of ${total} albums`
-        : `${format} / ${genre} · 0 albums`,
+      resultSummary: ({ total, start, end }) => total
+        ? `${start}–${end} of ${total}` : '0 records',
       previousView: '← Previous',
       albumListButton: 'Album list',
       tracklist: 'Tracklist',
@@ -485,282 +471,6 @@
   function t(key) {
     const value = UI_TEXT[state.language]?.[key] ?? UI_TEXT.ko[key] ?? '';
     return typeof value === 'function' ? value : String(value);
-  }
-
-  function getRequestTrackId(albumId, trackIndex) {
-    return `${String(albumId)}::${Number(trackIndex)}`;
-  }
-
-  function resolveRequestTrack(entry) {
-    const album = albums.find(item => String(item.id) === String(entry?.albumId));
-    if (!album || !Array.isArray(album.tracklist)) return null;
-    let trackIndex = Number(entry?.trackIndex);
-    const savedTrack = String(entry?.track || '');
-    if (!Number.isInteger(trackIndex) || album.tracklist[trackIndex] !== savedTrack) {
-      trackIndex = album.tracklist.findIndex(track => String(track) === savedTrack);
-    }
-    if (trackIndex < 0 || !album.tracklist[trackIndex]) return null;
-    return { album, trackIndex, track: String(album.tracklist[trackIndex]) };
-  }
-
-  function loadRequestTracks() {
-    if (!CUSTOMER_FEATURES.requestTrackList) return [];
-    try {
-      const saved = JSON.parse(localStorage.getItem(REQUEST_TRACKS_STORAGE_KEY) || '[]');
-      const seen = new Set();
-      return (Array.isArray(saved) ? saved : []).reduce((list, entry) => {
-        const resolved = resolveRequestTrack(entry);
-        if (!resolved) return list;
-        const id = getRequestTrackId(resolved.album.id, resolved.trackIndex);
-        if (seen.has(id)) return list;
-        seen.add(id);
-        list.push({ albumId: String(resolved.album.id), trackIndex: resolved.trackIndex, track: resolved.track });
-        return list;
-      }, []);
-    } catch (error) {
-      console.warn(error);
-      return [];
-    }
-  }
-
-  function saveRequestTracks() {
-    if (!CUSTOMER_FEATURES.requestTrackList) return;
-    try {
-      localStorage.setItem(REQUEST_TRACKS_STORAGE_KEY, JSON.stringify(requestTracks));
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-
-  function isTrackRequested(albumId, trackIndex) {
-    const id = getRequestTrackId(albumId, trackIndex);
-    return requestTracks.some(entry => getRequestTrackId(entry.albumId, entry.trackIndex) === id);
-  }
-
-  function toggleRequestTrack(album, trackIndex) {
-    if (!CUSTOMER_FEATURES.requestTrackList || !album?.tracklist?.[trackIndex]) return false;
-    const id = getRequestTrackId(album.id, trackIndex);
-    const existingIndex = requestTracks.findIndex(entry => getRequestTrackId(entry.albumId, entry.trackIndex) === id);
-    if (existingIndex >= 0) requestTracks.splice(existingIndex, 1);
-    else requestTracks.push({ albumId: String(album.id), trackIndex, track: String(album.tracklist[trackIndex]) });
-    saveRequestTracks();
-    return existingIndex < 0;
-  }
-
-  let floatingRequestButton = null;
-
-  function ensureFloatingRequestButton() {
-    if (floatingRequestButton?.isConnected) return floatingRequestButton;
-    floatingRequestButton = document.createElement('button');
-    floatingRequestButton.type = 'button';
-    floatingRequestButton.className = 'request-floating-button';
-    floatingRequestButton.dataset.requestList = '';
-    floatingRequestButton.hidden = true;
-    floatingRequestButton.addEventListener('click', () => openRequestTrackList());
-    document.body.append(floatingRequestButton);
-    return floatingRequestButton;
-  }
-
-  function refreshRequestTrackUi(root = app) {
-    if (!root) return;
-    const floatingButton = ensureFloatingRequestButton();
-    const listButtons = new Set([...root.querySelectorAll('[data-request-list]'), floatingButton]);
-    listButtons.forEach(button => {
-      const isFloating = button === floatingButton;
-      button.hidden = !CUSTOMER_FEATURES.requestTrackList || (isFloating && requestTracks.length === 0);
-      button.textContent = t(isFloating ? 'requestFloatingCount' : 'requestListCount')(requestTracks.length);
-      button.title = t('requestListOpen');
-      button.setAttribute('aria-label', isFloating
-        ? `${t('requestListOpen')} · ${t('requestFloatingCount')(requestTracks.length)}`
-        : t('requestListOpen'));
-    });
-    root.querySelectorAll('[data-request-track]').forEach(button => {
-      const selected = isTrackRequested(button.dataset.albumId, Number(button.dataset.trackIndex));
-      const label = selected ? t('requestTrackRemove') : t('requestTrackAdd');
-      button.textContent = selected ? '✓' : '+';
-      button.title = label;
-      button.setAttribute('aria-label', label);
-      button.setAttribute('aria-pressed', String(selected));
-    });
-  }
-
-  function hideRequestTrackList() {
-    if (!requestListOverlay) return;
-    requestListOverlay.hidden = true;
-    document.body.classList.remove('request-list-open');
-    if (requestListTrigger?.isConnected) requestListTrigger.focus({ preventScroll: true });
-    requestListClosing = false;
-  }
-
-  function closeRequestTrackList(afterClose) {
-    if (!requestListOverlay || requestListOverlay.hidden || requestListClosing) return;
-    afterRequestListClose = typeof afterClose === 'function' ? afterClose : null;
-    if (history.state?.requestList) {
-      requestListClosing = true;
-      history.back();
-      return;
-    }
-    hideRequestTrackList();
-    const callback = afterRequestListClose;
-    afterRequestListClose = null;
-    callback?.();
-  }
-
-  function ensureRequestListOverlay() {
-    if (requestListOverlay) return requestListOverlay;
-    requestListOverlay = document.createElement('div');
-    requestListOverlay.className = 'request-list-overlay';
-    requestListOverlay.hidden = true;
-    requestListOverlay.setAttribute('role', 'dialog');
-    requestListOverlay.setAttribute('aria-modal', 'true');
-    requestListOverlay.addEventListener('click', event => {
-      if (event.target === requestListOverlay) closeRequestTrackList();
-    });
-    requestListOverlay.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeRequestTrackList();
-    });
-    document.body.append(requestListOverlay);
-    return requestListOverlay;
-  }
-
-  function renderRequestTrackList() {
-    const overlay = ensureRequestListOverlay();
-    const resolvedEntries = requestTracks.map(entry => ({ entry, resolved: resolveRequestTrack(entry) })).filter(item => item.resolved);
-    if (resolvedEntries.length !== requestTracks.length) {
-      requestTracks = resolvedEntries.map(({ resolved }) => ({
-        albumId: String(resolved.album.id),
-        trackIndex: resolved.trackIndex,
-        track: resolved.track,
-      }));
-      saveRequestTracks();
-    }
-
-    const panel = document.createElement('section');
-    panel.className = 'request-list-panel';
-    const header = document.createElement('header');
-    header.className = 'request-list-header';
-    const title = document.createElement('h2');
-    title.textContent = t('requestListCount')(requestTracks.length);
-    const closeButton = document.createElement('button');
-    closeButton.type = 'button';
-    closeButton.className = 'request-list-close';
-    closeButton.textContent = '×';
-    closeButton.setAttribute('aria-label', t('requestListClose'));
-    closeButton.addEventListener('click', closeRequestTrackList);
-    header.append(title, closeButton);
-
-    const notice = document.createElement('p');
-    notice.className = 'request-list-notice';
-    notice.textContent = t('requestListNotice');
-
-    const content = document.createElement('div');
-    content.className = 'request-list-content';
-    if (!resolvedEntries.length) {
-      const empty = document.createElement('p');
-      empty.className = 'request-list-empty';
-      empty.textContent = t('requestListEmpty');
-      content.append(empty);
-    } else {
-      resolvedEntries.forEach(({ resolved }) => {
-        const row = document.createElement('article');
-        row.className = 'request-list-item';
-        const openButton = document.createElement('button');
-        openButton.type = 'button';
-        openButton.className = 'request-list-item-main';
-        const cover = createCover(resolved.album, 'request-list-cover');
-        const text = document.createElement('span');
-        text.className = 'request-list-item-text';
-        const trackParts = splitTrackLine(resolved.track);
-        const trackTitle = document.createElement('strong');
-        trackTitle.textContent = trackParts.title;
-        const trackNumber = document.createElement('span');
-        trackNumber.className = 'request-list-track-number';
-        trackNumber.textContent = [formatLabel(resolved.album.format), trackParts.number].filter(Boolean).join(' · ');
-        const artistMeta = document.createElement('span');
-        artistMeta.className = 'request-list-artist';
-        artistMeta.textContent = getLocalizedArtist(resolved.album) || '';
-        const albumMeta = document.createElement('span');
-        albumMeta.className = 'request-list-album-meta';
-        albumMeta.textContent = resolved.album.title || '';
-        text.append(trackTitle, artistMeta, albumMeta, trackNumber);
-        openButton.append(cover, text);
-        openButton.addEventListener('click', () => {
-          closeRequestTrackList(() => openAlbum(resolved.album.id, {
-            focusTrackIndex: resolved.trackIndex,
-          }));
-        });
-
-        const removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.className = 'request-list-remove';
-        removeButton.textContent = '×';
-        removeButton.setAttribute('aria-label', t('requestTrackRemove'));
-        removeButton.addEventListener('click', () => {
-          const id = getRequestTrackId(resolved.album.id, resolved.trackIndex);
-          requestTracks = requestTracks.filter(entry => getRequestTrackId(entry.albumId, entry.trackIndex) !== id);
-          saveRequestTracks();
-          renderRequestTrackList();
-          refreshRequestTrackUi(app);
-        });
-        row.append(openButton, removeButton);
-        content.append(row);
-      });
-    }
-
-    const footer = document.createElement('footer');
-    footer.className = 'request-list-footer';
-    if (resolvedEntries.length) {
-      const clearButton = document.createElement('button');
-      clearButton.type = 'button';
-      clearButton.textContent = t('requestListClear');
-      clearButton.addEventListener('click', () => {
-        requestTracks = [];
-        saveRequestTracks();
-        renderRequestTrackList();
-        refreshRequestTrackUi(app);
-      });
-      footer.append(clearButton);
-    }
-    panel.append(header, notice, content, footer);
-    overlay.replaceChildren(panel);
-    overlay.setAttribute('aria-label', t('requestListTitle'));
-  }
-
-  function openRequestTrackList(options = {}) {
-    if (!CUSTOMER_FEATURES.requestTrackList || (requestListOverlay && !requestListOverlay.hidden)) return;
-    requestListTrigger = document.activeElement;
-    requestListBaseUrl = window.location.href;
-    if (!options.fromHistory) {
-      history.pushState({ ...history.state, requestList: true }, '', requestListBaseUrl);
-    }
-    renderRequestTrackList();
-    requestListOverlay.hidden = false;
-    document.body.classList.add('request-list-open');
-    requestListOverlay.querySelector('.request-list-close')?.focus();
-  }
-
-  function showRequestAddedToast() {
-    let toast = document.querySelector('[data-request-toast]');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.className = 'request-toast';
-      toast.dataset.requestToast = '';
-      document.body.append(toast);
-    }
-    const message = document.createElement('span');
-    message.textContent = t('requestAdded');
-    const listButton = document.createElement('button');
-    listButton.type = 'button';
-    listButton.textContent = t('requestListView');
-    listButton.addEventListener('click', () => {
-      window.clearTimeout(requestToastTimer);
-      toast.remove();
-      openRequestTrackList();
-    });
-    toast.replaceChildren(message, listButton);
-    toast.dataset.visible = 'true';
-    window.clearTimeout(requestToastTimer);
-    requestToastTimer = window.setTimeout(() => toast.remove(), 2300);
   }
 
   function getGenreLabel(genre, language = state.language) {
@@ -805,15 +515,6 @@
     applyStaticTranslations(document);
     if (CUSTOMER_FEATURES.persistentDetailLayers) homeViewReady = false;
     renderRouteFromLocation();
-  }
-
-  function normalize(value) {
-    return String(value || '')
-      .toLowerCase()
-      .normalize('NFKD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[\s\-_.:;,'"!?’‘“”()[\]{}]+/g, '')
-      .trim();
   }
 
   function normalizeGenreName(value) {
@@ -878,233 +579,6 @@
   });
   function getWeeklyAlbum() {
     return albums.find(album => album.isWeekly === true || album.weekly === true) || null;
-  }
-
-  function setupWeeklyMotion(card, album) {
-    const video = card?.querySelector('[data-weekly-motion-video]');
-    const scrim = card?.querySelector('[data-weekly-motion-scrim]');
-    const indicator = card?.querySelector('[data-weekly-motion-indicator]');
-    const videoPath = String(album?.weeklyVideo || '').trim();
-    const enabled = videoPath
-      && video
-      && scrim
-      && indicator;
-
-    if (!enabled) {
-      return { shouldSuppressClick: () => false };
-    }
-
-    video.src = videoPath;
-    video.poster = String(album.weeklyVideoPoster || album.coverImage || '').trim();
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.hidden = false;
-    scrim.hidden = false;
-    indicator.hidden = false;
-    card.classList.add('has-weekly-motion');
-    card.setAttribute('aria-label', `${album.title || t('weeklyAlbum')}: ${t('details')}`);
-    video.load();
-
-    let activeInteraction = null;
-    const holdGestureMs = 300;
-    let suppressNextClick = false;
-    let suppressClickTimer = null;
-    let cancelledMotionTimer = null;
-
-    const clearClickSuppression = () => {
-      suppressNextClick = false;
-      if (suppressClickTimer) window.clearTimeout(suppressClickTimer);
-      suppressClickTimer = null;
-    };
-
-    const armClickSuppression = () => {
-      // 네이버 같은 인앱 브라우저는 길게 누른 뒤 수 초 후 합성 click을 보내기도 합니다.
-      // 시간만 재지 않고 같은 터치 뒤의 다음 click 한 번을 막되, 새 터치가 시작되면 바로 해제합니다.
-      suppressNextClick = true;
-      if (suppressClickTimer) window.clearTimeout(suppressClickTimer);
-      suppressClickTimer = window.setTimeout(clearClickSuppression, 5000);
-    };
-
-    const clearCancelledMotionTimer = () => {
-      if (cancelledMotionTimer) window.clearTimeout(cancelledMotionTimer);
-      cancelledMotionTimer = null;
-    };
-
-    const stopMotion = ({ suppressClick = false } = {}) => {
-      clearCancelledMotionTimer();
-      video.pause();
-      card.classList.remove('is-motion-playing');
-      if (suppressClick) armClickSuppression();
-    };
-
-    const startMotion = interaction => {
-      if (activeInteraction) return false;
-      activeInteraction = {
-        ...interaction,
-        startedAt: performance.now(),
-      };
-      const requestKey = `${interaction.type}:${interaction.id}`;
-      card.classList.add('is-motion-playing');
-      video.muted = true;
-
-      const playRequest = video.play();
-      if (playRequest && typeof playRequest.then === 'function') {
-        playRequest.then(() => {
-          const activeKey = activeInteraction
-            ? `${activeInteraction.type}:${activeInteraction.id}`
-            : '';
-          if (activeKey !== requestKey) video.pause();
-        }).catch(error => {
-          activeInteraction = null;
-          stopMotion();
-          console.warn('Weekly motion preview could not start.', error);
-        });
-      }
-      return true;
-    };
-
-    const finishInteraction = ({ type, id, suppressClick = true } = {}) => {
-      if (!activeInteraction
-        || activeInteraction.type !== type
-        || activeInteraction.id !== id) return;
-      const heldLongEnough = performance.now() - activeInteraction.startedAt >= holdGestureMs;
-      const movedWhilePressed = Boolean(activeInteraction.moved);
-      activeInteraction = null;
-      stopMotion({ suppressClick: suppressClick && (heldLongEnough || movedWhilePressed) });
-    };
-
-    const keepMotionAfterBrowserCancel = () => {
-      if (!activeInteraction) return;
-
-      // 네이버 인앱 브라우저는 손가락을 계속 누르는 중에도 touchcancel을 보낼 수 있습니다.
-      // 이 신호만으로 영상을 끄지 않고, 실제 해제 신호를 조금 더 기다립니다.
-      activeInteraction.browserCancelled = true;
-      activeInteraction.cancelledAt = performance.now();
-      armClickSuppression();
-      clearCancelledMotionTimer();
-      cancelledMotionTimer = window.setTimeout(() => {
-        if (!activeInteraction?.browserCancelled) return;
-        activeInteraction = null;
-        stopMotion({ suppressClick: true });
-      }, 8000);
-    };
-
-    const touchCapable = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
-
-    card.addEventListener('pointerdown', event => {
-      if (event.button > 0 || (touchCapable && event.pointerType === 'touch')) return;
-      if (!activeInteraction) clearClickSuppression();
-      if (!startMotion({ type: 'pointer', id: event.pointerId })) return;
-      try {
-        card.setPointerCapture(event.pointerId);
-      } catch (error) {
-        // Pointer capture is optional; pointer cancellation still stops playback.
-      }
-    });
-
-    const finishPointer = event => {
-      finishInteraction({ type: 'pointer', id: event.pointerId });
-    };
-
-    card.addEventListener('pointerup', finishPointer);
-    card.addEventListener('pointercancel', finishPointer);
-    card.addEventListener('lostpointercapture', event => {
-      finishInteraction({ type: 'pointer', id: event.pointerId });
-    });
-
-    if (touchCapable) {
-      card.addEventListener('touchstart', event => {
-        const touch = event.changedTouches[0];
-        if (!touch) return;
-
-        // 이전 터치를 브라우저가 취소한 뒤 새 손가락 입력이 오면 남은 재생 상태를 정리합니다.
-        if (activeInteraction?.browserCancelled) {
-          activeInteraction = null;
-          stopMotion();
-        }
-        if (!activeInteraction) clearClickSuppression();
-        startMotion({
-          type: 'touch',
-          id: touch.identifier,
-          startX: touch.clientX,
-          startY: touch.clientY,
-        });
-      }, { passive: true });
-
-      card.addEventListener('touchmove', event => {
-        if (activeInteraction?.type !== 'touch') return;
-        const touch = Array.from(event.changedTouches)
-          .find(item => item.identifier === activeInteraction.id);
-        if (!touch) return;
-
-        const distance = Math.hypot(
-          touch.clientX - activeInteraction.startX,
-          touch.clientY - activeInteraction.startY,
-        );
-
-        // 손가락 이동은 영상 정지 조건이 아닙니다. 누른 채 스크롤해도 재생을 유지합니다.
-        // 대신 이동한 터치는 손을 뗀 뒤 상세 화면을 여는 클릭으로 처리되지 않게 기록합니다.
-        if (distance > 6) activeInteraction.moved = true;
-      }, { passive: true });
-
-      const finishTouch = event => {
-        if (activeInteraction?.type !== 'touch') return;
-        const touch = Array.from(event.changedTouches)
-          .find(item => item.identifier === activeInteraction.id);
-        if (!touch) return;
-        finishInteraction({ type: 'touch', id: touch.identifier });
-      };
-
-      card.addEventListener('touchend', finishTouch, { passive: true });
-      card.addEventListener('touchcancel', event => {
-        if (activeInteraction?.type !== 'touch') return;
-        const changedTouches = Array.from(event.changedTouches || []);
-        const touch = changedTouches
-          .find(item => item.identifier === activeInteraction.id);
-        if (changedTouches.length && !touch) return;
-
-        const heldLongEnough = performance.now() - activeInteraction.startedAt >= holdGestureMs;
-        if (heldLongEnough) {
-          keepMotionAfterBrowserCancel();
-          return;
-        }
-
-        finishInteraction({ type: 'touch', id: activeInteraction.id, suppressClick: false });
-      }, { passive: true });
-    }
-
-    card.addEventListener('contextmenu', event => event.preventDefault());
-    card.addEventListener('keydown', clearClickSuppression);
-
-    return {
-      shouldSuppressClick: () => {
-        // 네이버는 손가락을 떼기 전에도 합성 click을 보낼 수 있습니다.
-        // 상세 화면 이동만 막고, 실제 touchend 전까지 영상은 계속 재생합니다.
-        if (activeInteraction?.browserCancelled) {
-          const timeSinceCancel = performance.now() - activeInteraction.cancelledAt;
-          if (timeSinceCancel > 350) {
-            activeInteraction = null;
-            stopMotion({ suppressClick: true });
-          } else {
-            armClickSuppression();
-          }
-          return true;
-        }
-
-        if (activeInteraction
-          && performance.now() - activeInteraction.startedAt >= holdGestureMs) {
-          armClickSuppression();
-          return true;
-        }
-        if (!suppressNextClick) return false;
-        clearClickSuppression();
-        return true;
-      },
-    };
   }
 
   function getWeeklyHistoryEntries() {
@@ -1218,137 +692,6 @@
     return format || '';
   }
 
-  function getLocalizedArtist(album) {
-    const original = String(album?.artist || '').trim();
-    const artistKo = String(album?.artistKo || '').trim();
-    const artistEn = String(album?.artistEn || '').trim();
-    if (artistKo && artistEn) return state.language === 'en' ? artistEn : artistKo;
-    return original;
-  }
-
-  function getArtistKey(album) {
-    return normalize(album?.artistKo || album?.artistEn || album?.artist).normalize('NFC');
-  }
-
-  const artistDirectory = CUSTOMER_CONFIG.artistDirectory || {};
-  const artistDefinitions = Array.isArray(artistDirectory.identities) ? artistDirectory.identities : [];
-  const artistById = new Map(artistDefinitions.map(identity => [identity.id, identity]));
-  const artistAliasToId = new Map();
-  artistDefinitions.forEach(identity => {
-    [identity.ko, identity.en, ...(identity.aliases || [])].filter(Boolean).forEach(name => {
-      artistAliasToId.set(normalize(name).normalize('NFC'), identity.id);
-    });
-  });
-  // 쉼표가 이름의 일부인 경우 먼저 보호한 뒤 공동 명의의 쉼표만 나눕니다.
-  const protectedArtistNames = [...new Set(artistDefinitions.flatMap(identity =>
-    [identity.ko, identity.en, ...(identity.aliases || [])].filter(name => String(name || '').includes(','))
-  ))].sort((a, b) => b.length - a.length);
-
-  function splitArtistNames(value) {
-    const text = String(value || '').trim();
-    if (!text) return [];
-    if (artistAliasToId.has(normalize(text).normalize('NFC'))) return [text];
-    const restored = [];
-    let safeText = text;
-    protectedArtistNames.forEach(name => {
-      const pattern = new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-      safeText = safeText.replace(pattern, match => {
-        const index = restored.push(match) - 1;
-        return `\uE000${index}\uE001`;
-      });
-    });
-    // 알려진 그룹명은 위에서 보호합니다. 나머지는 공동 명의의 구분자만 나눕니다.
-    safeText = safeText.replace(/\s+[x×]\s+/gi, ',').replace(/\s*\/\s+/g, ',');
-    const parts = [];
-    let part = '';
-    let parentheses = 0;
-    for (const character of safeText) {
-      if (character === '(') parentheses += 1;
-      if (character === ')') parentheses = Math.max(0, parentheses - 1);
-      if ((character === ',' || character === '&') && parentheses === 0) {
-        parts.push(part);
-        part = '';
-      } else {
-        part += character;
-      }
-    }
-    parts.push(part);
-    return parts.map(part =>
-      part.replace(/\uE000(\d+)\uE001/g, (_, index) => restored[Number(index)] || '').trim()
-    ).filter(Boolean);
-  }
-
-  // 두 언어의 참여자 수가 같을 때만 서로 연결합니다. 같은 영문명에 서로 다른
-  // 한글 표기가 쓰이거나, 일부 음반에 영문명이 없는 경우도 같은 인물로 찾습니다.
-  const albumArtistNames = albums.map(album => {
-    const ko = splitArtistNames(album.artistKo || album.artist || album.artistEn);
-    const en = splitArtistNames(album.artistEn);
-    return { ko, en: en.length === ko.length ? en : [] };
-  });
-  albumArtistNames.sort((a, b) => Number(Boolean(b.en.length)) - Number(Boolean(a.en.length)));
-  albumArtistNames.forEach(({ ko, en }) => ko.forEach((name, index) => {
-    const englishName = en[index] || '';
-    const key = normalize(name).normalize('NFC');
-    const englishKey = normalize(englishName).normalize('NFC');
-    const id = artistAliasToId.get(key) || artistAliasToId.get(englishKey) || `name:${englishKey || key}`;
-    if (!artistById.has(id)) artistById.set(id, { id, ko: name, en: englishName || name });
-    [key, englishKey].filter(Boolean).forEach(alias => {
-      if (!artistAliasToId.has(alias)) artistAliasToId.set(alias, id);
-    });
-  }));
-
-  function getAlbumArtistCredits(album) {
-    const override = artistDirectory.creditOverrides?.[album?.id];
-    if (Array.isArray(override)) {
-      return override.filter(id => artistById.has(id)).map(id => {
-        const identity = artistById.get(id);
-        return { id, ko: identity.ko, en: identity.en || identity.ko };
-      });
-    }
-    const koreanNames = splitArtistNames(album?.artistKo || album?.artist || album?.artistEn);
-    const englishNames = splitArtistNames(album?.artistEn);
-    return koreanNames.map((name, index) => {
-      const englishName = englishNames.length === koreanNames.length ? englishNames[index] : '';
-      const id = artistAliasToId.get(normalize(name).normalize('NFC'))
-        || artistAliasToId.get(normalize(englishName).normalize('NFC'))
-        || `name:${normalize(name).normalize('NFC')}`;
-      const identity = artistById.get(id);
-      return { id, ko: identity?.ko || name, en: identity?.en || englishName || name };
-    }).filter(credit => credit.id !== 'name:' && !/^(여러아티스트|variousartists)$/.test(normalize(credit.ko).normalize('NFC')));
-  }
-
-  function getArtistChoices(album) {
-    const choices = [];
-    const seen = new Set();
-    const add = credit => {
-      if (!credit?.id || seen.has(credit.id)) return;
-      seen.add(credit.id);
-      choices.push(credit);
-    };
-    getAlbumArtistCredits(album).forEach(credit => {
-      add(credit);
-      (artistById.get(credit.id)?.members || []).forEach(id => {
-        const identity = artistById.get(id);
-        if (identity) add({ id, ko: identity.ko, en: identity.en || identity.ko });
-      });
-    });
-    return choices;
-  }
-
-  function getRelatedArtistAlbums(album, artistId = '') {
-    const ids = artistId ? [artistId] : getArtistChoices(album).map(choice => choice.id);
-    if (!ids.length) return [];
-    return albums.filter(item => getAlbumArtistCredits(item).some(credit =>
-      ids.includes(credit.id) || (artistById.get(credit.id)?.members || []).some(memberId => ids.includes(memberId))
-    ));
-  }
-
-  function getArtistAlbums(album) {
-    const key = getArtistKey(album);
-    if (!key || /^(여러아티스트|variousartists)$/.test(key)) return [];
-    return albums.filter(item => getArtistKey(item) === key);
-  }
-
   function getLocalizedDescription(album) {
     if (state.language === 'en') return String(album?.descriptionEn || '').trim();
     return String(album?.description || '').trim();
@@ -1359,541 +702,6 @@
     return String(value || '').trim() || t('weeklyDefaultReason');
   }
 
-  function createFallbackCover(album, className = '') {
-    // 이미지 없을 때 임시 커버 표시: 깨진 이미지 아이콘 대신 앨범명/아티스트명을 보여줍니다.
-    const fallback = document.createElement('div');
-    fallback.className = `cover-fallback ${className}`.trim();
-    fallback.innerHTML = `
-      <span>${escapeHtml(getLocalizedArtist(album) || 'PUNCH-DRUNK')}</span>
-      <strong>${escapeHtml(album.title || 'Untitled')}</strong>
-    `;
-    return fallback;
-  }
-
-  function getCoverVariantPath(path, folder, extension) {
-    const normalized = String(path || '').trim().replace(/\\/g, '/');
-    if (!/^covers\/(?!thumbs\/|display\/)/i.test(normalized) || /\.(?:gif|svg)$/i.test(normalized)) return '';
-
-    const relativePath = normalized.slice('covers/'.length);
-    const fileName = relativePath.split('/').pop() || 'cover';
-    const baseName = fileName
-      .replace(/\.[^.]+$/, '')
-      .normalize('NFKD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9._-]+/gi, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 60) || 'cover';
-    let hash = 0x811c9dc5;
-    for (const byte of new TextEncoder().encode(relativePath)) {
-      hash ^= byte;
-      hash = Math.imul(hash, 0x01000193);
-    }
-    return `covers/${folder}/${baseName}-${(hash >>> 0).toString(16).padStart(8, '0')}.${extension}`;
-  }
-
-  function getCoverThumbnailPath(path) {
-    if (!CUSTOMER_FEATURES.gridThumbnails) return '';
-    return getCoverVariantPath(path, 'thumbs', 'jpg');
-  }
-
-  function getOptimizedCoverPath(path) {
-    return getCoverVariantPath(path, 'display', 'webp');
-  }
-
-  function getComparisonCoverSource(album) {
-    const originalSource = String(album?.coverImage || '').trim();
-    if (COVER_RENDER_MODE === 'optimized') return getOptimizedCoverPath(originalSource) || originalSource;
-    return originalSource;
-  }
-
-  function createCover(album, className = '', options = {}) {
-    const wrap = document.createElement('div');
-    wrap.className = `cover-frame ${className}`.trim();
-
-    if (album.coverImage) {
-      const img = document.createElement('img');
-      const originalSource = String(album.coverImage).trim();
-      const classes = className.split(/\s+/);
-      const comparisonTarget = classes.some(name => name === 'grid-cover' || name === 'detail-cover' || name === 'weekly-cover-art');
-      const sources = [originalSource];
-      if (comparisonTarget && COVER_RENDER_MODE === 'optimized') {
-        sources.unshift(getOptimizedCoverPath(originalSource));
-      } else if (classes.includes('grid-cover') && COVER_RENDER_MODE === 'thumbnail') {
-        sources.unshift(getCoverThumbnailPath(originalSource));
-      }
-      const availableSources = [...new Set(sources.filter(Boolean))];
-      let sourceIndex = 0;
-      const priority = CUSTOMER_FEATURES.priorityCovers && options.priority === true;
-      img.src = availableSources[sourceIndex] || originalSource;
-      img.alt = `${getLocalizedArtist(album) || ''} - ${album.title || ''}`.trim();
-      // 첫 화면의 금주의 음반과 상세 커버는 목록 커버보다 먼저 불러와 빈 화면을 줄입니다.
-      img.loading = priority ? 'eager' : 'lazy';
-      img.decoding = 'async';
-      if (priority) img.fetchPriority = 'high';
-      img.onerror = () => {
-        sourceIndex += 1;
-        if (availableSources[sourceIndex]) {
-          img.src = availableSources[sourceIndex];
-          return;
-        }
-        // 이미지 파일이 없거나 경로가 틀린 경우에도 화면이 깨지지 않게 임시 커버로 바꿉니다.
-        // NEW 같은 커버 위 표시가 함께 사라지지 않도록 실패한 이미지 요소만 교체합니다.
-        img.remove();
-        wrap.prepend(createFallbackCover(album));
-      };
-      wrap.append(img);
-    } else {
-      wrap.append(createFallbackCover(album));
-    }
-
-    return wrap;
-  }
-
-  function ensureDetailCoverViewer() {
-    if (detailCoverViewer) return detailCoverViewer;
-
-    const overlay = document.createElement('div');
-    overlay.className = 'detail-cover-viewer';
-    overlay.hidden = true;
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-modal', 'true');
-
-    const stage = document.createElement('div');
-    stage.className = 'detail-cover-viewer-stage';
-    const image = document.createElement('img');
-    image.className = 'detail-cover-viewer-image';
-    image.draggable = false;
-    stage.append(image);
-
-    const closeButton = document.createElement('button');
-    closeButton.type = 'button';
-    closeButton.className = 'detail-cover-viewer-close';
-    closeButton.textContent = '×';
-
-    const view = {
-      overlay,
-      stage,
-      image,
-      closeButton,
-      pointers: new Map(),
-      scale: 1,
-      x: 0,
-      y: 0,
-      dismissX: 0,
-      dismissY: 0,
-      gesture: null,
-      opening: false,
-      closing: false,
-      settling: false,
-      transitionClone: null,
-      transitionToken: 0,
-      pendingCloseOptions: null,
-    };
-
-    const setBackdropStrength = strength => {
-      const clamped = Math.max(0, Math.min(1, strength));
-      overlay.style.setProperty('--viewer-backdrop-opacity', String(0.97 * clamped));
-      closeButton.style.opacity = String(clamped);
-    };
-
-    const getBaseImageSize = () => {
-      const stageRect = stage.getBoundingClientRect();
-      const naturalWidth = image.naturalWidth || stageRect.width || 1;
-      const naturalHeight = image.naturalHeight || stageRect.height || 1;
-      const fit = Math.min(stageRect.width / naturalWidth, stageRect.height / naturalHeight);
-      return {
-        stageWidth: stageRect.width,
-        stageHeight: stageRect.height,
-        width: naturalWidth * fit,
-        height: naturalHeight * fit,
-      };
-    };
-
-    const applyTransform = () => {
-      const size = getBaseImageSize();
-      const maxX = Math.max(0, (size.width * view.scale - size.stageWidth) / 2);
-      const maxY = Math.max(0, (size.height * view.scale - size.stageHeight) / 2);
-      view.x = Math.max(-maxX, Math.min(maxX, view.x));
-      view.y = Math.max(-maxY, Math.min(maxY, view.y));
-      const dismissDistance = Math.hypot(view.dismissX, view.dismissY);
-      const dismissScale = view.scale <= 1.01
-        ? 1 - Math.min(0.045, dismissDistance / 2400)
-        : 1;
-      image.style.transform = `translate3d(${view.x + view.dismissX}px, ${view.y + view.dismissY}px, 0) scale(${view.scale * dismissScale})`;
-      stage.classList.toggle('is-zoomed', view.scale > 1.01);
-      stage.classList.toggle('is-dismissing', dismissDistance > 0.5);
-      if (view.scale <= 1.01 && dismissDistance > 0) {
-        const fadeDistance = Math.max(180, Math.min(window.innerWidth, window.innerHeight) * 0.48);
-        setBackdropStrength(1 - Math.min(0.64, dismissDistance / fadeDistance * 0.64));
-      } else if (!view.opening && !view.closing) {
-        setBackdropStrength(1);
-      }
-    };
-
-    const resetTransform = () => {
-      view.scale = 1;
-      view.x = 0;
-      view.y = 0;
-      view.dismissX = 0;
-      view.dismissY = 0;
-      view.gesture = null;
-      view.pointers.clear();
-      applyTransform();
-    };
-
-    const setScale = nextScale => {
-      view.scale = Math.max(1, Math.min(4, nextScale));
-      view.dismissX = 0;
-      view.dismissY = 0;
-      if (view.scale <= 1.01) {
-        view.x = 0;
-        view.y = 0;
-      }
-      applyTransform();
-    };
-
-    const getTriggerCover = () => {
-      if (!detailCoverViewerTrigger?.isConnected) return null;
-      return detailCoverViewerTrigger.querySelector('.cover-frame') || detailCoverViewerTrigger;
-    };
-
-    const getViewerTargetRect = sourceRect => {
-      const stageRect = stage.getBoundingClientRect();
-      const naturalWidth = image.naturalWidth || sourceRect?.width || 1;
-      const naturalHeight = image.naturalHeight || sourceRect?.height || 1;
-      const fit = Math.min(stageRect.width / naturalWidth, stageRect.height / naturalHeight);
-      const width = Math.max(1, naturalWidth * fit);
-      const height = Math.max(1, naturalHeight * fit);
-      return {
-        left: stageRect.left + (stageRect.width - width) / 2,
-        top: stageRect.top + (stageRect.height - height) / 2,
-        width,
-        height,
-      };
-    };
-
-    const createTransitionClone = (rect, source) => {
-      if (!rect?.width || !rect?.height || !source) return null;
-      const clone = document.createElement('img');
-      clone.className = 'detail-cover-viewer-transition-image';
-      clone.src = source;
-      clone.alt = '';
-      clone.setAttribute('aria-hidden', 'true');
-      Object.assign(clone.style, {
-        left: `${rect.left}px`,
-        top: `${rect.top}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-      });
-      overlay.append(clone);
-      view.transitionClone = clone;
-      return clone;
-    };
-
-    const animateCloneBetweenRects = (clone, fromRect, toRect, duration) => {
-      if (!clone || !fromRect?.width || !toRect?.width) return Promise.resolve();
-      const transform = `translate3d(${toRect.left - fromRect.left}px, ${toRect.top - fromRect.top}px, 0) scale(${toRect.width / fromRect.width}, ${toRect.height / fromRect.height})`;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        clone.style.transform = transform;
-        return Promise.resolve();
-      }
-      if (typeof clone.animate === 'function') {
-        const animation = clone.animate([
-          { transform: 'translate3d(0, 0, 0) scale(1, 1)', borderRadius: '8px' },
-          { transform, borderRadius: '2px' },
-        ], {
-          duration,
-          easing: 'cubic-bezier(0.2, 0.78, 0.18, 1)',
-          fill: 'forwards',
-        });
-        return Promise.race([
-          animation.finished.catch(() => undefined),
-          new Promise(resolve => window.setTimeout(resolve, duration + 100)),
-        ]);
-      }
-      clone.style.transition = `transform ${duration}ms cubic-bezier(0.2, 0.78, 0.18, 1), border-radius ${duration}ms ease`;
-      clone.getBoundingClientRect();
-      requestAnimationFrame(() => {
-        clone.style.transform = transform;
-        clone.style.borderRadius = '2px';
-      });
-      return new Promise(resolve => window.setTimeout(resolve, duration + 80));
-    };
-
-    const openFromTrigger = async trigger => {
-      const token = ++view.transitionToken;
-      view.opening = true;
-      view.closing = false;
-      delete overlay.dataset.closing;
-      const source = trigger?.querySelector('.cover-frame') || trigger;
-      const sourceRect = source?.getBoundingClientRect();
-      const sourceImage = source?.querySelector('img') || source?.closest?.('img');
-      const sourceUrl = sourceImage?.currentSrc || sourceImage?.src || image.currentSrc || image.src;
-      image.style.opacity = '0';
-      setBackdropStrength(0);
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      if (token !== view.transitionToken || overlay.hidden) return;
-      const targetRect = getViewerTargetRect(sourceRect);
-      const clone = createTransitionClone(sourceRect, sourceUrl);
-      requestAnimationFrame(() => setBackdropStrength(1));
-      await animateCloneBetweenRects(clone, sourceRect, targetRect, 360);
-      if (token !== view.transitionToken || overlay.hidden) return;
-      clone?.remove();
-      if (view.transitionClone === clone) view.transitionClone = null;
-      image.style.opacity = '1';
-      view.opening = false;
-      setBackdropStrength(1);
-    };
-
-    const settleDismissBack = () => {
-      if (view.settling || view.closing) return;
-      view.settling = true;
-      const fromTransform = image.style.transform;
-      setBackdropStrength(1);
-      const finish = () => {
-        view.dismissX = 0;
-        view.dismissY = 0;
-        view.settling = false;
-        applyTransform();
-      };
-      if (typeof image.animate !== 'function' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        finish();
-        return;
-      }
-      const animation = image.animate([
-        { transform: fromTransform },
-        { transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})` },
-      ], {
-        duration: 220,
-        easing: 'cubic-bezier(0.2, 0.78, 0.18, 1)',
-      });
-      animation.finished.then(finish).catch(finish);
-    };
-
-    const close = async ({ restoreFocus = true, animate = true } = {}) => {
-      if (overlay.hidden || view.closing) return;
-      const token = ++view.transitionToken;
-      view.closing = true;
-      overlay.dataset.closing = 'true';
-      view.opening = false;
-      view.settling = false;
-      view.pointers.clear();
-      view.gesture = null;
-      const target = getTriggerCover();
-      const targetRect = target?.getBoundingClientRect();
-      const movingElement = view.transitionClone?.isConnected ? view.transitionClone : image;
-      const currentRect = movingElement.getBoundingClientRect();
-      const sourceUrl = image.currentSrc || image.src;
-      view.transitionClone?.remove();
-      view.transitionClone = null;
-      image.style.opacity = '0';
-
-      if (animate && targetRect?.width && currentRect?.width && sourceUrl) {
-        const clone = createTransitionClone(currentRect, sourceUrl);
-        requestAnimationFrame(() => setBackdropStrength(0));
-        await animateCloneBetweenRects(clone, currentRect, targetRect, 320);
-        clone?.remove();
-        if (view.transitionClone === clone) view.transitionClone = null;
-      } else {
-        setBackdropStrength(0);
-        if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          await new Promise(resolve => window.setTimeout(resolve, 160));
-        }
-      }
-      if (token !== view.transitionToken) return;
-      overlay.hidden = true;
-      delete overlay.dataset.closing;
-      document.body.classList.remove('detail-cover-viewer-open');
-      image.style.opacity = '';
-      view.closing = false;
-      resetTransform();
-      detailCoverViewerHistoryActive = false;
-      if (restoreFocus && detailCoverViewerTrigger?.isConnected) {
-        detailCoverViewerTrigger.focus({ preventScroll: true });
-      }
-      detailCoverViewerTrigger = null;
-    };
-
-    closeButton.addEventListener('click', () => requestCloseDetailCoverViewer());
-    overlay.addEventListener('click', event => {
-      if (event.target === overlay) requestCloseDetailCoverViewer();
-    });
-    overlay.addEventListener('keydown', event => {
-      if (event.key === 'Escape') requestCloseDetailCoverViewer();
-      if (event.key === 'Tab') {
-        event.preventDefault();
-        closeButton.focus();
-      }
-    });
-
-    stage.addEventListener('wheel', event => {
-      event.preventDefault();
-      setScale(view.scale * (event.deltaY < 0 ? 1.16 : 0.86));
-    }, { passive: false });
-
-    stage.addEventListener('dblclick', event => {
-      event.preventDefault();
-      setScale(view.scale > 1.01 ? 1 : 2.4);
-    });
-
-    stage.addEventListener('pointerdown', event => {
-      if (event.button > 0 || view.opening || view.closing || view.settling) return;
-      event.preventDefault();
-      try {
-        stage.setPointerCapture(event.pointerId);
-      } catch (error) {
-        // Pointer capture is optional on older in-app browsers.
-      }
-      view.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      const points = [...view.pointers.values()];
-      if (points.length >= 2) {
-        view.dismissX = 0;
-        view.dismissY = 0;
-        setBackdropStrength(1);
-        const [a, b] = points;
-        view.gesture = {
-          type: 'pinch',
-          distance: Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)),
-          centerX: (a.x + b.x) / 2,
-          centerY: (a.y + b.y) / 2,
-          scale: view.scale,
-          x: view.x,
-          y: view.y,
-        };
-      } else if (view.scale > 1.01) {
-        view.gesture = {
-          type: 'pan',
-          startX: event.clientX,
-          startY: event.clientY,
-          x: view.x,
-          y: view.y,
-        };
-      } else {
-        view.gesture = {
-          type: 'dismiss',
-          startX: event.clientX,
-          startY: event.clientY,
-        };
-      }
-    });
-
-    stage.addEventListener('pointermove', event => {
-      if (!view.pointers.has(event.pointerId)) return;
-      event.preventDefault();
-      view.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      const points = [...view.pointers.values()];
-
-      if (points.length >= 2) {
-        const [a, b] = points;
-        if (view.gesture?.type !== 'pinch') {
-          view.gesture = {
-            type: 'pinch',
-            distance: Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)),
-            centerX: (a.x + b.x) / 2,
-            centerY: (a.y + b.y) / 2,
-            scale: view.scale,
-            x: view.x,
-            y: view.y,
-          };
-        }
-        const distance = Math.max(1, Math.hypot(b.x - a.x, b.y - a.y));
-        const centerX = (a.x + b.x) / 2;
-        const centerY = (a.y + b.y) / 2;
-        view.scale = Math.max(1, Math.min(4, view.gesture.scale * distance / view.gesture.distance));
-        view.x = view.gesture.x + centerX - view.gesture.centerX;
-        view.y = view.gesture.y + centerY - view.gesture.centerY;
-        applyTransform();
-        return;
-      }
-
-      if (view.gesture?.type === 'pan' && view.scale > 1.01) {
-        view.x = view.gesture.x + event.clientX - view.gesture.startX;
-        view.y = view.gesture.y + event.clientY - view.gesture.startY;
-        applyTransform();
-        return;
-      }
-
-      if (view.gesture?.type === 'dismiss' && view.scale <= 1.01) {
-        view.dismissX = event.clientX - view.gesture.startX;
-        view.dismissY = event.clientY - view.gesture.startY;
-        applyTransform();
-      }
-    }, { passive: false });
-
-    const finishPointer = (event, cancelled = false) => {
-      const finishedGesture = view.gesture;
-      view.pointers.delete(event.pointerId);
-      const remaining = [...view.pointers.values()][0];
-      if (remaining) {
-        view.gesture = view.scale > 1.01
-          ? { type: 'pan', startX: remaining.x, startY: remaining.y, x: view.x, y: view.y }
-          : { type: 'dismiss', startX: remaining.x - view.dismissX, startY: remaining.y - view.dismissY };
-        return;
-      }
-      view.gesture = null;
-      if (finishedGesture?.type !== 'dismiss') return;
-      const distance = Math.hypot(view.dismissX, view.dismissY);
-      const stageRect = stage.getBoundingClientRect();
-      const threshold = Math.min(140, Math.max(88, Math.min(stageRect.width, stageRect.height) * 0.18));
-      if (!cancelled && distance >= threshold) {
-        requestCloseDetailCoverViewer({ restoreFocus: false });
-      } else {
-        settleDismissBack();
-      }
-    };
-    stage.addEventListener('pointerup', finishPointer);
-    stage.addEventListener('pointercancel', event => finishPointer(event, true));
-    image.addEventListener('load', applyTransform);
-    window.addEventListener('resize', applyTransform);
-
-    overlay.append(stage, closeButton);
-    document.body.append(overlay);
-    detailCoverViewer = { ...view, resetTransform, close, openFromTrigger, setBackdropStrength };
-    return detailCoverViewer;
-  }
-
-  function openDetailCoverViewer(album, trigger) {
-    if (!CUSTOMER_FEATURES.detailCoverViewer || !String(album?.coverImage || '').trim()) return;
-    const viewer = ensureDetailCoverViewer();
-    detailCoverViewerTrigger = trigger || null;
-    viewer.overlay.setAttribute('aria-label', state.language === 'ko' ? '앨범 커버 크게 보기' : 'Expanded album cover');
-    viewer.closeButton.setAttribute('aria-label', state.language === 'ko' ? '커버 크게 보기 닫기' : 'Close expanded cover');
-    const triggerImage = trigger?.querySelector('.cover-frame img') || trigger?.querySelector('img');
-    viewer.image.src = triggerImage?.currentSrc || triggerImage?.src || String(album.coverImage).trim();
-    viewer.image.alt = `${getLocalizedArtist(album) || ''} - ${album.title || ''}`.trim();
-    viewer.overlay.hidden = false;
-    document.body.classList.add('detail-cover-viewer-open');
-    viewer.resetTransform();
-    if (CUSTOMER_FEATURES.interactiveCoverViewer) {
-      const currentState = history.state && typeof history.state === 'object'
-        ? history.state
-        : { view: 'detail', albumId: album.id };
-      if (!currentState.coverViewer) {
-        history.pushState({ ...currentState, view: 'detail', albumId: album.id, coverViewer: true }, '', window.location.href);
-      }
-      detailCoverViewerHistoryActive = true;
-      viewer.openFromTrigger(trigger);
-    } else {
-      viewer.image.style.opacity = '1';
-      viewer.setBackdropStrength(1);
-    }
-    viewer.closeButton.focus({ preventScroll: true });
-  }
-
-  function requestCloseDetailCoverViewer(options = {}) {
-    if (!detailCoverViewer || detailCoverViewer.overlay.hidden || detailCoverViewer.overlay.dataset.closing === 'true') return;
-    if (CUSTOMER_FEATURES.interactiveCoverViewer && detailCoverViewerHistoryActive) {
-      detailCoverViewer.pendingCloseOptions = options;
-      history.back();
-      return;
-    }
-    detailCoverViewer.close(options);
-  }
-
-  function closeDetailCoverViewer(options = {}) {
-    detailCoverViewer?.close(options);
-  }
-
   function escapeHtml(value) {
     return String(value || '')
       .replace(/&/g, '&amp;')
@@ -1901,62 +709,6 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
-  }
-
-  function getSearchTerms(query = state.query) {
-    return String(query || '')
-      .toLowerCase()
-      .normalize('NFKD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .normalize('NFC')
-      .replace(/[^\p{L}\p{N}]+/gu, ' ')
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-  }
-
-  function matchesSearch(value, terms) {
-    if (!terms.length) return true;
-    const words = getSearchTerms(value);
-    const compactText = words.join('');
-    return terms.every(term => {
-      // 한글·일본어처럼 단어 안에서 이어 쓰는 언어는 부분 검색을 유지합니다.
-      // 영문·숫자는 단어 앞부분부터 찾습니다. "no"는 "known"에 걸리지 않습니다.
-      const containsCjk = /[\u1100-\u11ff\u3040-\u30ff\u3130-\u318f\u3400-\u9fff\uac00-\ud7a3]/u.test(term);
-      return containsCjk
-        ? words.some(word => word.includes(term)) || compactText.includes(term)
-        : words.some(word => word.startsWith(term));
-    });
-  }
-
-  function getAlbumArtistSearchText(album) {
-    const ids = new Set(getAlbumArtistCredits(album).map(credit => credit.id));
-    [...ids].forEach(id => (artistById.get(id)?.members || []).forEach(memberId => ids.add(memberId)));
-    const names = [...ids].flatMap(id => {
-      const identity = artistById.get(id);
-      return identity ? [identity.ko, identity.en, ...(identity.aliases || [])] : [];
-    });
-    return [album.artist, album.artistKo, album.artistEn, getLocalizedArtist(album), ...names]
-      .filter(Boolean).join(' ');
-  }
-
-  function getAlbumSearchMetadata(album) {
-    return [album.title, getAlbumArtistSearchText(album)].filter(Boolean).join(' ');
-  }
-
-  function getAlbumSearchGroups(album) {
-    // 여러 검색어는 음반 정보 한 묶음 또는 한 곡 안에서 함께 맞아야 합니다.
-    // 서로 다른 곡에서 한 단어씩 발견되는 우연한 결과는 제외합니다.
-    const metadata = getAlbumSearchMetadata(album);
-    return [
-      metadata,
-      ...(album.recommendedTracks || []).map(track => `${metadata} ${track}`),
-      ...(album.tracklist || []).map(track => `${metadata} ${track}`),
-    ];
-  }
-
-  function albumMatchesSearch(album, terms) {
-    return !terms.length || getAlbumSearchGroups(album).some(value => matchesSearch(value, terms));
   }
 
   function matchesAlbumFilters(album, terms, options = {}) {
@@ -2214,693 +966,6 @@
 
     swipeHintTimer = window.setTimeout(playHint, 500);
   }
-  function fieldMatches(value, query) {
-    return matchesSearch(value, getSearchTerms(query));
-  }
-
-  function getTrackSearchMatches(album, query = state.query) {
-    const terms = getSearchTerms(query);
-    if (!terms.length) return [];
-    const metadata = getAlbumSearchMetadata(album);
-    // 음반 정보만으로 검색어가 모두 맞으면 곡 자체의 일치만 표시합니다.
-    // 아티스트+곡명 검색은 검색 결과와 동일한 정보 묶음으로 실제 트랙을 찾습니다.
-    const metadataOnly = matchesSearch(metadata, terms);
-    const matchesTrack = track => matchesSearch(metadataOnly ? track : `${metadata} ${track}`, terms);
-    const matchingRecommendations = (album.recommendedTracks || []).filter(matchesTrack);
-    return (album.tracklist || []).flatMap((track, index) => {
-      const matches = matchesTrack(track)
-        || matchingRecommendations.some(recommended => isRecommendedTrack(track, [recommended]));
-      return matches ? [{ index, track }] : [];
-    });
-  }
-
-  function getTrackSearchQuery(album, query = state.query) {
-    return getTrackSearchMatches(album, query).length ? String(query).trim() : '';
-  }
-
-  function albumHasTrackSearchMatch(album, query = state.query) {
-    return Boolean(getTrackSearchQuery(album, query));
-  }
-
-  function getSearchMatchType(album) {
-    if (!getSearchTerms().length) return '';
-    if (fieldMatches(album.title, state.query)) return 'title';
-    if (fieldMatches([album.artist, album.artistKo, album.artistEn].join(' '), state.query)) return 'artist';
-    if (fieldMatches(getAlbumArtistSearchText(album), state.query)) return 'relatedArtist';
-    if (albumHasTrackSearchMatch(album)) return 'tracklist';
-    return '';
-  }
-
-  function getSearchMatchLabel(album, matchType = getSearchMatchType(album)) {
-    const labels = {
-      title: 'matchTitle',
-      artist: 'matchArtist',
-      relatedArtist: 'matchRelatedArtist',
-      year: 'matchYear',
-      format: 'matchFormat',
-      genre: 'matchGenre',
-      tracklist: 'matchTracklist',
-    };
-    return labels[matchType] ? t(labels[matchType]) : '';
-  }
-
-  function getBaseUrl() {
-    return `${window.location.pathname}${window.location.search}`;
-  }
-
-  function getAlbumHash(albumId) {
-    return `#album=${encodeURIComponent(albumId)}`;
-  }
-
-  function getAlbumIdFromHash() {
-    const match = window.location.hash.match(/^#album=(.+)$/);
-    if (!match) return '';
-    try {
-      return decodeURIComponent(match[1]);
-    } catch (error) {
-      return '';
-    }
-  }
-
-  function waitForTransitionCoverImage(destination, timeout = 1600) {
-    const image = destination?.querySelector('img');
-    if (!image) return Promise.resolve();
-    const loaded = image.complete
-      ? Promise.resolve()
-      : new Promise(resolve => {
-        image.addEventListener('load', resolve, { once: true });
-        image.addEventListener('error', resolve, { once: true });
-      });
-    const ready = loaded.then(() => {
-      if (typeof image.decode !== 'function' || !image.naturalWidth) return undefined;
-      return image.decode().catch(() => undefined);
-    });
-    return Promise.race([
-      ready,
-      new Promise(resolve => window.setTimeout(resolve, timeout)),
-    ]);
-  }
-
-  const transitionCoverPreloads = new Map();
-
-  function preloadTransitionCover(album, preferredSource = '') {
-    const source = String(preferredSource || getComparisonCoverSource(album)).trim();
-    if (!source) return Promise.resolve();
-    if (transitionCoverPreloads.has(source)) return transitionCoverPreloads.get(source);
-
-    const promise = new Promise(resolve => {
-      const image = new Image();
-      const finish = () => {
-        if (typeof image.decode !== 'function' || !image.naturalWidth) {
-          resolve();
-          return;
-        }
-        image.decode().catch(() => undefined).then(resolve);
-      };
-      image.addEventListener('load', finish, { once: true });
-      image.addEventListener('error', resolve, { once: true });
-      image.src = source;
-      if (image.complete) finish();
-    });
-    transitionCoverPreloads.set(source, promise);
-    return promise;
-  }
-
-  function upgradeDetailCoverWithoutFlash(destination, currentImage, originalSource, coverReady) {
-    if (!destination || !currentImage || !originalSource) return;
-
-    const getAbsoluteUrl = value => {
-      try {
-        return new URL(value, document.baseURI).href;
-      } catch (error) {
-        return String(value || '');
-      }
-    };
-    const currentSource = currentImage.currentSrc || currentImage.src || '';
-    if (getAbsoluteUrl(currentSource) === getAbsoluteUrl(originalSource)) return;
-
-    // 목록 썸네일을 먼저 그대로 보여주고, 원본이 완전히 준비된 뒤 위에 겹쳐 교체해 빈 프레임을 막습니다.
-    Promise.resolve(coverReady).then(() => {
-      if (!destination.isConnected || destination.querySelector('img') !== currentImage) return;
-
-      const upgradedImage = new Image();
-      upgradedImage.className = `${currentImage.className || ''} cover-quality-upgrade`.trim();
-      upgradedImage.alt = currentImage.alt || '';
-      upgradedImage.loading = 'eager';
-      upgradedImage.decoding = 'async';
-      upgradedImage.fetchPriority = 'high';
-      upgradedImage.draggable = false;
-      let started = false;
-
-      const revealUpgrade = () => {
-        if (started) return;
-        started = true;
-        const decoded = typeof upgradedImage.decode === 'function'
-          ? upgradedImage.decode().catch(() => undefined)
-          : Promise.resolve();
-        decoded.then(() => {
-          if (!upgradedImage.naturalWidth || !destination.isConnected || destination.querySelector('img') !== currentImage) return;
-          destination.append(upgradedImage);
-
-          const finishUpgrade = () => {
-            if (!upgradedImage.isConnected) return;
-            currentImage.remove();
-            upgradedImage.classList.remove('cover-quality-upgrade', 'is-ready');
-          };
-          upgradedImage.addEventListener('transitionend', finishUpgrade, { once: true });
-          requestAnimationFrame(() => upgradedImage.classList.add('is-ready'));
-          window.setTimeout(finishUpgrade, 240);
-        });
-      };
-
-      upgradedImage.addEventListener('load', revealUpgrade, { once: true });
-      upgradedImage.addEventListener('error', () => upgradedImage.remove(), { once: true });
-      upgradedImage.src = originalSource;
-      if (upgradedImage.complete) revealUpgrade();
-    });
-  }
-
-  async function animateDirectCoverIntoDetail(album, transitionSource, commitDetailOpen) {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const sourceRect = transitionSource?.getBoundingClientRect();
-    const canAnimate = CUSTOMER_FEATURES.coverTransitions
-      && transitionSource
-      && !reduceMotion
-      && sourceRect
-      && sourceRect.width > 8
-      && sourceRect.height > 8;
-    if (!canAnimate) {
-      commitDetailOpen(false);
-      return;
-    }
-
-    const instantMotion = CUSTOMER_FEATURES.instantCoverMotion && CUSTOMER_FEATURES.instantDetailContinuity;
-    const sourceImage = transitionSource.querySelector('img');
-    const sourceImageUrl = sourceImage?.currentSrc || sourceImage?.src || '';
-    const sharpTransition = instantMotion && CUSTOMER_FEATURES.sharpDetailCoverTransition && Boolean(sourceImage);
-    const originalSource = String(album?.coverImage || '').trim();
-    const transitionImageUrl = sharpTransition && originalSource ? originalSource : sourceImageUrl;
-    const coverReady = preloadTransitionCover(album, transitionImageUrl);
-    const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
-    const backdrop = instantMotion ? document.createElement('div') : null;
-    if (backdrop) {
-      backdrop.className = 'cover-transition-backdrop';
-      backdrop.setAttribute('aria-hidden', 'true');
-      document.body.append(backdrop);
-    }
-    document.documentElement.classList.add('is-cover-zoom-running');
-
-    const createTransitionClone = ({ rect, imageSource = sourceImageUrl, transform = 'none', borderRadius = sourceBorderRadius }) => {
-      const clone = transitionSource.cloneNode(true);
-      clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
-      clone.className = 'cover-transition-clone';
-      const cloneImage = clone.querySelector('img');
-      if (cloneImage && imageSource) {
-        cloneImage.src = imageSource;
-        cloneImage.loading = 'eager';
-        cloneImage.decoding = 'sync';
-        cloneImage.fetchPriority = 'high';
-      }
-      Object.assign(clone.style, {
-        position: 'fixed',
-        left: `${rect.left}px`,
-        top: `${rect.top}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-        margin: '0',
-        borderRadius,
-        transform,
-        transformOrigin: 'top left',
-        zIndex: '1000',
-        pointerEvents: 'none',
-        willChange: 'transform, border-radius, border-width, box-shadow',
-      });
-      return clone;
-    };
-
-    if (instantMotion) {
-      // 상세 화면을 같은 프레임에 준비한 뒤 목록 위치에서 상세 커버 위치까지 한 번에 이동합니다.
-      commitDetailOpen(true);
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-      const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
-      const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
-      const detailPage = detailRoot.querySelector('.detail-page');
-      if (!destination) {
-        backdrop?.remove();
-        document.documentElement.classList.remove('is-cover-zoom-running');
-        activatePersistentDetailView();
-        return;
-      }
-
-      destination.style.visibility = 'hidden';
-      const destinationImage = destination.querySelector('img');
-      if (transitionImageUrl && destinationImage) {
-        destinationImage.src = transitionImageUrl;
-        destinationImage.loading = 'eager';
-        destinationImage.decoding = 'sync';
-        destinationImage.fetchPriority = 'high';
-      }
-
-      const destinationRect = destination.getBoundingClientRect();
-      if (!destinationRect.width || !destinationRect.height) {
-        backdrop?.remove();
-        destination.style.visibility = '';
-        document.documentElement.classList.remove('is-cover-zoom-running');
-        activatePersistentDetailView();
-        return;
-      }
-
-      const sourceStyle = getComputedStyle(transitionSource);
-      const destinationStyle = getComputedStyle(destination);
-      const destinationRadius = destinationStyle.borderRadius || '6px';
-      const sourceShadow = sourceStyle.boxShadow || 'none';
-      const destinationShadow = destinationStyle.boxShadow || 'none';
-      const sourceScaleX = sourceRect.width / destinationRect.width;
-      const sourceScaleY = sourceRect.height / destinationRect.height;
-      const sourceScale = Math.max(0.01, Math.min(sourceScaleX, sourceScaleY));
-      const sourceRadiusValue = Number.parseFloat(sourceBorderRadius) || 0;
-      const destinationRadiusValue = Number.parseFloat(destinationRadius) || 0;
-      const sourceBorderWidth = Number.parseFloat(sourceStyle.borderTopWidth) || 0;
-      const destinationBorderWidth = Number.parseFloat(destinationStyle.borderTopWidth) || 0;
-      const sharpInitialTransform = `translate3d(${sourceRect.left - destinationRect.left}px, ${sourceRect.top - destinationRect.top}px, 0) scale(${sourceScaleX}, ${sourceScaleY})`;
-      const regularFinalTransform = `translate3d(${destinationRect.left - sourceRect.left}px, ${destinationRect.top - sourceRect.top}px, 0) scale(${destinationRect.width / sourceRect.width}, ${destinationRect.height / sourceRect.height})`;
-
-      // 상세 커버 자체를 목록 위치에 축소해 둔 뒤 펼칩니다.
-      // 별도 복제본을 상세 커버로 교체하지 않으므로 마지막 프레임의 미세한 위치 변경도 생기지 않습니다.
-      let clone = null;
-      const movingCover = sharpTransition
-        ? destination
-        : createTransitionClone({ rect: sourceRect });
-      if (sharpTransition) {
-        Object.assign(destination.style, {
-          visibility: '',
-          transform: sharpInitialTransform,
-          transformOrigin: 'top left',
-          borderRadius: `${sourceRadiusValue / sourceScale}px`,
-          borderWidth: `${sourceBorderWidth / sourceScale}px`,
-          borderColor: sourceStyle.borderColor,
-          boxShadow: sourceShadow,
-          willChange: 'transform, border-radius, border-width, box-shadow',
-          zIndex: '1000',
-        });
-      } else {
-        clone = movingCover;
-        document.body.append(clone);
-      }
-      movingCover.getBoundingClientRect();
-
-      const upgradeDestinationCover = () => {
-        if (USES_SHARED_HIGH_QUALITY_COVERS) return;
-        upgradeDetailCoverWithoutFlash(destination, destinationImage, originalSource, coverReady);
-      };
-      let revealed = false;
-      let coverAnimation = null;
-      const revealDetail = () => {
-        if (revealed) return;
-        revealed = true;
-        clone?.remove();
-        coverAnimation?.cancel();
-        backdrop?.remove();
-        Object.assign(destination.style, {
-          visibility: '',
-          transform: '',
-          transformOrigin: '',
-          borderRadius: '',
-          borderWidth: '',
-          borderColor: '',
-          boxShadow: '',
-          transition: '',
-          willChange: '',
-          zIndex: '',
-        });
-        document.documentElement.classList.remove('is-cover-zoom-running');
-        activatePersistentDetailView();
-        detailPage?.classList.add('is-cover-zoom-revealing');
-        upgradeDestinationCover();
-        window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 220);
-      };
-      const coverKeyframes = sharpTransition
-        ? [
-          {
-            transform: sharpInitialTransform,
-            borderRadius: `${sourceRadiusValue / sourceScale}px`,
-            borderWidth: `${sourceBorderWidth / sourceScale}px`,
-            borderColor: sourceStyle.borderColor,
-            boxShadow: sourceShadow,
-          },
-          {
-            transform: 'translate3d(0, 0, 0) scale(1, 1)',
-            borderRadius: `${destinationRadiusValue}px`,
-            borderWidth: `${destinationBorderWidth}px`,
-            borderColor: destinationStyle.borderColor,
-            boxShadow: destinationShadow,
-          },
-        ]
-        : [
-          {
-            transform: 'translate3d(0, 0, 0) scale(1)',
-            borderRadius: sourceBorderRadius,
-            boxShadow: sourceShadow,
-          },
-          {
-            transform: regularFinalTransform,
-            borderRadius: destinationRadius,
-            boxShadow: destinationShadow,
-          },
-        ];
-      const motionDuration = 420;
-      if (typeof movingCover.animate === 'function') {
-        coverAnimation = movingCover.animate(coverKeyframes, {
-          duration: motionDuration,
-          easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
-          fill: 'forwards',
-        });
-        coverAnimation.finished.then(revealDetail).catch(revealDetail);
-      } else {
-        // 일부 인앱 브라우저에서는 Web Animations API가 없어 같은 움직임을 CSS transition으로 실행합니다.
-        movingCover.style.transition = [
-          `transform ${motionDuration}ms cubic-bezier(0.22, 0.72, 0.18, 1)`,
-          `border-radius ${motionDuration}ms ease`,
-          `border-width ${motionDuration}ms ease`,
-          `border-color ${motionDuration}ms ease`,
-          `box-shadow ${motionDuration}ms ease`,
-        ].join(', ');
-        requestAnimationFrame(() => {
-          movingCover.style.transform = sharpTransition ? 'translate3d(0, 0, 0) scale(1, 1)' : regularFinalTransform;
-          movingCover.style.borderRadius = destinationRadius;
-          movingCover.style.borderWidth = `${destinationBorderWidth}px`;
-          movingCover.style.borderColor = destinationStyle.borderColor;
-          movingCover.style.boxShadow = destinationShadow;
-        });
-        movingCover.addEventListener('transitionend', event => {
-          if (event.propertyName === 'transform') revealDetail();
-        });
-      }
-      window.setTimeout(revealDetail, 540);
-      return;
-    }
-
-    const clone = createTransitionClone({ rect: sourceRect });
-    document.body.append(clone);
-    clone.getBoundingClientRect();
-
-    commitDetailOpen(true);
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    const detailRoot = detailViewLayer?.isConnected ? detailViewLayer : app;
-    const destination = detailRoot.querySelector('[data-detail-cover] .cover-frame');
-    const detailPage = detailRoot.querySelector('.detail-page');
-    if (!destination) {
-      clone.remove();
-      backdrop?.remove();
-      document.documentElement.classList.remove('is-cover-zoom-running');
-      activatePersistentDetailView();
-      return;
-    }
-
-    destination.style.visibility = 'hidden';
-    const destinationImage = destination.querySelector('img');
-    if (instantMotion && sourceImageUrl && destinationImage) {
-      // 현재 화면에서 이미 디코딩된 썸네일을 그대로 사용해 클릭 다음 프레임부터 이동합니다.
-      destinationImage.src = sourceImageUrl;
-      destinationImage.loading = 'eager';
-      destinationImage.decoding = 'sync';
-      destinationImage.fetchPriority = 'high';
-    } else {
-      await Promise.all([
-        coverReady,
-        waitForTransitionCoverImage(destination, 4000),
-      ]);
-    }
-
-    const destinationRect = destination.getBoundingClientRect();
-    if (!destinationRect.width || !destinationRect.height) {
-      clone.remove();
-      backdrop?.remove();
-      destination.style.visibility = '';
-      document.documentElement.classList.remove('is-cover-zoom-running');
-      activatePersistentDetailView();
-      return;
-    }
-
-    const inverseTransform = `translate3d(${sourceRect.left - destinationRect.left}px, ${sourceRect.top - destinationRect.top}px, 0) scale(${sourceRect.width / destinationRect.width}, ${sourceRect.height / destinationRect.height})`;
-    const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
-    destination.style.visibility = '';
-    destination.style.transformOrigin = 'top left';
-    destination.style.willChange = 'transform, border-radius, box-shadow';
-
-    const upgradeDestinationCover = () => {
-      const originalSource = String(album?.coverImage || '').trim();
-      if (!instantMotion || !destinationImage || !originalSource) return;
-      coverReady.then(() => {
-        if (!destination.isConnected || destination.querySelector('img') !== destinationImage) return;
-        destinationImage.src = originalSource;
-        destinationImage.loading = 'eager';
-        destinationImage.decoding = 'async';
-        destinationImage.fetchPriority = 'high';
-      });
-    };
-
-    let revealed = false;
-    const revealDetail = () => {
-      if (revealed) return;
-      revealed = true;
-      clone.remove();
-      backdrop?.remove();
-      destination.style.visibility = '';
-      destination.style.transform = '';
-      destination.style.transformOrigin = '';
-      destination.style.willChange = '';
-      destination.style.transition = '';
-      document.documentElement.classList.remove('is-cover-zoom-running');
-      activatePersistentDetailView();
-      detailPage?.classList.add('is-cover-zoom-revealing');
-      upgradeDestinationCover();
-      window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
-    };
-
-    const motionDuration = instantMotion ? 440 : 520;
-
-    if (typeof destination.animate === 'function') {
-      const coverAnimation = destination.animate([
-        {
-          transform: inverseTransform,
-          borderRadius: sourceBorderRadius,
-          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
-        },
-        {
-          transform: 'translate3d(0, 0, 0) scale(1, 1)',
-          borderRadius: destinationRadius,
-          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
-        },
-      ], {
-        duration: motionDuration,
-        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
-        fill: 'forwards',
-      });
-      clone.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: instantMotion ? 60 : 90,
-        easing: 'ease-out',
-        fill: 'forwards',
-      });
-      coverAnimation.finished.then(revealDetail).catch(revealDetail);
-      window.setTimeout(revealDetail, motionDuration + 180);
-      return;
-    }
-
-    destination.style.transform = inverseTransform;
-    destination.style.borderRadius = sourceBorderRadius;
-    destination.style.boxShadow = '0 5px 16px rgba(0, 0, 0, 0.28)';
-    destination.getBoundingClientRect();
-    destination.style.transition = `transform ${motionDuration}ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius ${motionDuration}ms ease, box-shadow ${motionDuration}ms ease`;
-    clone.style.transition = `opacity ${instantMotion ? 60 : 90}ms ease-out`;
-    clone.style.opacity = '0';
-    requestAnimationFrame(() => {
-      destination.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
-      destination.style.borderRadius = destinationRadius;
-      destination.style.boxShadow = '0 22px 48px rgba(0, 0, 0, 0.42)';
-    });
-    window.setTimeout(revealDetail, motionDuration + 100);
-  }
-
-  function animateCoverIntoDetail(transitionSource, commitDetailOpen) {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const sourceRect = transitionSource?.getBoundingClientRect();
-    const canAnimate = CUSTOMER_FEATURES.coverTransitions
-      && transitionSource
-      && !reduceMotion
-      && sourceRect
-      && sourceRect.width > 8
-      && sourceRect.height > 8;
-    if (!canAnimate) {
-      commitDetailOpen(false);
-      return;
-    }
-
-    const sourceBorderRadius = getComputedStyle(transitionSource).borderRadius || '0px';
-    const clone = transitionSource.cloneNode(true);
-    clone.querySelectorAll('.album-card-new, .weekly-motion-indicator').forEach(element => element.remove());
-    clone.querySelectorAll('img').forEach(image => {
-      image.loading = 'eager';
-      image.removeAttribute('fetchpriority');
-    });
-    clone.className = 'cover-transition-clone';
-    Object.assign(clone.style, {
-      position: 'fixed',
-      left: `${sourceRect.left}px`,
-      top: `${sourceRect.top}px`,
-      width: `${sourceRect.width}px`,
-      height: `${sourceRect.height}px`,
-      margin: '0',
-      transformOrigin: 'top left',
-      zIndex: '1000',
-      pointerEvents: 'none',
-    });
-    document.body.append(clone);
-    document.documentElement.classList.add('is-cover-zoom-running');
-
-    commitDetailOpen(true);
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    const destination = app.querySelector('[data-detail-cover] .cover-frame');
-    const destinationRect = destination?.getBoundingClientRect();
-    if (!destination || !destinationRect?.width || !destinationRect?.height) {
-      clone.remove();
-      document.documentElement.classList.remove('is-cover-zoom-running');
-      activatePersistentDetailView();
-      return;
-    }
-
-    destination.style.visibility = 'hidden';
-    const translateX = destinationRect.left - sourceRect.left;
-    const translateY = destinationRect.top - sourceRect.top;
-    const scaleX = destinationRect.width / sourceRect.width;
-    const scaleY = destinationRect.height / sourceRect.height;
-    let cleaned = false;
-    const finish = async () => {
-      if (cleaned) return;
-      cleaned = true;
-      const detailPage = app.querySelector('.detail-page');
-
-      if (CUSTOMER_FEATURES.seamlessCoverTransitions) {
-        // 실제 상세 커버가 디코딩될 때까지 움직인 커버를 목적지에 그대로 둡니다.
-        await waitForTransitionCoverImage(destination);
-        destination.style.visibility = '';
-        destination.style.opacity = '0';
-        destination.style.transition = 'none';
-        detailPage?.classList.add('is-cover-zoom-revealing');
-        document.documentElement.classList.remove('is-cover-zoom-running');
-        destination.getBoundingClientRect();
-        destination.style.transition = 'opacity 120ms ease-out';
-        destination.style.opacity = '1';
-
-        if (typeof clone.animate === 'function') {
-          const handoff = clone.animate([
-            { opacity: 1 },
-            { opacity: 0 },
-          ], {
-            duration: 120,
-            easing: 'ease-out',
-            fill: 'forwards',
-          });
-          await Promise.race([
-            handoff.finished.catch(() => undefined),
-            new Promise(resolve => window.setTimeout(resolve, 180)),
-          ]);
-        } else {
-          clone.style.transition = 'opacity 120ms ease-out';
-          clone.style.opacity = '0';
-          await new Promise(resolve => window.setTimeout(resolve, 140));
-        }
-
-        clone.remove();
-        destination.style.opacity = '';
-        destination.style.transition = '';
-        activatePersistentDetailView();
-        window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
-        return;
-      }
-
-      clone.remove();
-      destination.style.visibility = '';
-      document.documentElement.classList.remove('is-cover-zoom-running');
-      activatePersistentDetailView();
-      detailPage?.classList.add('is-cover-zoom-revealing');
-      window.setTimeout(() => detailPage?.classList.remove('is-cover-zoom-revealing'), 360);
-    };
-    const destinationTransform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scaleX}, ${scaleY})`;
-    const destinationRadius = getComputedStyle(destination).borderRadius || '8px';
-    if (typeof clone.animate === 'function') {
-      const animation = clone.animate([
-        {
-          transform: 'translate3d(0, 0, 0) scale(1, 1)',
-          borderRadius: sourceBorderRadius,
-          boxShadow: '0 5px 16px rgba(0, 0, 0, 0.28)',
-        },
-        {
-          transform: destinationTransform,
-          borderRadius: destinationRadius,
-          boxShadow: '0 22px 48px rgba(0, 0, 0, 0.42)',
-        },
-      ], {
-        duration: 500,
-        easing: 'cubic-bezier(0.22, 0.72, 0.18, 1)',
-        fill: 'forwards',
-      });
-      animation.finished.then(finish).catch(finish);
-    } else {
-      // 일부 인앱 브라우저는 Web Animations API를 감추므로 같은 이동을 CSS transition으로 실행합니다.
-      clone.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
-      clone.style.borderRadius = sourceBorderRadius;
-      clone.style.boxShadow = '0 5px 16px rgba(0, 0, 0, 0.28)';
-      clone.style.transition = 'transform 500ms cubic-bezier(0.22, 0.72, 0.18, 1), border-radius 500ms ease, box-shadow 500ms ease';
-      requestAnimationFrame(() => {
-        clone.style.transform = destinationTransform;
-        clone.style.borderRadius = destinationRadius;
-        clone.style.boxShadow = '0 22px 48px rgba(0, 0, 0, 0.42)';
-      });
-    }
-    window.setTimeout(finish, 650);
-  }
-
-  function openAlbum(albumId, options = {}) {
-    finishHomeSectionMotion?.();
-    const album = albums.find(item => item.id === albumId) || getWeeklyAlbum();
-    if (!album) return renderHome();
-    if (CUSTOMER_FEATURES.persistentDetailLayers && !document.body.classList.contains('is-detail-view')) {
-      homeScrollPosition = window.scrollY;
-      homeAlbumPage = state.page;
-      if (homeViewLayer) homeViewLayer.dataset.preservedAlbumPage = String(homeAlbumPage);
-      app.querySelector('[data-album-grid].is-persistent-pager')?._pdPager?.suspend();
-    }
-    const detailHash = getAlbumHash(album.id);
-    const trackSearchQuery = String(options.trackSearchQuery || '').trim();
-    const focusTrackIndex = Number(options.focusTrackIndex);
-    state.detailTrackSearch = trackSearchQuery ? { albumId: album.id, query: trackSearchQuery } : null;
-    state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
-      ? { albumId: album.id, trackIndex: focusTrackIndex }
-      : null;
-    const detailState = { view: 'detail', albumId: album.id, homeSection: state.homeSection };
-    if (trackSearchQuery) detailState.trackSearchQuery = trackSearchQuery;
-    if (state.detailTrackFocus) detailState.focusTrackIndex = state.detailTrackFocus.trackIndex;
-
-    const commitDetailOpen = skipInitialScroll => {
-      // 브라우저 뒤로가기 지원: 상세 화면을 열 때 방문 기록에 한 단계를 쌓아 목록으로 돌아갈 수 있게 합니다.
-      if (window.location.hash !== detailHash) {
-        history.pushState(detailState, '', `${getBaseUrl()}${detailHash}`);
-      } else {
-        history.replaceState(detailState, '', `${getBaseUrl()}${detailHash}`);
-      }
-      renderDetail(album.id, {
-        skipInitialScroll,
-        // 전환 중에도 상세 정보가 이미 완성되어 있어 로딩처럼 뒤늦게 채워지지 않습니다.
-        deferContent: false,
-      });
-    };
-    if (CUSTOMER_FEATURES.persistentDetailLayers && CUSTOMER_FEATURES.directCoverTransition) {
-      animateDirectCoverIntoDetail(album, options.transitionSource, commitDetailOpen);
-    } else {
-      animateCoverIntoDetail(options.transitionSource, commitDetailOpen);
-    }
-  }
 
   function isWeeklyDetailRandom(button) {
     return state.homeSection === 'weekly' && Boolean(button.closest('.detail-page'));
@@ -3091,6 +1156,7 @@
   }
 
   function activatePersistentDetailView() {
+    if (!getAlbumIdFromHash()) return;
     if (!CUSTOMER_FEATURES.persistentDetailLayers || !detailViewLayer?.isConnected) return;
     app.classList.remove('is-detail-staging');
     app.classList.add('is-detail-active');
@@ -3152,7 +1218,10 @@
         getAlbumGenres(weekly).map(genre => getGenreLabel(genre)).join(' · '),
         getAlbumCountry(weekly) === COUNTRY_UNKNOWN ? '' : getCountryLabel(getAlbumCountry(weekly)),
       ].filter(Boolean).join(' · ');
-      node.querySelector('[data-weekly-title]').textContent = weekly.title || t('chooseWeekly');
+      const weeklyTitle = node.querySelector('[data-weekly-title]');
+      weeklyTitle.textContent = weekly.title || t('chooseWeekly');
+      const titleLength = Array.from(weeklyTitle.textContent).length;
+      weeklyTitle.dataset.titleLength = titleLength > 72 ? 'very-long' : titleLength > 38 ? 'long' : 'normal';
       node.querySelector('[data-weekly-artist]').textContent = getLocalizedArtist(weekly) || '';
       node.querySelector('[data-weekly-year]').textContent = weekly.year ? t('released')(weekly.year) : '';
       node.querySelector('[data-weekly-reason]').textContent = getLocalizedWeeklyReason(weekly);
@@ -3272,6 +1341,19 @@
       state.filtersExpanded = false;
       resetAlbumPage();
       renderHome();
+    });
+
+    node.querySelector('[data-empty-clear-filters]').addEventListener('click', () => {
+      // 검색어와 보기 방식은 유지하고 결과를 제한한 조건만 해제합니다.
+      state.artist = '';
+      state.format = FORMAT_ALL;
+      state.genre = GENRE_ALL;
+      state.decade = '';
+      state.recentOnly = false;
+      state.filtersExpanded = false;
+      resetAlbumPage();
+      renderHome();
+      app.querySelector('#search-input')?.focus({ preventScroll: true });
     });
 
     const requestListButton = node.querySelector('[data-request-list]');
@@ -4165,7 +2247,10 @@
       }
     }
 
-    empty.textContent = t('emptyAlbums');
+    const hasRestrictingFilters = Boolean(state.artist || state.format !== FORMAT_ALL
+      || state.genre !== GENRE_ALL || state.decade || state.recentOnly);
+    empty.querySelector('[data-empty-title]').textContent = t(hasRestrictingFilters ? 'emptyAlbums' : 'emptyAllAlbums');
+    empty.querySelector('[data-empty-clear-filters]').hidden = !hasRestrictingFilters;
     empty.hidden = filtered.length !== 0;
     refreshRequestTrackUi(app);
     renderPagination(pagination, filtered.length, totalPages);
@@ -4174,62 +2259,6 @@
       app.querySelector('.grid-section')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
     syncBrowseUrl();
-  }
-
-  function stripTrackNumber(track) {
-    const text = String(track || '').trim();
-    // 트랙 번호와 곡 제목 분리: A1. Title / B2 Title / 1. Title 같은 앞 번호를 제거합니다.
-    return text.replace(/^([A-Z]\s*\d+|\d+|[A-Z][-–]\d+|[A-Z]\.\d+)\.?\s+/i, '').trim();
-  }
-
-  function splitTrackLine(track) {
-    // 트랙 번호와 곡 제목 분리: 추천점이 곡 번호 왼쪽에 놓이도록 번호를 별도 span으로 나눕니다.
-    const text = String(track || '').trim();
-    const match = text.match(/^([A-Z]\s*\d+|\d+|[A-Z][-–]\d+|[A-Z]\.\d+)\.?\s+(.+)$/i);
-    if (!match) return { number: '', title: text };
-    const rawNumber = match[1].replace(/\s+/g, '');
-    const number = rawNumber.endsWith('.') ? rawNumber : `${rawNumber}.`;
-    return { number, title: match[2].trim() };
-  }
-
-  function isRecommendedTrack(track, recommendedTracks) {
-    // 추천곡 매칭: 트랙 한 줄 또는 곡명이 정확히 같을 때만 같은 곡으로 봅니다.
-    // 단어 포함 비교를 하지 않아 원곡과 Instrumental/Remix가 함께 표시되지 않습니다.
-    const trackLine = normalize(String(track || '').trim());
-    const trackTitle = normalize(stripTrackNumber(track));
-    if (!trackTitle) return false;
-    return (recommendedTracks || []).some(recommended => {
-      const recommendedValue = normalize(String(recommended || '').trim());
-      return recommendedValue && (recommendedValue === trackLine || recommendedValue === trackTitle);
-    });
-  }
-
-  function goHome() {
-    const returningFromDetail = Boolean(getAlbumIdFromHash());
-    state.detailTrackSearch = null;
-    state.detailTrackFocus = null;
-    state.homeSection = 'weekly';
-    syncBrowseUrl();
-    history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
-    if (!returningFromDetail && app.querySelector('[data-home-sections]')) {
-      setHomeSection(state.homeSection);
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      return;
-    }
-    if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
-  }
-
-  function goPreviousView() {
-    history.back();
-  }
-
-  function goAlbumList() {
-    state.detailTrackSearch = null;
-    state.detailTrackFocus = null;
-    state.homeSection = 'catalog';
-    syncBrowseUrl();
-    history.pushState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
-    if (!revealPersistentHomeView({ scrollY: 0 })) renderHome();
   }
 
   function hideArtistAlbums() {
@@ -4592,48 +2621,8 @@
     }, 120);
   });
 
-  function renderRouteFromLocation() {
-    const browseChanged = applyBrowseStateFromUrl();
-    const albumId = getAlbumIdFromHash();
-    if (albumId && albums.some(album => album.id === albumId)) {
-      const trackSearchQuery = history.state?.albumId === albumId
-        ? String(history.state.trackSearchQuery || '').trim()
-        : '';
-      const focusTrackIndex = history.state?.albumId === albumId
-        ? Number(history.state.focusTrackIndex)
-        : Number.NaN;
-      state.detailTrackSearch = trackSearchQuery ? { albumId, query: trackSearchQuery } : null;
-      state.detailTrackFocus = Number.isInteger(focusTrackIndex) && focusTrackIndex >= 0
-        ? { albumId, trackIndex: focusTrackIndex }
-        : null;
-      if (CUSTOMER_FEATURES.persistentDetailLayers && (!homeViewReady || browseChanged)) renderHome({ keepInactive: true });
-      renderDetail(albumId);
-      return;
-    }
-    state.detailTrackSearch = null;
-    state.detailTrackFocus = null;
-    if (window.location.hash) history.replaceState({ view: 'home', homeSection: state.homeSection }, '', getBaseUrl());
-    if (browseChanged) return renderHome();
-    if (!revealPersistentHomeView({ scrollY: homeScrollPosition })) renderHome();
-  }
-
   function handlePopState() {
-    // 메모창도 방문 기록 한 단계로 취급해 첫 뒤로가기는 배경 화면을 유지합니다.
-    if (requestListOverlay && !requestListOverlay.hidden) {
-      const stayedOnPage = window.location.href === requestListBaseUrl;
-      hideRequestTrackList();
-      const callback = afterRequestListClose;
-      afterRequestListClose = null;
-      if (stayedOnPage) {
-        callback?.();
-        return;
-      }
-    }
-    if (history.state?.requestList) {
-      renderRouteFromLocation();
-      openRequestTrackList({ fromHistory: true });
-      return;
-    }
+    if (handleNotesPopState()) return;
     if (artistAlbumsOverlay) {
       const stayedOnPage = window.location.href === artistAlbumsBaseUrl;
       hideArtistAlbums();
@@ -4650,13 +2639,7 @@
       if (album) openArtistAlbums(album, document.querySelector('[data-artist-albums]'), { fromHistory: true });
       return;
     }
-    // 커버 크게 보기는 상세 페이지 위의 한 단계이므로, 뒤로가기는 먼저 뷰어만 닫습니다.
-    if (CUSTOMER_FEATURES.interactiveCoverViewer && detailCoverViewer && !detailCoverViewer.overlay.hidden) {
-      const closeOptions = detailCoverViewer.pendingCloseOptions || {};
-      detailCoverViewer.pendingCloseOptions = null;
-      closeDetailCoverViewer({ ...closeOptions, animate: true });
-      return;
-    }
+    if (handleCoverPopState()) return;
     renderRouteFromLocation();
   }
 
