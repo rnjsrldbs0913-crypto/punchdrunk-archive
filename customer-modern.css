@@ -995,6 +995,33 @@ html.feature-customer-modern-style[data-customer-theme="day"] body.customer-page
   }
 }
 
+.feature-customer-modern-style[data-customer-theme="day"] .search-clear-button {
+  color: #4f535a;
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .search-clear-button:hover,
+.feature-customer-modern-style[data-customer-theme="day"] .search-clear-button:focus-visible {
+  color: #15171a;
+  background: rgba(21, 23, 26, 0.08);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .album-card-match,
+.feature-customer-modern-style[data-customer-theme="day"] .track-search-marker {
+  border-color: rgba(143, 33, 55, 0.3);
+  background: #fff0f2;
+  color: #8f2137;
+}
+
+.feature-customer-modern-style .album-card-track-match {
+  color: var(--modern-text);
+}
+
+.feature-customer-modern-style[data-customer-theme="day"] .request-floating-button {
+  border-color: #3658b8;
+  background: #3658b8;
+  box-shadow: 0 4px 18px rgba(40, 62, 122, 0.2);
+}
+
 /* 모바일 필터에서 현재 결과로 바로 이동합니다. */
 .filter-results-jump {
   display: none;

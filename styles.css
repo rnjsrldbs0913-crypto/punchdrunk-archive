@@ -1657,6 +1657,23 @@ select:focus-visible,
   white-space: nowrap;
 }
 
+.album-card-track-match {
+  display: -webkit-box;
+  min-width: 0;
+  margin-top: 6px;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.album-card-track-count {
+  white-space: nowrap;
+}
+
 .empty-message {
   color: var(--muted);
   text-align: center;
@@ -3773,7 +3790,7 @@ body.request-list-open {
 }
 
 .request-list-item-text strong {
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
@@ -3792,6 +3809,44 @@ body.request-list-open {
   font-size: 12px;
   line-height: 1.4;
   overflow-wrap: anywhere;
+}
+
+.request-list-artist {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.request-floating-button {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 900;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(164, 187, 255, 0.65);
+  border-radius: 999px;
+  background: #283e7b;
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.request-floating-button[hidden],
+.request-list-open .request-floating-button {
+  display: none;
+}
+
+.request-floating-button:focus-visible {
+  outline: 2px solid #aabaff;
+  outline-offset: 3px;
+}
+
+body:has(.request-toast) .request-floating-button {
+  bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
 .request-list-footer {

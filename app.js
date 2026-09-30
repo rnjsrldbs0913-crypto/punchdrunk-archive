@@ -165,7 +165,7 @@
   ];
 
   const BROWSE_SORTS = new Set(['default', 'newest', 'oldest', 'artist', 'title']);
-  const BROWSE_URL_KEYS = ['q', 'artist', 'format', 'genre', 'sort', 'decade', 'recent', 'section'];
+  const BROWSE_URL_KEYS = ['q', 'artist', 'format', 'genre', 'sort', 'decade', 'recent', 'section', 'page'];
 
   function readBrowseStateFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -185,6 +185,8 @@
       sort: BROWSE_SORTS.has(sort) ? sort : 'default',
       decade: /^\d{4}$/.test(decade || '') && albums.some(album => getAlbumDecade(album) === decade) ? decade : '',
       recentOnly: params.get('recent') === '1',
+      page: /^\d+$/.test(params.get('page') || '')
+        ? Math.min(1000000, Math.max(1, Number(params.get('page')))) : 1,
       homeSection: HOME_SECTIONS.includes(section)
         ? section
         : HOME_SECTIONS.includes(history.state?.homeSection)
@@ -197,16 +199,16 @@
     const next = readBrowseStateFromUrl();
     const filtersChanged = ['query', 'artist', 'format', 'genre', 'sort', 'decade', 'recentOnly']
       .some(key => state[key] !== next[key]);
+    const pageChanged = state.page !== next.page;
     Object.assign(state, next);
     if (filtersChanged) {
-      state.page = 1;
       state.filtersExpanded = state.format !== FORMAT_ALL
         || state.genre !== GENRE_ALL
         || state.sort !== 'default'
         || Boolean(state.decade)
         || state.recentOnly;
     }
-    return filtersChanged;
+    return filtersChanged || pageChanged;
   }
 
   function syncBrowseUrl() {
@@ -219,6 +221,7 @@
     if (state.sort !== 'default') params.set('sort', state.sort);
     if (state.decade) params.set('decade', state.decade);
     if (state.recentOnly) params.set('recent', '1');
+    if (state.page > 1) params.set('page', String(state.page));
     if (state.homeSection !== HOME_SECTIONS[0]) params.set('section', state.homeSection);
     const search = params.toString();
     const url = `${window.location.pathname}${search ? `?${search}` : ''}${window.location.hash}`;
@@ -322,6 +325,9 @@
       requestListClose: '신청곡 메모 닫기',
       requestAdded: '신청곡 메모에 담았습니다.',
       requestListView: '메모 보기',
+      requestFloatingCount: count => `메모 ${count}곡`,
+      moreMatchedTracks: count => `외 ${count}곡`,
+      matchRelatedArtist: '관련 아티스트',
       albumList: '앨범 목록',
       albumListPage: '앨범 목록 페이지',
       albumView: '보기 방식',
@@ -427,6 +433,9 @@
       requestListClose: 'Close request notes',
       requestAdded: 'Added to your request notes.',
       requestListView: 'View notes',
+      requestFloatingCount: count => `Notes ${count}`,
+      moreMatchedTracks: count => `+${count} more`,
+      matchRelatedArtist: 'Related artist',
       albumList: 'Album list',
       albumListPage: 'Album list pages',
       albumView: 'View',
@@ -538,13 +547,32 @@
     return existingIndex < 0;
   }
 
+  let floatingRequestButton = null;
+
+  function ensureFloatingRequestButton() {
+    if (floatingRequestButton?.isConnected) return floatingRequestButton;
+    floatingRequestButton = document.createElement('button');
+    floatingRequestButton.type = 'button';
+    floatingRequestButton.className = 'request-floating-button';
+    floatingRequestButton.dataset.requestList = '';
+    floatingRequestButton.hidden = true;
+    floatingRequestButton.addEventListener('click', () => openRequestTrackList());
+    document.body.append(floatingRequestButton);
+    return floatingRequestButton;
+  }
+
   function refreshRequestTrackUi(root = app) {
     if (!root) return;
-    root.querySelectorAll('[data-request-list]').forEach(button => {
-      button.hidden = !CUSTOMER_FEATURES.requestTrackList;
-      button.textContent = t('requestListCount')(requestTracks.length);
+    const floatingButton = ensureFloatingRequestButton();
+    const listButtons = new Set([...root.querySelectorAll('[data-request-list]'), floatingButton]);
+    listButtons.forEach(button => {
+      const isFloating = button === floatingButton;
+      button.hidden = !CUSTOMER_FEATURES.requestTrackList || (isFloating && requestTracks.length === 0);
+      button.textContent = t(isFloating ? 'requestFloatingCount' : 'requestListCount')(requestTracks.length);
       button.title = t('requestListOpen');
-      button.setAttribute('aria-label', t('requestListOpen'));
+      button.setAttribute('aria-label', isFloating
+        ? `${t('requestListOpen')} · ${t('requestFloatingCount')(requestTracks.length)}`
+        : t('requestListOpen'));
     });
     root.querySelectorAll('[data-request-track]').forEach(button => {
       const selected = isTrackRequested(button.dataset.albumId, Number(button.dataset.trackIndex));
@@ -647,14 +675,14 @@
         trackTitle.textContent = trackParts.title;
         const trackNumber = document.createElement('span');
         trackNumber.className = 'request-list-track-number';
-        trackNumber.textContent = trackParts.number || '';
+        trackNumber.textContent = [formatLabel(resolved.album.format), trackParts.number].filter(Boolean).join(' · ');
         const artistMeta = document.createElement('span');
         artistMeta.className = 'request-list-artist';
         artistMeta.textContent = getLocalizedArtist(resolved.album) || '';
         const albumMeta = document.createElement('span');
         albumMeta.className = 'request-list-album-meta';
         albumMeta.textContent = resolved.album.title || '';
-        text.append(trackTitle, trackNumber, artistMeta, albumMeta);
+        text.append(trackTitle, artistMeta, albumMeta, trackNumber);
         openButton.append(cover, text);
         openButton.addEventListener('click', () => {
           closeRequestTrackList(() => openAlbum(resolved.album.id, {
@@ -1890,24 +1918,36 @@
   function matchesSearch(value, terms) {
     if (!terms.length) return true;
     const words = getSearchTerms(value);
+    const compactText = words.join('');
     return terms.every(term => {
       // 한글·일본어처럼 단어 안에서 이어 쓰는 언어는 부분 검색을 유지합니다.
       // 영문·숫자는 단어 앞부분부터 찾습니다. "no"는 "known"에 걸리지 않습니다.
       const containsCjk = /[\u1100-\u11ff\u3040-\u30ff\u3130-\u318f\u3400-\u9fff\uac00-\ud7a3]/u.test(term);
-      return words.some(word => containsCjk ? word.includes(term) : word.startsWith(term));
+      return containsCjk
+        ? words.some(word => word.includes(term)) || compactText.includes(term)
+        : words.some(word => word.startsWith(term));
     });
+  }
+
+  function getAlbumArtistSearchText(album) {
+    const ids = new Set(getAlbumArtistCredits(album).map(credit => credit.id));
+    [...ids].forEach(id => (artistById.get(id)?.members || []).forEach(memberId => ids.add(memberId)));
+    const names = [...ids].flatMap(id => {
+      const identity = artistById.get(id);
+      return identity ? [identity.ko, identity.en, ...(identity.aliases || [])] : [];
+    });
+    return [album.artist, album.artistKo, album.artistEn, getLocalizedArtist(album), ...names]
+      .filter(Boolean).join(' ');
+  }
+
+  function getAlbumSearchMetadata(album) {
+    return [album.title, getAlbumArtistSearchText(album)].filter(Boolean).join(' ');
   }
 
   function getAlbumSearchGroups(album) {
     // 여러 검색어는 음반 정보 한 묶음 또는 한 곡 안에서 함께 맞아야 합니다.
     // 서로 다른 곡에서 한 단어씩 발견되는 우연한 결과는 제외합니다.
-    const metadata = [
-      album.title,
-      album.artist,
-      album.artistKo,
-      album.artistEn,
-      getLocalizedArtist(album),
-    ].filter(Boolean).join(' ');
+    const metadata = getAlbumSearchMetadata(album);
     return [
       metadata,
       ...(album.recommendedTracks || []).map(track => `${metadata} ${track}`),
@@ -2178,12 +2218,24 @@
     return matchesSearch(value, getSearchTerms(query));
   }
 
-  function getTrackSearchQuery(album, query = state.query) {
+  function getTrackSearchMatches(album, query = state.query) {
     const terms = getSearchTerms(query);
-    if (!terms.length) return '';
-    const tracks = [...(album.tracklist || []), ...(album.recommendedTracks || [])];
-    if (tracks.some(track => matchesSearch(track, terms))) return String(query).trim();
-    return '';
+    if (!terms.length) return [];
+    const metadata = getAlbumSearchMetadata(album);
+    // 음반 정보만으로 검색어가 모두 맞으면 곡 자체의 일치만 표시합니다.
+    // 아티스트+곡명 검색은 검색 결과와 동일한 정보 묶음으로 실제 트랙을 찾습니다.
+    const metadataOnly = matchesSearch(metadata, terms);
+    const matchesTrack = track => matchesSearch(metadataOnly ? track : `${metadata} ${track}`, terms);
+    const matchingRecommendations = (album.recommendedTracks || []).filter(matchesTrack);
+    return (album.tracklist || []).flatMap((track, index) => {
+      const matches = matchesTrack(track)
+        || matchingRecommendations.some(recommended => isRecommendedTrack(track, [recommended]));
+      return matches ? [{ index, track }] : [];
+    });
+  }
+
+  function getTrackSearchQuery(album, query = state.query) {
+    return getTrackSearchMatches(album, query).length ? String(query).trim() : '';
   }
 
   function albumHasTrackSearchMatch(album, query = state.query) {
@@ -2194,6 +2246,7 @@
     if (!getSearchTerms().length) return '';
     if (fieldMatches(album.title, state.query)) return 'title';
     if (fieldMatches([album.artist, album.artistKo, album.artistEn].join(' '), state.query)) return 'artist';
+    if (fieldMatches(getAlbumArtistSearchText(album), state.query)) return 'relatedArtist';
     if (albumHasTrackSearchMatch(album)) return 'tracklist';
     return '';
   }
@@ -2202,6 +2255,7 @@
     const labels = {
       title: 'matchTitle',
       artist: 'matchArtist',
+      relatedArtist: 'matchRelatedArtist',
       year: 'matchYear',
       format: 'matchFormat',
       genre: 'matchGenre',
@@ -3488,6 +3542,7 @@
     const card = document.createElement('button');
     const recentlyAdded = isRecentlyAdded(album);
     const searchMatchType = getSearchMatchType(album);
+    const matchingTracks = getTrackSearchMatches(album);
     const trackSearchQuery = getTrackSearchQuery(album);
     card.type = 'button';
     card.className = 'album-card';
@@ -3544,6 +3599,22 @@
       match.className = 'album-card-match';
       match.textContent = matchLabel;
       card.append(match);
+    }
+
+    if (matchingTracks.length) {
+      const trackMatch = document.createElement('span');
+      trackMatch.className = 'album-card-track-match';
+      const parts = splitTrackLine(matchingTracks[0].track);
+      const firstTrack = [parts.number.replace(/\.$/, ''), parts.title].filter(Boolean).join(' · ');
+      trackMatch.textContent = firstTrack;
+      if (matchingTracks.length > 1) {
+        const count = document.createElement('span');
+        count.className = 'album-card-track-count';
+        count.textContent = t('moreMatchedTracks')(matchingTracks.length - 1);
+        trackMatch.append(document.createTextNode(' · '), count);
+      }
+      trackMatch.title = matchingTracks.map(({ track }) => track).join('\n');
+      card.append(trackMatch);
     }
 
     return card;
@@ -4133,21 +4204,6 @@
     });
   }
 
-  function isTrackSearchMatch(track, searchQuery, recommendedTracks) {
-    // 트랙 검색 강조: 트랙리스트 직접 검색과 추천곡 데이터 검색을 모두 실제 트랙 행에 연결합니다.
-    const q = String(searchQuery || '').trim();
-    if (!getSearchTerms(q).length) return false;
-    if (fieldMatches(track, q)) return true;
-
-    const trackTitle = normalize(stripTrackNumber(track));
-    return (recommendedTracks || []).some(recommended => {
-      const recommendedTitle = normalize(stripTrackNumber(recommended));
-      return fieldMatches(recommended, q)
-        && recommendedTitle
-        && (trackTitle === recommendedTitle || trackTitle.includes(recommendedTitle));
-    });
-  }
-
   function goHome() {
     const returningFromDetail = Boolean(getAlbumIdFromHash());
     state.detailTrackSearch = null;
@@ -4385,13 +4441,14 @@
       const trackSearchQuery = state.detailTrackSearch?.albumId === album.id
         ? state.detailTrackSearch.query
         : '';
+      const matchedTrackIndices = new Set(getTrackSearchMatches(album, trackSearchQuery).map(({ index }) => index));
 
       trackList.replaceChildren(...tracks.map((track, trackIndex) => {
         const { number, title } = splitTrackLine(track);
         const li = document.createElement('li');
         li.className = 'track-row';
         if (isRecommendedTrack(track, recommendedTracks)) li.classList.add('is-recommended');
-        const isSearchMatch = isTrackSearchMatch(track, trackSearchQuery, recommendedTracks);
+        const isSearchMatch = matchedTrackIndices.has(trackIndex);
         if (isSearchMatch) li.classList.add('is-search-match');
         const isRequestFocus = state.detailTrackFocus?.albumId === album.id
           && state.detailTrackFocus.trackIndex === trackIndex;

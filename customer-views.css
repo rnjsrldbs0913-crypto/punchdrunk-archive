@@ -372,6 +372,10 @@ html.feature-customer-modern-style[data-customer-theme="day"] body.customer-page
     margin-top: 6px;
   }
 
+  .customer-page .album-grid[data-album-view="list"] .album-card-track-match {
+    grid-column: 2;
+  }
+
   .customer-page .album-grid[data-album-view="list"] .album-card-new {
     top: 4px;
     right: 4px;
