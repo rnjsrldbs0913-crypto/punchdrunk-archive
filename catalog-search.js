@@ -37,10 +37,20 @@
         .filter(Boolean);
     }
 
+    const searchWordCache = new Map();
+    function getSearchWords(value) {
+      const text = String(value || '');
+      if (searchWordCache.has(text)) return searchWordCache.get(text);
+      const words = getSearchTerms(text);
+      const entry = { words, compactText: words.join('') };
+      if (searchWordCache.size >= 10000) searchWordCache.delete(searchWordCache.keys().next().value);
+      searchWordCache.set(text, entry);
+      return entry;
+    }
+
     function matchesSearch(value, terms) {
       if (!terms.length) return true;
-      const words = getSearchTerms(value);
-      const compactText = words.join('');
+      const { words, compactText } = getSearchWords(value);
       return terms.every(term => {
         // 한글·일본어처럼 단어 안에서 이어 쓰는 언어는 부분 검색을 유지합니다.
         // 영문·숫자는 단어 앞부분부터 찾습니다. "no"는 "known"에 걸리지 않습니다.
@@ -51,15 +61,21 @@
       });
     }
 
+    const artistSearchCache = new WeakMap();
     function getAlbumArtistSearchText(album) {
+      const signature = JSON.stringify([album.artist, album.artistKo, album.artistEn, state.language]);
+      const cached = artistSearchCache.get(album);
+      if (cached?.signature === signature) return cached.text;
       const ids = new Set(getAlbumArtistCredits(album).map(credit => credit.id));
       [...ids].forEach(id => (artistById.get(id)?.members || []).forEach(memberId => ids.add(memberId)));
       const names = [...ids].flatMap(id => {
         const identity = artistById.get(id);
         return identity ? [identity.ko, identity.en, ...(identity.aliases || [])] : [];
       });
-      return [album.artist, album.artistKo, album.artistEn, getLocalizedArtist(album), ...names]
+      const text = [album.artist, album.artistKo, album.artistEn, getLocalizedArtist(album), ...names]
         .filter(Boolean).join(' ');
+      artistSearchCache.set(album, { signature, text });
+      return text;
     }
 
     function getAlbumSearchMetadata(album) {
@@ -112,7 +128,7 @@
     function getSearchMatchType(album) {
       if (!getSearchTerms().length) return '';
       if (fieldMatches(album.title, state.query)) return 'title';
-      if (fieldMatches([album.artist, album.artistKo, album.artistEn].join(' '), state.query)) return 'artist';
+      if (matchesDirectArtist(album, state.query)) return 'artist';
       if (fieldMatches(getAlbumArtistSearchText(album), state.query)) return 'relatedArtist';
       if (albumHasTrackSearchMatch(album)) return 'tracklist';
       return '';
@@ -286,6 +302,144 @@
       return albums.filter(item => getArtistKey(item) === key);
     }
 
+    function getDirectArtistNames(album, query = '') {
+      const credits = getAlbumArtistCredits(album);
+      const queryId = artistAliasToId.get(normalize(query).normalize('NFC'));
+      // A member mentioned in a group's display name is still a group relation.
+      if (queryId && !credits.some(credit => credit.id === queryId)
+        && credits.some(credit => (artistById.get(credit.id)?.members || []).includes(queryId))) return [];
+      const isGroup = credits.some(credit => artistById.get(credit.id)?.members?.length);
+      const names = [album.artist, album.artistKo, album.artistEn, ...credits.flatMap(credit => {
+        const identity = artistById.get(credit.id);
+        return identity ? [identity.ko, identity.en, ...(identity.aliases || [])] : [credit.ko, credit.en];
+      })];
+      return [...new Set(names.filter(Boolean).map(name => isGroup
+        ? String(name).replace(/\s*\([^)]*\)/g, '').trim() : String(name)))];
+    }
+
+    function matchesDirectArtist(album, query) {
+      const id = artistAliasToId.get(normalize(query).normalize('NFC'));
+      return (id && getAlbumArtistCredits(album).some(credit => credit.id === id))
+        || fieldMatches(getDirectArtistNames(album, query).join(' '), query);
+    }
+
+    function getTrackSearchTitles(track) {
+      const title = stripTrackNumber(track);
+      const mainTitle = title
+        .replace(/\s*[\[(](?:feat\.?|ft\.?|featuring)\s+[^\])]*[\])]\s*$/i, '')
+        .replace(/\s+(?:feat\.?|ft\.?|featuring)\s+.+$/i, '').trim();
+      return [...new Set([title, mainTitle].filter(Boolean))];
+    }
+
+    function getSearchRelevance(album, query = state.query) {
+      const terms = getSearchTerms(query);
+      if (!terms.length) return [0, 0];
+      const key = terms.join('');
+      const names = getDirectArtistNames(album, query);
+      const directId = artistAliasToId.get(normalize(query).normalize('NFC'));
+      const tracks = (album.tracklist || []).flatMap(getTrackSearchTitles);
+      if ([album.title, ...names, ...tracks].some(value => getSearchWords(value).compactText === key)
+        || (directId && getAlbumArtistCredits(album).some(credit => credit.id === directId))) return [0, 0];
+      const quality = value => {
+        const { words } = getSearchWords(value);
+        return terms.filter(term => !words.includes(term)).length;
+      };
+      const direct = [album.title, ...names].filter(Boolean).join(' ');
+      if (matchesSearch(direct, terms)) return [1, quality(direct)];
+      // Artist + song queries are direct matches, provided the song alone isn't the whole match.
+      const combined = tracks.filter(track => !matchesSearch(track, terms))
+        .map(track => `${direct} ${track}`).filter(value => matchesSearch(value, terms));
+      if (combined.length) return [1, Math.min(...combined.map(quality))];
+      const related = getAlbumSearchMetadata(album);
+      if (matchesSearch(related, terms)) return [2, quality(related)];
+      const relatedTracks = tracks.filter(track => !matchesSearch(track, terms))
+        .map(track => `${related} ${track}`).filter(value => matchesSearch(value, terms));
+      if (relatedTracks.length) return [2, Math.min(...relatedTracks.map(quality))];
+      const trackMatches = tracks.filter(track => matchesSearch(track, terms));
+      return [3, trackMatches.length ? Math.min(...trackMatches.map(quality)) : terms.length];
+    }
+
+    function rankSearchResults(list, query = state.query) {
+      if (!getSearchTerms(query).length) return [...list];
+      return list.map((album, index) => ({ album, index, rank: getSearchRelevance(album, query) }))
+        .sort((a, b) => a.rank[0] - b.rank[0] || a.rank[1] - b.rank[1] || a.index - b.index)
+        .map(item => item.album);
+    }
+
+    // Suggestions are built lazily from owned records, never from an external music catalog.
+    let suggestionIndex = null;
+    function getSuggestionIndex() {
+      if (suggestionIndex) return suggestionIndex;
+      const fields = new Map(), tokens = new Map();
+      const add = (value, kind) => {
+        const text = String(value || '').trim(), key = normalize(text).normalize('NFC');
+        if (!key || fields.has(key)) return;
+        fields.set(key, { text, key, kind });
+        getSearchTerms(text).forEach(word => {
+          if (word.length >= (/\p{Script=Hangul}|\p{Script=Han}/u.test(word) ? 3 : 4)) tokens.set(word, word);
+        });
+      };
+      albums.forEach(album => {
+        add(album.title, 'title');
+        getDirectArtistNames(album).forEach(name => add(name, 'artist'));
+        (album.tracklist || []).forEach(track => getTrackSearchTitles(track).forEach(title => add(title, 'track')));
+      });
+      suggestionIndex = { fields: [...fields.values()], tokens: [...tokens.keys()] };
+      return suggestionIndex;
+    }
+
+    function typoDistance(left, right, maximum) {
+      const a = Array.from(left), b = Array.from(right);
+      if (Math.abs(a.length - b.length) > maximum) return maximum + 1;
+      let previous = Array.from({ length: b.length + 1 }, (_, i) => i), beforePrevious;
+      for (let i = 1; i <= a.length; i += 1) {
+        const row = [i];
+        for (let j = 1; j <= b.length; j += 1) {
+          row[j] = Math.min(row[j - 1] + 1, previous[j] + 1, previous[j - 1] + Number(a[i - 1] !== b[j - 1]));
+          if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+            row[j] = Math.min(row[j], beforePrevious[j - 2] + 1);
+          }
+        }
+        if (Math.min(...row) > maximum) return maximum + 1;
+        beforePrevious = previous; previous = row;
+      }
+      return previous[b.length];
+    }
+
+    function getSearchSuggestions(query = state.query, limit = 3) {
+      const terms = getSearchTerms(query), key = normalize(query).normalize('NFC');
+      const minimum = /\p{Script=Hangul}|\p{Script=Han}/u.test(key) ? 3 : 4;
+      if (key.length < minimum || key.length > 100 || !terms.length
+        || albums.some(album => albumMatchesSearch(album, terms))) return [];
+      const index = getSuggestionIndex(), candidates = new Map();
+      const maximum = value => /\p{Script=Hangul}|\p{Script=Han}/u.test(value) || value.length < 8 ? 1 : 2;
+      const add = (text, distance, kind) => {
+        const candidateKey = normalize(text).normalize('NFC');
+        const existing = candidates.get(candidateKey);
+        if (existing && existing.distance <= distance) return;
+        const candidateTerms = getSearchTerms(text);
+        if (!albums.some(album => albumMatchesSearch(album, candidateTerms))) return;
+        candidates.set(candidateKey, { query: text, distance, kind });
+      };
+      index.fields.forEach(field => {
+        const distance = typoDistance(key, field.key, maximum(key));
+        if (distance <= maximum(key) && distance / key.length <= 0.25) add(field.text, distance, field.kind);
+      });
+      terms.forEach((term, position) => {
+        const tokenMinimum = /\p{Script=Hangul}|\p{Script=Han}/u.test(term) ? 3 : 4;
+        if (term.length < tokenMinimum) return;
+        const replacements = index.tokens.map(word => ({ word, distance: typoDistance(term, word, maximum(term)) }))
+          .filter(item => item.distance > 0 && item.distance <= maximum(term) && item.distance / term.length <= 0.25)
+          .sort((a, b) => a.distance - b.distance || a.word.localeCompare(b.word)).slice(0, 12);
+        replacements.forEach(({ word, distance }) => {
+          const corrected = [...terms]; corrected[position] = word; add(corrected.join(' '), distance, 'combined');
+        });
+      });
+      const kindOrder = { title: 0, artist: 0, combined: 1, track: 2 };
+      return [...candidates.values()].sort((a, b) => a.distance - b.distance
+        || kindOrder[a.kind] - kindOrder[b.kind] || a.query.localeCompare(b.query))
+        .slice(0, limit).map(({ query: value }) => ({ query: value }));
+    }
 
     return {
       normalize, getLocalizedArtist, getArtistKey, getSearchTerms,
@@ -293,7 +447,7 @@
       albumMatchesSearch, fieldMatches, getTrackSearchMatches, getTrackSearchQuery,
       albumHasTrackSearchMatch, getSearchMatchType, getSearchMatchLabel, stripTrackNumber,
       splitTrackLine, isRecommendedTrack, getAlbumArtistCredits, getArtistChoices,
-      getRelatedArtistAlbums, getArtistAlbums,
+      getRelatedArtistAlbums, getArtistAlbums, getSearchRelevance, rankSearchResults, getSearchSuggestions,
     };
   };
 })();

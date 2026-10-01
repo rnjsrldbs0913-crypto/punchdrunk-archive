@@ -109,6 +109,7 @@
     homeSection: HOME_SECTIONS[0],
     albumView: getInitialAlbumView(),
     query: '',
+    searchComposing: false,
     artist: '',
     format: FORMAT_ALL,
     genre: GENRE_ALL,
@@ -128,7 +129,7 @@
     albumMatchesSearch, fieldMatches, getTrackSearchMatches, getTrackSearchQuery,
     albumHasTrackSearchMatch, getSearchMatchType, getSearchMatchLabel, stripTrackNumber,
     splitTrackLine, isRecommendedTrack, getAlbumArtistCredits, getArtistChoices,
-    getRelatedArtistAlbums, getArtistAlbums,
+    getRelatedArtistAlbums, getArtistAlbums, rankSearchResults, getSearchSuggestions,
   } = window.PD_ARCHIVE.createSearch({
     albums, state, CUSTOMER_CONFIG, t,
   });
@@ -285,6 +286,8 @@
       allDecades: '전체 연대',
       decadeLabel: year => `${year}년대`,
       sortDefault: '기본순',
+      sortRelevance: '관련도순',
+      searchSuggestions: '혹시 찾으셨나요?',
       sortNewest: '최근 발매순',
       sortOldest: '오래된순',
       sortArtist: '아티스트순',
@@ -341,6 +344,9 @@
       previousView: '← 이전 화면',
       albumListButton: '음반 목록',
       tracklist: '트랙리스트',
+      recommendedOnly: count => `추천곡만 · ${count}`,
+      tracklistCount: count => `${count}곡`,
+      recommendedTrackCount: (shown, total) => `${total}곡 중 ${shown}곡`,
       recommendedHint: '표시는 추천곡입니다.',
       description: '설명',
       otherAlbums: '다른 음반 보기',
@@ -402,6 +408,8 @@
       allDecades: 'All decades',
       decadeLabel: year => `${year}s`,
       sortDefault: 'Default',
+      sortRelevance: 'Relevance',
+      searchSuggestions: 'Did you mean?',
       sortNewest: 'Newest release',
       sortOldest: 'Oldest release',
       sortArtist: 'Artist',
@@ -458,6 +466,9 @@
       previousView: '← Previous',
       albumListButton: 'Album list',
       tracklist: 'Tracklist',
+      recommendedOnly: count => `Recommended · ${count}`,
+      tracklistCount: count => `${count} tracks`,
+      recommendedTrackCount: (shown, total) => `${shown} of ${total} tracks`,
       recommendedHint: 'marks recommended tracks.',
       description: 'Description',
       otherAlbums: 'Browse other albums',
@@ -796,6 +807,7 @@
     const filtered = getFilteredAlbums();
     const sorted = [...filtered];
 
+    if (state.sort === 'default' && getSearchTerms().length) return rankSearchResults(sorted);
     if (state.sort === 'newest') sorted.sort((a, b) => parseYear(b.year) - parseYear(a.year));
     if (state.sort === 'oldest') sorted.sort((a, b) => parseYear(a.year) - parseYear(b.year));
     if (state.sort === 'artist') sorted.sort((a, b) => compareText(getLocalizedArtist(a), getLocalizedArtist(b)) || compareText(a.title, b.title));
@@ -1281,7 +1293,20 @@
       searchClearButton.hidden = !searchInput.value;
     };
     searchInput.value = state.query;
+    state.searchComposing = false;
     updateSearchClearButton();
+    searchInput.addEventListener('compositionstart', () => {
+      state.searchComposing = true;
+      updateSearchSuggestions();
+    });
+    searchInput.addEventListener('compositionend', () => {
+      state.searchComposing = false;
+      state.query = searchInput.value;
+      renderAllFilterControls(app);
+      resetAlbumPage();
+      updateAlbumGrid();
+      updateSearchClearButton();
+    });
     searchInput.addEventListener('input', event => {
       state.query = event.target.value;
       renderAllFilterControls(app);
@@ -2190,6 +2215,9 @@
     const summary = app.querySelector('[data-result-summary]');
     const pagination = app.querySelector('[data-pagination]');
     const filtered = getVisibleAlbums();
+    const defaultSort = app.querySelector('[data-sort-select] option[value="default"]');
+    if (defaultSort) defaultSort.textContent = t(getSearchTerms().length ? 'sortRelevance' : 'sortDefault');
+    updateSearchSuggestions(filtered.length);
     const filterResultsJump = document.querySelector('body > [data-filter-results-jump]');
     if (filterResultsJump) filterResultsJump.textContent = t('filterResultsJump')(filtered.length);
     const perPage = getAlbumsPerPage();
@@ -2270,6 +2298,40 @@
       app.querySelector('.grid-section')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
     syncBrowseUrl();
+  }
+
+  function updateSearchSuggestions(resultCount = 0) {
+    const tray = app.querySelector('[data-search-suggestions]');
+    if (!tray) return;
+    const suggestions = resultCount || state.searchComposing ? [] : getSearchSuggestions(state.query, 8)
+      .filter(candidate => albums.some(album => matchesAlbumFilters(album, getSearchTerms(candidate.query))))
+      .slice(0, 3);
+    tray.hidden = suggestions.length === 0;
+    tray.replaceChildren();
+    if (!suggestions.length) return;
+    const label = document.createElement('span');
+    label.className = 'search-suggestions-label';
+    label.textContent = t('searchSuggestions');
+    tray.append(label);
+    suggestions.forEach(suggestion => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'search-suggestion-button';
+      button.textContent = suggestion.query;
+      button.addEventListener('click', () => {
+        state.query = suggestion.query;
+        const input = app.querySelector('#search-input');
+        input.value = state.query;
+        input.blur();
+        app.querySelector('[data-search-clear]').hidden = false;
+        renderAllFilterControls(app);
+        resetAlbumPage();
+        updateAlbumGrid();
+        updateFilterPanel(app);
+        app.querySelector('[data-album-grid] .album-card')?.focus({ preventScroll: true });
+      });
+      tray.append(button);
+    });
   }
 
   function hideArtistAlbums() {
@@ -2532,6 +2594,23 @@
         li.append(dot, numberSpan, titleSpan, requestButton);
         return li;
       }));
+
+      const recommendedButton = root.querySelector('[data-recommended-only]');
+      const trackSummary = root.querySelector('[data-tracklist-summary]');
+      const recommendedCount = trackList.querySelectorAll('.is-recommended').length;
+      root.querySelector('[data-tracklist-tools]').hidden = recommendedCount === 0;
+      recommendedButton.textContent = t('recommendedOnly')(recommendedCount);
+      recommendedButton.setAttribute('aria-pressed', 'false');
+      trackSummary.textContent = t('tracklistCount')(tracks.length);
+      recommendedButton.onclick = () => {
+        const only = recommendedButton.getAttribute('aria-pressed') !== 'true';
+        recommendedButton.setAttribute('aria-pressed', String(only));
+        trackList.querySelectorAll('.track-row').forEach(row => {
+          row.hidden = only && !row.classList.contains('is-recommended');
+        });
+        trackSummary.textContent = only
+          ? t('recommendedTrackCount')(recommendedCount, tracks.length) : t('tracklistCount')(tracks.length);
+      };
 
       root.querySelector('[data-detail-description]').textContent = getLocalizedDescription(album) || t('descriptionEmpty');
       root.querySelector('[data-request-note]').textContent = t('requestNote');

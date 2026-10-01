@@ -21,7 +21,7 @@
   <script src="customer-theme.js?v=20260818150000"></script>
   <link rel="stylesheet" href="styles.css?v=2026093003" />
   <link rel="stylesheet" href="customer-polish.css?v=20260818143000" />
-  <link rel="stylesheet" href="customer-modern.css?v=2026100102" />
+  <link rel="stylesheet" href="customer-modern.css?v=2026100103" />
   <link rel="stylesheet" href="customer-color-field.css?v=20260827120000" />
   <link rel="stylesheet" href="customer-views.css?v=2026093003" />
   <link rel="stylesheet" href="customer-brand.css?v=2026091401" />
@@ -140,6 +140,7 @@
               <input id="search-input" class="search-input" type="search" placeholder="음반명·아티스트·곡 제목" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
               <button class="search-clear-button" type="button" data-search-clear aria-label="검색어 지우기" data-i18n-aria="clearSearch" hidden></button>
             </div>
+            <div class="search-suggestions" data-search-suggestions hidden></div>
             <div class="artist-scope" data-artist-scope hidden>
               <span data-artist-scope-label></span>
               <button type="button" data-clear-artist-scope aria-label="아티스트 보기 해제" data-i18n-aria="clearArtistScope">×</button>
@@ -252,6 +253,10 @@
           <h2 data-i18n="tracklist">트랙리스트</h2>
           <button class="detail-request-list-button" type="button" data-request-list>신청곡 메모 0</button>
         </div>
+        <div class="tracklist-tools" data-tracklist-tools hidden>
+          <button class="recommended-only-button" type="button" data-recommended-only aria-pressed="false"></button>
+          <span class="tracklist-summary" data-tracklist-summary role="status" aria-live="polite" aria-atomic="true"></span>
+        </div>
         <ol class="tracklist" data-detail-tracklist></ol>
         <p class="tracklist-hint"><span class="tiny-dot"></span> <span data-i18n="recommendedHint">표시는 추천곡입니다.</span></p>
       </section>
@@ -269,10 +274,10 @@
   </template>
 
   <script src="albums-data.js?v=094aeccef0c7"></script>
-  <script src="catalog-search.js?v=2026093003"></script>
+  <script src="catalog-search.js?v=2026100103"></script>
   <script src="catalog-navigation.js?v=2026100102"></script>
   <script src="cover-motion.js?v=2026093003"></script>
   <script src="request-notes.js?v=2026093003"></script>
-  <script src="app.js?v=2026100102"></script>
+  <script src="app.js?v=2026100103"></script>
 </body>
 </html>

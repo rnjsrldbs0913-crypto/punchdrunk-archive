@@ -1,4 +1,84 @@
 /* 2026-08-14 현대적 디자인. html의 기능 클래스를 제거하면 이 파일만 즉시 롤백됩니다. */
+
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 4px;
+  padding: 12px;
+  border: 1px solid var(--pd-match-border);
+  border-radius: 12px;
+  background: var(--pd-match-background);
+}
+
+.search-suggestions-label {
+  flex-basis: 100%;
+  color: var(--modern-muted);
+  font-size: 12px;
+}
+
+.search-suggestion-button {
+  max-width: 100%;
+  min-height: var(--pd-touch-target, 44px);
+  padding: 8px 12px;
+  border: 1px solid var(--pd-match-border);
+  border-radius: 9px;
+  background: var(--modern-panel-solid);
+  color: var(--pd-match-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.tracklist-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+
+.recommended-only-button {
+  min-height: var(--pd-touch-target, 44px);
+  padding: 8px 12px;
+  border: 1px solid var(--modern-line);
+  border-radius: 9px;
+  background: var(--modern-panel-solid);
+  color: var(--modern-muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.recommended-only-button[aria-pressed="true"] {
+  border-color: var(--pd-match-border);
+  background: var(--pd-match-background);
+  color: var(--pd-match-text);
+}
+
+.tracklist-summary {
+  color: var(--modern-muted);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.search-suggestion-button:focus-visible,
+.recommended-only-button:focus-visible {
+  outline: 2px solid var(--modern-blue);
+  outline-offset: 3px;
+}
+
+.search-suggestions[hidden],
+.tracklist-tools[hidden],
+.feature-customer-modern-style .tracklist .track-row[hidden] {
+  display: none;
+}
+
 @font-face {
   font-family: "PDL Jost";
   src: url("media/fonts/jost-brand-700.woff2") format("woff2");
