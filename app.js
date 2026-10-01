@@ -205,6 +205,9 @@
     albums, app, CUSTOMER_FEATURES, t, createCover, splitTrackLine, formatLabel,
     getLocalizedArtist, openAlbum, renderRouteFromLocation,
   });
+  const { recordRecentAlbum, openRecentAlbums, handleRecentAlbumsPopState } = window.PD_ARCHIVE.createRecentAlbums({
+    albums, t, createCover, getLocalizedArtist, openAlbum, renderRouteFromLocation,
+  });
 
   applyBrowseStateFromUrl();
 
@@ -300,6 +303,10 @@
       requestListClear: '전체 비우기',
       requestListClose: '신청곡 메모 닫기',
       requestAdded: '메모에 담겼습니다',
+      recentAlbumsButton: '최근 본 음반',
+      recentAlbumsTitle: '최근 본 음반',
+      recentAlbumsClose: '최근 본 음반 닫기',
+      recentAlbumsEmpty: '아직 본 음반이 없습니다.',
       weeklyHold: '꾹',
       weeklyHoldLabel: '길게 눌러 영상 보기',
       lighting: '조명',
@@ -413,6 +420,10 @@
       requestListClear: 'Clear all',
       requestListClose: 'Close request notes',
       requestAdded: 'Added to notes.',
+      recentAlbumsButton: 'Recent albums',
+      recentAlbumsTitle: 'Recently viewed',
+      recentAlbumsClose: 'Close recently viewed albums',
+      recentAlbumsEmpty: 'No albums viewed yet.',
       weeklyHold: 'Hold',
       weeklyHoldLabel: 'Press and hold to watch the video',
       lighting: 'Light',
@@ -2564,6 +2575,7 @@
     const deferContent = options.deferContent === true;
     const initialTrackSearchQuery = deferContent ? '' : populateDetailContent(node);
     detailRoot.replaceChildren(node);
+    recordRecentAlbum(album.id);
     updateRandomAlbumButtons();
     if (persistentLayers) stagePersistentDetailView(Boolean(options.skipInitialScroll));
     refreshRequestTrackUi(app);
@@ -2593,6 +2605,8 @@
   });
 
   document.addEventListener('click', event => {
+    const recentButton = event.target.closest('[data-recent-albums]');
+    if (recentButton) openRecentAlbums();
     const button = event.target.closest('[data-random-album]');
     if (button) openRandomAlbum(button);
   });
@@ -2622,6 +2636,7 @@
   });
 
   function handlePopState() {
+    if (handleRecentAlbumsPopState()) return;
     if (handleNotesPopState()) return;
     if (artistAlbumsOverlay) {
       const stayedOnPage = window.location.href === artistAlbumsBaseUrl;

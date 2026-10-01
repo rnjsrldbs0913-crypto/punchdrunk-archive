@@ -1200,6 +1200,51 @@ html.feature-customer-modern-style .track-request-button:is(button)[aria-pressed
   display: none;
 }
 
+/* 최근 상세 음반 여섯 장만 보여 주는 작은 하단 창입니다. */
+body.recent-albums-open { overflow: hidden; }
+.recent-albums-sheet {
+  position: fixed;
+  inset: auto 0 0;
+  width: min(420px, 100%);
+  max-width: 100%;
+  max-height: 80vh;
+  max-height: 80dvh;
+  margin: 0 auto;
+  padding: 9px 16px calc(14px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  border: 1px solid var(--modern-line, var(--line));
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  background: var(--modern-panel-solid, var(--bg));
+  color: var(--modern-text, var(--text));
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, .18);
+}
+.recent-albums-sheet::backdrop { background: rgba(0, 0, 0, .48); }
+.recent-albums-handle { width: 28px; height: 3px; margin: 0 auto 5px; border-radius: 2px; background: var(--modern-line, var(--line)); }
+.recent-albums-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.recent-albums-heading h2 { margin: 0; font-size: 16px; line-height: 1.4; }
+.recent-albums-close { width: 44px; height: 44px; flex: 0 0 44px; padding: 0; border: 1px solid var(--modern-line, var(--line)); border-radius: 8px; background: transparent; color: inherit; font: inherit; font-size: 24px; cursor: pointer; }
+.recent-albums-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 10px; }
+.recent-albums-item { min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.recent-albums-sheet .recent-albums-cover { width: min(82px, 100%); margin: 0 auto; border-radius: 4px; box-shadow: none; background: transparent; }
+.recent-albums-sheet .recent-albums-cover img { object-fit: contain; }
+.recent-albums-title { display: block; height: 16px; margin-top: 6px; overflow: hidden; font-size: 12px; line-height: 16px; white-space: nowrap; text-overflow: ellipsis; text-align: center; }
+.recent-albums-empty { margin: 12px 0 20px; color: var(--modern-muted, var(--muted)); font-size: 13px; text-align: center; }
+.recent-albums-item:focus-visible, .recent-albums-close:focus-visible { outline: 2px solid var(--modern-blue, #8cacef); outline-offset: 3px; }
+@media (max-width: 719px), (pointer: coarse) and (max-width: 900px) {
+  .customer-page .result-action-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .customer-page .result-action-buttons > .tool-button { min-width: 0; padding-inline: 6px; font-size: 11px; }
+  .customer-page .detail-top-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .customer-page .detail-top-actions > button { min-width: 0; min-height: 44px; padding-inline: 5px; font-size: 12px; white-space: nowrap; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .recent-albums-sheet[open] { animation: recent-albums-rise .18s ease-out; }
+  @keyframes recent-albums-rise { from { transform: translateY(24px); } to { transform: translateY(0); } }
+}
+
 @media (max-width: 720px) {
   .filter-panel {
     padding-bottom: 70px;

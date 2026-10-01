@@ -191,4 +191,156 @@
       goPreviousView, goAlbumList, renderRouteFromLocation,
     };
   };
+
+  // Recent detail views stay on this browser and never become request notes.
+  archive.createRecentAlbumHistory = function ({ albums, storage }) {
+    const key = 'pd-recent-albums-v1';
+    const knownIds = new Set(albums.map(album => String(album.id)));
+    let recent = [];
+    try {
+      const saved = JSON.parse(storage.getItem(key) || '[]');
+      if (Array.isArray(saved)) recent = [...new Set(saved.filter(id => typeof id === 'string' && knownIds.has(id)))].slice(0, 6);
+    } catch (_) { /* 저장이 제한된 브라우저에서도 현재 방문 기록은 사용할 수 있습니다. */ }
+    return {
+      list: () => [...recent],
+      record(albumId) {
+        const id = String(albumId);
+        if (!knownIds.has(id)) return;
+        recent = [id, ...recent.filter(item => item !== id)].slice(0, 6);
+        try { storage.setItem(key, JSON.stringify(recent)); } catch (_) { /* The in-memory history remains usable. */ }
+      },
+    };
+  };
+
+  archive.createRecentAlbums = function ({ albums, t, createCover, getLocalizedArtist, openAlbum, renderRouteFromLocation }) {
+    let storage;
+    try { storage = window.localStorage; } catch (_) { storage = null; }
+    const recent = archive.createRecentAlbumHistory({ albums, storage });
+    const byId = new Map(albums.map(album => [String(album.id), album]));
+    let dialog = null;
+    let trigger = null;
+    let baseUrl = '';
+    let closing = false;
+    let afterClose = null;
+    let backdropPointer = false;
+
+    function hide() {
+      if (!dialog?.open) return;
+      dialog.close();
+      document.body.classList.remove('recent-albums-open');
+      trigger?.setAttribute('aria-expanded', 'false');
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+      closing = false;
+    }
+
+    function close(callback) {
+      if (!dialog?.open || closing) return;
+      afterClose = typeof callback === 'function' ? callback : null;
+      if (history.state?.recentAlbums) {
+        closing = true;
+        history.back();
+      } else {
+        hide();
+        const next = afterClose;
+        afterClose = null;
+        next?.();
+      }
+    }
+
+    function ensureDialog() {
+      if (dialog) return dialog;
+      dialog = document.createElement('dialog');
+      dialog.className = 'recent-albums-sheet';
+      dialog.setAttribute('aria-labelledby', 'recent-albums-heading');
+      dialog.addEventListener('cancel', event => { event.preventDefault();close(); });
+      dialog.addEventListener('pointerdown', event => {
+        const rect = dialog.getBoundingClientRect();
+        backdropPointer = event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom);
+      });
+      dialog.addEventListener('click', event => {
+        const rect = dialog.getBoundingClientRect();
+        const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+        if (backdropPointer && event.target === dialog && outside) close();
+        backdropPointer = false;
+      });
+      document.body.append(dialog);
+      return dialog;
+    }
+
+    function render() {
+      const sheet = ensureDialog();
+      const handle = document.createElement('div');
+      handle.className = 'recent-albums-handle';
+      handle.setAttribute('aria-hidden', 'true');
+      const header = document.createElement('header');
+      header.className = 'recent-albums-heading';
+      const title = document.createElement('h2');
+      title.id = 'recent-albums-heading';
+      title.textContent = t('recentAlbumsTitle');
+      const closeButton = document.createElement('button');
+      closeButton.type = 'button';
+      closeButton.className = 'recent-albums-close';
+      closeButton.textContent = '×';
+      closeButton.setAttribute('aria-label', t('recentAlbumsClose'));
+      closeButton.autofocus = true;
+      closeButton.addEventListener('click', () => close());
+      header.append(title, closeButton);
+      const grid = document.createElement('div');
+      grid.className = 'recent-albums-grid';
+      const ids = recent.list();
+      ids.forEach(id => {
+        const album = byId.get(id);
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'recent-albums-item';
+        item.setAttribute('aria-label', [album.title, getLocalizedArtist(album)].filter(Boolean).join(' · '));
+        const cover = createCover(album, 'recent-albums-cover', { priority: true });
+        cover.setAttribute('aria-hidden', 'true');
+        const caption = document.createElement('span');
+        caption.className = 'recent-albums-title';
+        caption.textContent = album.title;
+        item.title = album.title;
+        item.append(cover, caption);
+        item.addEventListener('click', () => close(() => openAlbum(album.id)));
+        grid.append(item);
+      });
+      if (ids.length) sheet.replaceChildren(handle, header, grid);
+      else {
+        const empty = document.createElement('p');
+        empty.className = 'recent-albums-empty';
+        empty.textContent = t('recentAlbumsEmpty');
+        sheet.replaceChildren(handle, header, empty);
+      }
+    }
+
+    function openRecentAlbums(options = {}) {
+      if (dialog?.open) return;
+      trigger = document.activeElement;
+      baseUrl = window.location.href;
+      render();
+      if (!options.fromHistory) history.pushState({ ...history.state, recentAlbums: true }, '', baseUrl);
+      dialog.showModal();
+      document.body.classList.add('recent-albums-open');
+      if (trigger?.matches('[data-recent-albums]')) trigger.setAttribute('aria-expanded', 'true');
+      dialog.querySelector('.recent-albums-close').focus({ preventScroll: true });
+    }
+
+    function handleRecentAlbumsPopState() {
+      if (dialog?.open) {
+        const stayedOnPage = window.location.href === baseUrl;
+        hide();
+        const next = afterClose;
+        afterClose = null;
+        if (stayedOnPage && !history.state?.recentAlbums) { next?.();return true; }
+      }
+      if (history.state?.recentAlbums) {
+        renderRouteFromLocation();
+        openRecentAlbums({ fromHistory: true });
+        return true;
+      }
+      return false;
+    }
+
+    return { recordRecentAlbum: recent.record, openRecentAlbums, handleRecentAlbumsPopState };
+  };
 })();
