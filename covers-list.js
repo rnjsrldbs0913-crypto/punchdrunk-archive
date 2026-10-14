@@ -420,7 +420,16 @@ const COVER_IMAGES = [
   "covers/album-mu4xez4h.jpg",
   "covers/aomg-the-essental-1.webp",
   "covers/album-muhxhoqq.jpg",
-  "covers/album-muhxecwj.jpg"
+  "covers/album-muhxecwj.jpg",
+  "covers/album-muxbrzfj.jpg",
+  "covers/album-mv7hyfbr.jpg",
+  "covers/album-mv7hxdtw.jpg",
+  "covers/album-mv7hw28n.jpg",
+  "covers/album-mv7hv05i.jpg",
+  "covers/album-mv7hryze.jpg",
+  "covers/album-mv7hpixo.jpg",
+  "covers/album-mv7i5c5j.jpg",
+  "covers/album-mv7i5c5j-1.jpg"
 ];
 
 window.PD_COVERS = COVER_IMAGES;

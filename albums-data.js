@@ -3,6 +3,344 @@
 
 const ALBUMS = [
   {
+    "id": "album-mv7i5c5j",
+    "title": "Live at Real World Studios",
+    "artist": "알파 미스트",
+    "artistKo": "알파 미스트",
+    "artistEn": "Alfa Mist",
+    "addedAt": "2026-10-14T02:40:07.879Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7i5c5j-1.jpg",
+    "recommendedTracks": [
+      "1. Found You",
+      "4. Roulette",
+      "9. Roulette (Live at Real World Studios) [Alternate Take]"
+    ],
+    "tracklist": [
+      "1. Found You",
+      "2. Dersen Cafe",
+      "3. 9 Months",
+      "4. Roulette",
+      "5. From East",
+      "6. Avoid The Drones",
+      "7. Who Were You?",
+      "8. Found You [Alternate Take]",
+      "9. Roulette (Live at Real World Studios) [Alternate Take]"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mv7hyfbr",
+    "title": "HONNE — 10",
+    "artist": "혼네",
+    "artistKo": "혼네",
+    "artistEn": "HONNE",
+    "addedAt": "2026-10-14T02:34:45.399Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "일렉트로닉",
+    "genres": [
+      "일렉트로닉"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7hyfbr.jpg",
+    "recommendedTracks": [
+      "1. Warm on a Cold Night (10 Years)",
+      "2. Someone That Loves You (feat. Izzy Bizu) [10 Years]",
+      "11. Location Unknown (feat. NIKI) [10 Years]"
+    ],
+    "tracklist": [
+      "1. Warm on a Cold Night (10 Years)",
+      "2. Someone That Loves You (feat. Izzy Bizu) [10 Years]",
+      "3. It Ain't Wrong Loving You (10 Years)",
+      "4. The Night (10 Years)",
+      "5. Good Together (10 Years)",
+      "6. 3am (10 Years)",
+      "7. Me & You (10 Years)",
+      "8. Day 1 (10 Years)",
+      "9. Feels So Good (feat. Anna of the North) [10 Years]",
+      "10. 306 (10 Years)",
+      "11. Location Unknown (feat. NIKI) [10 Years]",
+      "12. Crying Over You (feat. BEKA) [10 Years]"
+    ],
+    "description": "세계적으로, 특히 한국에서 선풍적인 인기를 끌었고 현재도 두터운 팬층을 보유한 혼네의 데뷔 10주년 기념 앨범입니다.\n단순히 히트곡들을 뭉쳐 모음집을 내는 데 그치지 않고, 수록된 모든 곡을 새로 편곡하고 녹음해 실었습니다.",
+    "descriptionEn": "This album marks the tenth anniversary of HONNE’s debut. The duo became a sensation worldwide—especially in Korea—and still commands a devoted following.\n\nRather than simply bundling their hits into a compilation, they rearranged and rerecorded every song on the album.",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mv7hxdtw",
+    "title": "Two Balls Are Enough",
+    "artist": "마츠 구스타프손 & 키모 포요넨",
+    "artistKo": "마츠 구스타프손 & 키모 포요넨",
+    "artistEn": "Mats Gustafsson & Kimmo Pohjonen",
+    "addedAt": "2026-10-14T02:33:56.804Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7hxdtw.jpg",
+    "recommendedTracks": [
+      "1. Ice Heaven",
+      "2. Magna",
+      "4. Two Balls Are Enough"
+    ],
+    "tracklist": [
+      "1. Ice Heaven",
+      "2. Magna",
+      "3. Snow Linat",
+      "4. Two Balls Are Enough",
+      "5. Its Body Falls Open",
+      "6. Worn out Words",
+      "7. Slow Down the Beating",
+      "8. Naga",
+      "9. Backengrillen 1"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mv7hw28n",
+    "title": "Zodiac Suite: Reassured",
+    "artist": "양정림",
+    "artistKo": "양정림",
+    "artistEn": "Jeong Lim Yang",
+    "addedAt": "2026-10-14T02:32:55.128Z",
+    "year": "2022",
+    "format": "CD",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7hw28n.jpg",
+    "recommendedTracks": [
+      "7. Virgo",
+      "13. Madam, Thank You, Madam"
+    ],
+    "tracklist": [
+      "1. Pisces",
+      "2. Aries",
+      "3. Taurus",
+      "4. Gemini",
+      "5. Cancer",
+      "6. Leo",
+      "7. Virgo",
+      "8. Libra",
+      "9. Scorpio",
+      "10. Sagittarius",
+      "11. Capricorn",
+      "12. Aquarius",
+      "13. Madam, Thank You, Madam"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mv7hv05i",
+    "title": "Manifeste",
+    "artist": "티그랑 하마시안",
+    "artistKo": "티그랑 하마시안",
+    "artistEn": "Tigran Hamasyan",
+    "addedAt": "2026-10-14T02:32:05.766Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7hv05i.jpg",
+    "recommendedTracks": [
+      "1. Prelude For All Seekers",
+      "2. Yerevan Sunrise",
+      "11. Per Mané (Eb Venice song)",
+      "12. Window From One Heart To Another (For Rumi)"
+    ],
+    "tracklist": [
+      "1. Prelude For All Seekers",
+      "2. Yerevan Sunrise",
+      "3. Manifeste",
+      "4. One Body, One Blood",
+      "5. Seven Sorrows",
+      "6. Years Passing (For Akram)",
+      "7. Dardahan",
+      "8. War Time Poem",
+      "9. The Fire Child (Vahagn Is Born)",
+      "10. Ultradance",
+      "11. Per Mané (Eb Venice song)",
+      "12. Window From One Heart To Another (For Rumi)",
+      "13. A Eye (The Digital Leviathan)",
+      "14. National Repentance Anthem"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mv7hryze",
+    "title": "Affinity (feat. Toots Thielemans)",
+    "artist": "빌 에반스",
+    "artistKo": "빌 에반스",
+    "artistEn": "Bill Evans",
+    "addedAt": "2026-10-14T02:29:44.282Z",
+    "year": "1978",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7hryze.jpg",
+    "recommendedTracks": [
+      "1. I Do It For Your Love",
+      "2. Sno' Peas"
+    ],
+    "tracklist": [
+      "1. I Do It For Your Love",
+      "2. Sno' Peas",
+      "3. This Is All I Ask",
+      "4. The Days Of Wine And Roses",
+      "5. Jesus' Last Ballad",
+      "6. Tomato Kiss",
+      "7. The Other Side Of Midnight (Noelle's Theme)",
+      "8. Blue And Green",
+      "9. Body And Soul"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mv7hpixo",
+    "title": "Quintessence",
+    "artist": "빌 에반스",
+    "artistKo": "빌 에반스",
+    "artistEn": "Bill Evans",
+    "addedAt": "2026-10-14T02:27:50.172Z",
+    "year": "1976",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mv7hpixo.jpg",
+    "recommendedTracks": [
+      "1. Sweet Dulcinea Blue",
+      "4. A Child Is Born"
+    ],
+    "tracklist": [
+      "1. Sweet Dulcinea Blue",
+      "2. Martina",
+      "3. Second Time Around",
+      "4. A Child Is Born",
+      "5. Bass Face"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-muxbrzfj",
+    "title": "Rubber Soul (Special Edition Deluxe)",
+    "artist": "비틀즈",
+    "artistKo": "비틀즈",
+    "artistEn": "The Beatles",
+    "addedAt": "2026-10-06T23:44:05.407Z",
+    "year": "1965",
+    "format": "Vinyl",
+    "genre": "록",
+    "genres": [
+      "록"
+    ],
+    "country": "",
+    "coverImage": "covers/album-muxbrzfj.jpg",
+    "recommendedTracks": [
+      "A1. Drive My Car",
+      "A2. Norwegian Wood (This Bird Has Flown)",
+      "A3. You Won't See Me",
+      "A4. Nowhere Man",
+      "A5. Think For Yourself",
+      "A7. Michelle",
+      "B4. In My Life",
+      "C8. Drive My Car (Takes 1 and 2 – Instrumental Backing Track)",
+      "D2. Nowhere Man (Second Version – Take 5 – Instrumental Backing Track)",
+      "D3. Michelle (Take 1)"
+    ],
+    "tracklist": [
+      "A1. Drive My Car",
+      "A2. Norwegian Wood (This Bird Has Flown)",
+      "A3. You Won't See Me",
+      "A4. Nowhere Man",
+      "A5. Think For Yourself",
+      "A6. The Word",
+      "A7. Michelle",
+      "B1. What Goes On",
+      "B2. Girl",
+      "B3. I'm Looking Through You",
+      "B4. In My Life",
+      "B5. Wait",
+      "B6. If I Needed Someone",
+      "B7. Run For Your Life",
+      "C1. Day Tripper (Songwriting Work Tape)",
+      "C2. Day Tripper (2023 Mix)",
+      "C3. We Can Work It Out (Paul's Demo)",
+      "C4. We Can Work It Out (2023 Mix)",
+      "C5. Wait (Take 3 – Instrumental Backing Track)",
+      "C6. Run For Your Life (Takes 1–5 – Instrumental Backing Track)",
+      "C7. Norwegian Wood (This Bird Has Flown) (Second Version – Take 2)",
+      "C8. Drive My Car (Takes 1 and 2 – Instrumental Backing Track)",
+      "C9. If I Needed Someone (Take 1 – Instrumental Backing Track)",
+      "D1. In My Life (Take 1)",
+      "D2. Nowhere Man (Second Version – Take 5 – Instrumental Backing Track)",
+      "D3. Michelle (Take 1)",
+      "D4. What Goes On (Take 1 – Instrumental Backing Track)",
+      "D5. I'm Looking Through You (Second Version – Take 3)",
+      "D6. The Word (Takes 1 and 2 – Instrumental Backing Track)",
+      "D7. Girl (Take 2 – Instrumental Backing Track)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
     "id": "album-muhxhoqq",
     "title": "The Renaissance",
     "artist": "큐 팁",
@@ -16212,8 +16550,6 @@ const ALBUMS = [
   {
     "id": "album-mrdetafz",
     "title": "Punch-Drunk Love (Original Motion Picture Soundtrack)",
-    "weeklyVideo": "media/weekly-motion-test.mp4",
-    "weeklyVideoPoster": "media/weekly-motion-test-poster.jpg",
     "artist": "존 브리온",
     "artistKo": "존 브리온",
     "artistEn": "Jon Brion",
@@ -16256,6 +16592,8 @@ const ALBUMS = [
     "descriptionEn": "This is the soundtrack to Punch-Drunk Love, the film that inspired the bar. It is one of Jon Brion's finest works, giving real lift to Paul Thomas Anderson as he experimented with a shift in style in his early period.",
     "weeklyReason": "테스트니까 히히",
     "weeklyReasonEn": "Just a test, hehe.",
+    "weeklyVideo": "media/weekly-motion-test.mp4",
+    "weeklyVideoPoster": "media/weekly-motion-test-poster.jpg",
     "weeklyHistory": [
       {
         "id": "weekly-2026-09-15-initial",
