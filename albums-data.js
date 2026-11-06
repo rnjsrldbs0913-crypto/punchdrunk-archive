@@ -3,6 +3,132 @@
 
 const ALBUMS = [
   {
+    "id": "album-mw4gxppf",
+    "title": "Droppin' Science",
+    "artist": "여러 아티스트",
+    "artistKo": "여러 아티스트",
+    "artistEn": "Various Artists",
+    "addedAt": "2026-11-06T04:22:36.387Z",
+    "year": "2008",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mw4gxppf.jpg",
+    "recommendedTracks": [
+      "1. It's Your Thing",
+      "2. Mystic Brew",
+      "3. Think Twice (feat. Kay Haith)",
+      "4. The Edge",
+      "10. Who's Making Love"
+    ],
+    "tracklist": [
+      "1. It's Your Thing",
+      "2. Mystic Brew",
+      "3. Think Twice (feat. Kay Haith)",
+      "4. The Edge",
+      "5. Oblighetto",
+      "6. Get Out Of My Life Woman",
+      "7. Down Here On The Ground (Live At Cliche Lounge/1970)",
+      "8. Spinning Wheel",
+      "9. Howlin' For Judy",
+      "10. Who's Making Love",
+      "11. Tidal Wave",
+      "12. Little Green Apples",
+      "13. Wind Parade",
+      "14. Inside You"
+    ],
+    "description": "힙합이란 장르는 샘플링이라는 기법에서 출발했습니다. 힙합은 그 기원이 비교적 분명한 장르인데, 가장 정설로 받아들여지는 기원은 1973년 브롱크스의 한 아파트에서 벌어진 디스코 파티입니다. 70년대 흑인 사회에서 가장 인기많던 디스코 장르에는 춤을 추기 위해 다른 요소들을 줄이고 드럼을 앞에 내세운 '드럼 브레이크' 구간이 있는 경우가 많았는데, 이 날 파티에서 DJ를 보던 'DJ 쿨 허크'가 턴테이블을 이용해 이 드럼 브레이크만을 이어붙혀 만든 것이 힙합의 시초라는 것이 가장 잘 알려진 내용입니다.\n\n샘플링이라는 것은 기존에 존재하는 곡을 자르거나 변형해 붙여 새로운 곡을 만드는 기법이기 때문에, 필연적으로 기존에 이미 존재하는 곡을 활용할 수 밖에 없습니다. 이 과정에서 가장 많이 활용된 장르를 두가지 꼽으라면 소울/펑크와 재즈일 것입니다.\n\n그리고 (공식 집계는 당연히 없습니다만) 수많은 재즈 레이블 중 가장 많은 힙합 샘플 원곡들을 보유한 회사는 아마 블루 노트일 겁니다. 일단 역사가 길다보니 곡들이 많고, 다양한 재즈 장르들을 보유하고 있어 골라먹을 것이 많을 뿐만 아니라, 가장 중요하게도 블루노트는 이 샘플링을 아티스트들에게 적극 권장하는 편이었기 때문입니다. \n\n자유롭게 곡들을 이어붙혀 곡을 만들던 힙합은 90년대 즈음부터 사용한 샘플의 원작자에게 정당한 페이를 지불해야 한다는, \"샘플 클리어\"라는 홍역을 겪게 됩니다. 이미 발매된 앨범의 권리 문제로 법적 다툼이 오갔고, 새로 발매된 앨범의 유통이 중단되기도 합니다. 특히 새로 떠오르는 뮤지션들은 샘플 비용을 감당하기 어려워져 힙합은 큰 위기를 겪게 됩니다.\n\n그런데 이 시기의 블루노트는 자신들의 곡을 무단으로 샘플링한 Us3라는 그룹과 오히려 계약하여 93년에 자신들의 회사 곡들을 자유롭게 사용하도록 해 [Hand on the Torch]라는 좋은 앨범을 내놓는다거나, 구루, 더 루츠와 같은 힙합 아티스트들을 불러모아 96년에 [The New Groove]라는 블루노트 리믹스 앨범을 내놓는다거나, 2003년에는 힙합 프로듀서 매들립과 계약하여 블루노트 곡들을 활용한 [Shades of Blue]라는 앨범을 만들도록 지원하는 등 힙합의 정서를 이해하고 오히려 적극적으로 지지하는 행보를 보입니다.\n\n이러한 연장선에서 2008년에 발매된 앨범이 바로 이 [Droppin' Science]입니다. 힙합에서 샘플로 사용된 곡들 중 유명하고 가치있는 곡들을 모아 발매한 앨범입니다. 첫 곡부터 한국힙합 팬이라면 반가울, 재지팩트의 곡에 사용된 루 도날드슨의 <It's Your Thing>이 흘러나오고, 앨범을 듣는 내내 힙합 팬이라면 고개가 끄덕여질 반가운 곡들이 가득 차 있습니다. 힙합 팬들에게 자신이 좋아하던 곡의 샘플 원곡을 발견하는 것 만큼 즐거운 일도 드물겁니다.\n\n블루노트는 지금도 [Re:Imagined]시리즈를 통해 자신들의 오랜 유산을 젊은 아티스트들과 함께 활용하기 위한 노력을 계속 하고 있습니다. 재즈의 위기론은 수십년간 이어져서 이제는 철지난 돌림노래처럼 들릴 지경입니다만, 그걸 막기 위해 수십년간 새로운 길을 찾고 있는 블루노트의 노력은 항상 듣기에 즐겁습니다.",
+    "descriptionEn": "Hip-hop began with the technique of sampling. Its origins are relatively clear, and the most widely accepted story begins at a disco party in a Bronx apartment in 1973. Disco, the most popular genre in Black communities in the 1970s, often featured a “drum break,” stripping back the other elements and bringing the drums forward for people to dance to. The best-known account is that DJ Kool Herc, working the turntables at that party, linked those drum breaks together—and hip-hop began.\n\nSampling means cutting up or reshaping existing tracks and piecing them together to create something new, so it inevitably draws on music that is already there. If you had to name the two genres sampled most often, they would be soul/funk and jazz.\n\nAnd among the countless jazz labels, the one whose catalog has supplied the most hip-hop samples is probably Blue Note—though naturally, there are no official figures. Its long history means a deep catalog, and its range of jazz offers plenty to choose from. Most importantly, Blue Note actively encouraged artists to sample its music.\n\nHip-hop had freely built tracks by stitching records together, but around the 1990s it went through the growing pains of “sample clearance”: the requirement to properly pay the original creators of the samples being used. Legal battles broke out over the rights to albums already released, while newly released albums were pulled from distribution. Emerging musicians in particular struggled to afford the fees, and hip-hop faced a serious crisis.\n\nYet during this period, Blue Note signed Us3, a group that had sampled its music without permission, and gave them free rein over the label’s catalog for the fine 1993 album [Hand on the Torch]. In 1996, it brought together hip-hop artists including Guru and The Roots for the Blue Note remix album [The New Groove]. Then in 2003, it signed hip-hop producer Madlib and supported him in making [Shades of Blue] from Blue Note material. The label understood the spirit of hip-hop and chose to support it wholeheartedly.\n\nReleased in 2008, [Droppin’ Science] follows directly in that tradition. It collects famous and worthwhile tracks that hip-hop producers have sampled. Right from the opening track, Lou Donaldson’s It’s Your Thing—sampled by Jazzyfact—will be a welcome sound to Korean hip-hop fans. The whole album is full of familiar tracks that will have hip-hop listeners nodding in recognition. Few things are as satisfying for a hip-hop fan as discovering the original sample behind a favorite song.\n\nBlue Note continues working with younger artists to put its long legacy to new use through the [Blue Note Re:imagined] series. People have been declaring jazz in crisis for decades, to the point that it now sounds like a tired refrain. But it is always a pleasure to hear Blue Note’s decades-long search for new ways forward.",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mw4gx1aw",
+    "title": "MoonDial",
+    "artist": "팻 메스니",
+    "artistKo": "팻 메스니",
+    "artistEn": "Pat Metheny",
+    "addedAt": "2026-11-06T04:22:04.760Z",
+    "year": "2024",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mw4gx1aw.jpg",
+    "recommendedTracks": [
+      "1. MoonDial",
+      "4. Here, There and Everywhere",
+      "7. Everything Happens to Me / Somewhere"
+    ],
+    "tracklist": [
+      "1. MoonDial",
+      "2. La Crosse",
+      "3. You're Everything",
+      "4. Here, There and Everywhere",
+      "5. We Can't See It, But It's There",
+      "6. Falcon Love",
+      "7. Everything Happens to Me / Somewhere",
+      "8. Londonderry Air",
+      "9. This Belongs to You",
+      "10. Shōga",
+      "11. My Love and I",
+      "12. Angel Eyes",
+      "13. MoonDial (epilogue)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mw4gw5ob",
+    "title": "Heavy Is The Crown",
+    "artist": "앤더슨 팩 & 콜대",
+    "artistKo": "앤더슨 팩 & 콜대",
+    "artistEn": "Anderson .Paak & Cordae",
+    "addedAt": "2026-11-06T04:21:23.771Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "힙합",
+    "genres": [
+      "힙합"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mw4gw5ob.jpg",
+    "recommendedTracks": [
+      "4. A Good Day",
+      "5. You're Mine"
+    ],
+    "tracklist": [
+      "1. 58th Floor",
+      "2. Airbender",
+      "3. I'm On",
+      "4. A Good Day",
+      "5. You're Mine",
+      "6. Days Go By",
+      "7. Crown",
+      "8. Days Like This",
+      "9. Karma Tax",
+      "10. Helpless",
+      "11. Godfather II"
+    ],
+    "description": "처음 접점이 무엇이었는지는 알 수 없으나, 앤더슨 팩과 콜대는 2019년 콜대의 1집 [The Lost Boy]에 수록된 <RNP>라는 곡에서 부터 환상의 합을 자랑했습니다. 원래 그룹으로 활동하던 양 통통튀는 비트 위에서 서로 장난기 넘치는 라인을 주고받으며 멋진 곡을 만들었습니다. 당시 방송도 여러번 출연한지라 그 영상을 많이 찾아봤던 저는 방송용으로 검열된 가사가 더 익숙하게 느껴질 정도로 그 버전이 익숙합니다.\n\n둘의 호흡은 2023년 <Two Tens>와 2024년 <Summer Drops>에서도 변치않고 이어집니다. 재밌는 점은 언급된 세 곡이 모두 래퍼 제이콜의 비트였다는 점입니다. 힙합팬들에게 이 셋의 조합은 믿고 듣는 재밌는 조합으로 알려져 있었습니다.\n\n그러던 2026년 둘의 합작 앨범이 발표됐고, 앨범의 총괄 프로듀서는 제이콜이 맡았습니다. 장난기는 줄었고 제이콜은 이전같이 통통튀는 비트보다는 자신이 랩을 얹을만한 힙합 비트들을 가져왔습니다. 장난스러운 모습이 줄어 아쉽지만 그만큼 두 래퍼의 끝내주는 랩이 그 빈 공간을 채웁니다. 둘 모두, 특히 앤더슨 팩이 래퍼로써는 조금 저평가받는다고 생각해 아쉬움이 있던 저는 이 앨범이 아주 반가웠습니다. 아쉬운 점이 없지는 않지만, 좋은 비트 위로 좋은 랩이 얹어진 이 앨범을 나쁜 앨범이라고 부르는 것도 이상한 일일 것 같습니다.\n\n둘이서 앞으로 얼마나 같이 활동할 지는 모르지만, 개인적인 바람으로는 오래오래 함께해줬으면 하는 마음이 있습니다.",
+    "descriptionEn": "I do not know how they first crossed paths, but Anderson .Paak and Cordae have had remarkable chemistry ever since RNP, from Cordae’s 2019 debut album [The Lost Boy]. Over a buoyant beat, they traded playful lines as if they had always been a group and came away with a terrific track. They performed it on TV several times, and I watched those clips so often that the broadcast version feels more familiar to me—even with the lyrics censored.\n\nTheir chemistry remained intact on Two Tens in 2023 and Summer Drops in 2024. The fun part is that all three tracks were produced by J. Cole. Among hip-hop fans, the three of them had become a combination you could trust to deliver something entertaining.\n\nThen, in 2026, Anderson .Paak and Cordae released their collaborative album [Heavy Is The Crown], with J. Cole serving as executive producer. The playfulness is dialed back, and instead of the buoyant beats from before, J. Cole brings the kind of hip-hop beats he might rap over himself. I miss some of that mischievous energy, but the two rappers fill the space with phenomenal rapping. I have always felt that both of them—Anderson .Paak especially—are a little underrated as rappers, so I was very glad to see this album arrive. It is not without its shortcomings, but it would also feel strange to call an album with good rapping over good beats a bad one.\n\nI do not know how long the two will keep working together, but personally, I hope they stay at it for a long, long time.",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
     "id": "album-mv7i5c5j",
     "title": "Live at Real World Studios",
     "artist": "알파 미스트",
