@@ -159,8 +159,8 @@ const ALBUMS = [
       "8. Found You [Alternate Take]",
       "9. Roulette (Live at Real World Studios) [Alternate Take]"
     ],
-    "description": "",
-    "descriptionEn": "",
+    "description": "영국의 UK재즈 물결을 대표하는 피아니스트 알파 미스트는 2021년 [Bring Backs]를 발표할 때 부터 앨범을 발매하면 그 앨범의 수록곡들을 연주한 라이브 영상을 유튜브에 공개했습니다. 이 전통은 2025년 [Roulette]을 발표하고도 이어졌는데, 무슨 바람이 불어서인지 이 라이브 영상은 음반으로까지 발매가 됐습니다.\n\n그만큼 자신이 있었겠죠. 앨범 전곡을 라이브로 연주하고 또 다른 테이크도 추가됐습니다. 레코드의 품질이 뛰어나다고는 하기 어렵습니다만, 그 안에 담긴 음악만은 언제나처럼 뛰어납니다.",
+    "descriptionEn": "Alfa Mist, a pianist at the forefront of the UK jazz wave, has made a habit of uploading live performances of an album’s tracks to YouTube whenever he releases a new record, starting with [Bring Backs] in 2021. The tradition continued after [Roulette] came out in 2025, but for whatever reason, this particular live session even made it onto record.\n\nHe must have been that confident. The entire album is performed live, with alternate takes added as well. It would be hard to call the quality of the record itself outstanding, but the music it holds is as excellent as ever.",
     "weeklyReason": "",
     "weeklyReasonEn": "",
     "weeklyHistory": [],
