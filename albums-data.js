@@ -3,6 +3,200 @@
 
 const ALBUMS = [
   {
+    "id": "album-mwn78lfj",
+    "title": "Words Fall Short",
+    "artist": "조슈아 레드맨",
+    "artistKo": "조슈아 레드맨",
+    "artistEn": "Joshua Redman",
+    "addedAt": "2026-11-19T06:58:45.247Z",
+    "year": "2025",
+    "format": "CD",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mwn78lfj.jpg",
+    "recommendedTracks": [],
+    "tracklist": [
+      "1. A Message To Unsend (feat. Paul Cornish, Philip Norris & Nazir Ebo)",
+      "2. So It Goes (feat. Melissa Aldana, Paul Cornish, Philip Norris & Nazir Ebo)",
+      "3. Words Fall Short (feat. Paul Cornish, Philip Norris & Nazir Ebo)",
+      "4. Borrowed Eyes (feat. Paul Cornish, Philip Norris & Nazir Ebo)",
+      "5. Icarus (feat. Skylar Tang, Paul Cornish, Philip Norris & Nazir Ebo)",
+      "6. Over The Jelly-Green Sea (feat. Paul Cornish, Philip Norris & Nazir Ebo)",
+      "7. She Knows (feat. Paul Cornish, Philip Norris & Nazir Ebo)",
+      "8. Era's End (feat. Gabrielle Cavassa, Paul Cornish, Philip Norris & Nazir Ebo)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mwn778zc",
+    "title": "Spirit Fall (feat. Chris Potter & Brian Blade)",
+    "artist": "존 패티투치",
+    "artistKo": "존 패티투치",
+    "artistEn": "John Patitucci",
+    "addedAt": "2026-11-19T06:57:42.456Z",
+    "year": "2025",
+    "format": "CD",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mwn778zc.jpg",
+    "recommendedTracks": [
+      "2. Pole Star (feat. Chris Potter & Brian Blade)",
+      "5. Spirit Fall (feat. Chris Potter & Brian Blade)"
+    ],
+    "tracklist": [
+      "1. Think Fast (feat. Chris Potter & Brian Blade)",
+      "2. Pole Star (feat. Chris Potter & Brian Blade)",
+      "3. Deluge on 7th Ave (feat. Chris Potter & Brian Blade)",
+      "4. Thoughts and Dreams (feat. Chris Potter & Brian Blade)",
+      "5. Spirit Fall (feat. Chris Potter & Brian Blade)",
+      "6. Lipím (feat. Chris Potter & Brian Blade)",
+      "7. Silent Prayer (feat. Chris Potter & Brian Blade)",
+      "8. House of Jade (feat. Chris Potter & Brian Blade)",
+      "9. Light in the Darkness (feat. Chris Potter & Brian Blade)",
+      "10. Sonrisa (feat. Chris Potter & Brian Blade)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mwn76kfd",
+    "title": "LIVE FAST DIE SKRT",
+    "artist": "빌스택스",
+    "artistKo": "빌스택스",
+    "artistEn": "BILL STAX",
+    "addedAt": "2026-11-19T06:57:10.633Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "한국음악",
+    "genres": [
+      "한국음악"
+    ],
+    "country": "한국",
+    "coverImage": "covers/album-mwn76kfd.jpg",
+    "recommendedTracks": [
+      "5. Bbang (feat. Boy Wonder)",
+      "6. CHA MOO SIK (feat. Leellamarz)",
+      "8. MDMA (feat. Leellamarz)"
+    ],
+    "tracklist": [
+      "1. Shinin' Freestyle",
+      "2. Bless K-Trap (feat. 권기백)",
+      "3. Bricks n’ Mortar Shop (SKRR GANG)",
+      "4. Daddy is... (Skit) bmp67",
+      "5. Bbang (feat. Boy Wonder)",
+      "6. CHA MOO SIK (feat. Leellamarz)",
+      "7. Bad Movie (feat. Wuuslime)",
+      "8. MDMA (feat. Leellamarz)",
+      "9. Did You Piss Yourself? (Skit)",
+      "10. You're So Fine (feat. Coogie)",
+      "11. Thumb n' Index (feat. The Quiett)",
+      "12. 2,4,6,8,10",
+      "13. Doppest Dope in Town (feat. TRADE L)",
+      "14. Breakfast Lunch Dinner (feat. Rakon)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mwn75wb3",
+    "title": "Life and Shadow",
+    "artist": "나도윤",
+    "artistKo": "나도윤",
+    "artistEn": "Doyun Na",
+    "addedAt": "2026-11-19T06:56:39.375Z",
+    "year": "2025",
+    "format": "CD",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mwn75wb3.jpg",
+    "recommendedTracks": [
+      "2. Where is compassion?",
+      "9. No regrets",
+      "10. The refuge song"
+    ],
+    "tracklist": [
+      "1. In front of him",
+      "2. Where is compassion?",
+      "3. Bass orbit / Prelude to the moon",
+      "4. Moonbound dreams",
+      "5. Let's be lonely",
+      "6. He cursed",
+      "7. Breathing slowly",
+      "8. About spring",
+      "9. No regrets",
+      "10. The refuge song"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
+    "id": "album-mwn74p5z",
+    "title": "Roma (Live)",
+    "artist": "키스 자렛",
+    "artistKo": "키스 자렛",
+    "artistEn": "Keith Jarrett",
+    "addedAt": "2026-11-19T06:55:43.463Z",
+    "year": "2026",
+    "format": "Vinyl",
+    "genre": "재즈",
+    "genres": [
+      "재즈"
+    ],
+    "country": "",
+    "coverImage": "covers/album-mwn74p5z.jpg",
+    "recommendedTracks": [
+      "6. Roma, Part VI (Live)",
+      "11. Somewhere Over the Rainbow (Live)",
+      "12. It's a Lonesome Old Town (Live)"
+    ],
+    "tracklist": [
+      "1. Roma, Part I (Live)",
+      "2. Roma, Part II (Live)",
+      "3. Roma, Part III (Live)",
+      "4. Roma, Part IV (Live)",
+      "5. Roma, Part V (Live)",
+      "6. Roma, Part VI (Live)",
+      "7. Roma, Part VII (Live)",
+      "8. Roma, Part VIII (Live)",
+      "9. Roma, Part IX (Live)",
+      "10. Roma, Part X (Live)",
+      "11. Somewhere Over the Rainbow (Live)",
+      "12. It's a Lonesome Old Town (Live)"
+    ],
+    "description": "",
+    "descriptionEn": "",
+    "weeklyReason": "",
+    "weeklyReasonEn": "",
+    "weeklyHistory": [],
+    "isWeekly": false
+  },
+  {
     "id": "album-mw4gxppf",
     "title": "Droppin' Science",
     "artist": "여러 아티스트",
